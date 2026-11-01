@@ -1,0 +1,108 @@
+{% extends 'dashboard_base.html' %}
+
+{% block title %}My Prescriptions — CarePlus Hospital{% endblock %}
+{% block page_title %}Clinical Prescriptions{% endblock %}
+{% block page_subtitle %}Digital copies of medications, doctor advice, and clinical notes.{% endblock %}
+
+{% block dashboard_body %}
+<div class="cp-card">
+  <div class="cp-card-header">
+    <span><i class="bi bi-file-earmark-medical me-2 text-primary"></i>Issued Prescriptions ({{ prescriptions|length }})</span>
+  </div>
+  <div class="p-4">
+    {% if prescriptions %}
+      <div class="accordion" id="rxAccordion">
+        {% for rx in prescriptions %}
+          <div class="accordion-item mb-3 border rounded shadow-sm overflow-hidden">
+            <h2 class="accordion-header" id="heading_{{ rx.id }}">
+              <button class="accordion-button {% if not loop.first %}collapsed{% endif %}" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_{{ rx.id }}">
+                <div class="d-flex flex-wrap justify-content-between align-items-center w-100 me-3">
+                  <div>
+                    <span class="badge bg-primary me-2">Rx #{{ rx.id }}</span>
+                    <strong class="text-dark">{{ rx.doctor_name }}</strong>
+                    <span class="text-muted small ms-2">({{ rx.department_name }})</span>
+                  </div>
+                  <div class="small text-muted">
+                    <i class="bi bi-calendar3 me-1"></i>Date: {{ rx.appointment_date or rx.created_at }} &bull; Appt: {{ rx.appointment_number }}
+                  </div>
+                </div>
+              </button>
+            </h2>
+            <div id="collapse_{{ rx.id }}" class="accordion-collapse collapse {% if loop.first %}show{% endif %}" data-bs-parent="#rxAccordion">
+              <div class="accordion-body bg-white p-4">
+                <!-- Diagnosis Banner -->
+                <div class="alert alert-light border mb-4">
+                  <div class="row g-2">
+                    <div class="col-md-6">
+                      <span class="text-muted small d-block">Clinical Diagnosis</span>
+                      <strong class="text-dark fs-6">{{ rx.diagnosis }}</strong>
+                    </div>
+                    <div class="col-md-6 text-md-end">
+                      <span class="text-muted small d-block">Recommended Follow-up</span>
+                      <strong class="text-primary">{{ rx.follow_up_date or 'As needed' }}</strong>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Prescribed Medications Table -->
+                <h6 class="fw-bold mb-3 text-secondary text-uppercase small letter-spacing-1">Prescribed Medicines</h6>
+                <div class="table-responsive mb-4">
+                  <table class="table table-bordered table-sm align-middle">
+                    <thead class="table-light">
+                      <tr>
+                        <th>#</th>
+                        <th>Medicine</th>
+                        <th>Dosage</th>
+                        <th>Frequency</th>
+                        <th>Duration</th>
+                        <th>Instructions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% if rx.items %}
+                        {% for item in rx.items %}
+                          <tr>
+                            <td>{{ loop.index }}</td>
+                            <td class="fw-bold text-dark">{{ item.medicine_name }}</td>
+                            <td>{{ item.dosage }}</td>
+                            <td><span class="badge bg-info-subtle text-info border border-info">{{ item.frequency }}</span></td>
+                            <td>{{ item.duration }}</td>
+                            <td class="text-muted small">{{ item.instructions or 'Take as prescribed' }}</td>
+                          </tr>
+                        {% endfor %}
+                      {% else %}
+                        <tr>
+                          <td colspan="6" class="text-muted text-center py-2">No individual medication entries listed.</td>
+                        </tr>
+                      {% endif %}
+                    </tbody>
+                  </table>
+                </div>
+
+                {% if rx.advice_notes %}
+                  <div class="mb-3">
+                    <span class="text-muted small d-block fw-semibold">Doctor's Advice & Lifestyle Guidance:</span>
+                    <p class="mb-0 text-dark small bg-light p-3 rounded border">{{ rx.advice_notes }}</p>
+                  </div>
+                {% endif %}
+
+                <div class="text-end pt-2">
+                  <button type="button" class="btn btn-sm btn-outline-primary" onclick="window.print()">
+                    <i class="bi bi-printer me-1"></i> Print Prescription
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="text-center py-5 text-muted">
+        <i class="bi bi-capsule fs-1 d-block mb-2 text-muted"></i>
+        <h6>No digital prescriptions available yet.</h6>
+        <p class="small text-muted mb-0">Prescriptions issued by your doctor during consultations will appear here.</p>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

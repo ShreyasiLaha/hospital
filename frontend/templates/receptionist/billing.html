@@ -1,0 +1,158 @@
+{% extends 'dashboard_base.html' %}
+
+{% block title %}Cashier Invoicing Desk — CarePlus Hospital{% endblock %}
+{% block page_title %}Cashier Desk & Billing Management{% endblock %}
+{% block page_subtitle %}Process consultation invoices, apply discounts, and record patient payments.{% endblock %}
+
+{% block dashboard_body %}
+<div class="row g-4">
+  <div class="col-lg-7">
+    <div class="cp-card p-4">
+      <h5 class="fw-bold mb-3"><i class="bi bi-credit-card-2-front text-primary me-2"></i>Settle Patient Invoice</h5>
+      
+      <form method="POST" action="{{ url_for('receptionist.billing') }}" id="billing_form">
+        <!-- Select Bill -->
+        <div class="mb-3">
+          <label class="form-label fw-semibold" for="bill_select">Select Pending Invoice</label>
+          <select class="form-select form-select-lg" id="bill_select" name="bill_id" required>
+            <option value="">-- Choose Patient / Invoice to Settle --</option>
+            {% for b in unpaid_bills %}
+              <option value="{{ b.id }}" 
+                      data-inv="{{ b.invoice_number }}"
+                      data-patient="{{ b.patient_name }}"
+                      data-doctor="{{ b.doctor_name }}"
+                      data-fee="{{ b.consultation_fee }}">
+                {{ b.invoice_number }} &bull; {{ b.patient_name }} ({{ b.doctor_name }}) — Fee: ${{ "%.2f"|format(b.consultation_fee) }}
+              </option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <!-- Bill Details Summary -->
+        <div class="row g-3 mb-3">
+          <div class="col-md-6">
+            <label class="form-label fw-semibold" for="fee_input">Consultation Fee ($)</label>
+            <input type="number" step="0.01" class="form-control" id="fee_input" name="consultation_fee" value="0.00" required>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-semibold" for="charges_input">Lab / Additional Charges ($)</label>
+            <input type="number" step="0.01" class="form-control" id="charges_input" name="additional_charges" value="0.00">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-semibold" for="discount_input">Discount Concession ($)</label>
+            <input type="number" step="0.01" class="form-control" id="discount_input" name="discount" value="0.00">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-semibold" for="payment_method">Payment Mode</label>
+            <select class="form-select" id="payment_method" name="payment_method">
+              <option value="CASH">Cash</option>
+              <option value="CARD">Credit / Debit Card</option>
+              <option value="UPI">UPI / Digital QR</option>
+              <option value="ONLINE">Insurance / Corporate</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Dynamic Calculation Banner -->
+        <div class="alert alert-primary d-flex justify-content-between align-items-center mb-4 p-3">
+          <div>
+            <span class="text-muted small d-block">Net Payable Amount</span>
+            <strong class="fs-4 text-primary" id="display_payable">$0.00</strong>
+          </div>
+          <span class="badge bg-primary px-3 py-2">Cashier Ready</span>
+        </div>
+
+        <button type="submit" class="btn btn-success btn-lg w-100 shadow-sm" id="submit_payment_btn" disabled>
+          <i class="bi bi-check2-circle me-2"></i> Receive Payment & Settle Invoice
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <div class="col-lg-5">
+    <!-- Unpaid Invoices Summary -->
+    <div class="cp-card p-4 mb-4">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h6 class="fw-bold mb-0"><i class="bi bi-clock-history text-warning me-2"></i>Unpaid Invoices ({{ unpaid_bills|length }})</h6>
+      </div>
+      <div class="list-group list-group-flush small" style="max-height: 220px; overflow-y: auto;">
+        {% if unpaid_bills %}
+          {% for ub in unpaid_bills %}
+            <div class="list-group-item px-0 d-flex justify-content-between align-items-center">
+              <div>
+                <strong class="text-dark">{{ ub.invoice_number }}</strong>
+                <div class="text-muted">{{ ub.patient_name }} &bull; {{ ub.doctor_name }}</div>
+              </div>
+              <span class="badge bg-warning text-dark">${{ "%.2f"|format(ub.payable_amount) }}</span>
+            </div>
+          {% endfor %}
+        {% else %}
+          <div class="text-muted text-center py-3">No pending unpaid invoices.</div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Recent Payments History -->
+    <div class="cp-card p-4">
+      <h6 class="fw-bold mb-3"><i class="bi bi-receipt-cutoff text-success me-2"></i>Recent Completed Payments</h6>
+      <div class="list-group list-group-flush small" style="max-height: 220px; overflow-y: auto;">
+        {% if recent_paid_bills %}
+          {% for pb in recent_paid_bills %}
+            <div class="list-group-item px-0 d-flex justify-content-between align-items-center">
+              <div>
+                <strong>{{ pb.invoice_number }}</strong>
+                <div class="text-muted">{{ pb.patient_name }} &bull; {{ pb.payment_method }}</div>
+              </div>
+              <div class="text-end">
+                <span class="badge bg-success-subtle text-success border border-success">${{ "%.2f"|format(pb.payable_amount) }}</span>
+                <button type="button" class="btn btn-sm btn-link p-0 text-decoration-none d-block small" onclick="window.print()">Print</button>
+              </div>
+            </div>
+          {% endfor %}
+        {% else %}
+          <div class="text-muted text-center py-3">No payments recorded yet.</div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const billSelect = document.getElementById('bill_select');
+  const feeInput = document.getElementById('fee_input');
+  const chargesInput = document.getElementById('charges_input');
+  const discountInput = document.getElementById('discount_input');
+  const displayPayable = document.getElementById('display_payable');
+  const submitBtn = document.getElementById('submit_payment_btn');
+
+  function calculate() {
+    const fee = parseFloat(feeInput.value) || 0;
+    const charges = parseFloat(chargesInput.value) || 0;
+    const discount = parseFloat(discountInput.value) || 0;
+    const payable = Math.max(0, (fee + charges) - discount);
+    displayPayable.textContent = `$${payable.toFixed(2)}`;
+  }
+
+  if (billSelect) {
+    billSelect.addEventListener('change', function() {
+      const opt = this.options[this.selectedIndex];
+      if (opt && opt.value) {
+        feeInput.value = parseFloat(opt.dataset.fee || 0).toFixed(2);
+        chargesInput.value = "0.00";
+        discountInput.value = "0.00";
+        submitBtn.disabled = false;
+      } else {
+        feeInput.value = "0.00";
+        submitBtn.disabled = true;
+      }
+      calculate();
+    });
+  }
+
+  [feeInput, chargesInput, discountInput].forEach(inp => {
+    inp.addEventListener('input', calculate);
+  });
+});
+</script>
+{% endblock %}

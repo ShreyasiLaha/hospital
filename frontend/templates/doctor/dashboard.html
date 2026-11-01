@@ -1,0 +1,133 @@
+{% extends 'dashboard_base.html' %}
+
+{% block title %}Doctor Dashboard — CarePlus Hospital{% endblock %}
+{% block page_title %}Doctor Clinical Dashboard{% endblock %}
+{% block page_subtitle %}Welcome, Dr. {{ current_user_name }}. Here is today's schedule and waiting room.{% endblock %}
+
+{% block page_actions %}
+  <a href="{{ url_for('doctor.schedule') }}" class="btn btn-outline-primary">
+    <i class="bi bi-clock-history me-1"></i> Update Consultation Hours
+  </a>
+{% endblock %}
+
+{% block dashboard_body %}
+<!-- Metric Cards -->
+<div class="row g-4 mb-4">
+  <div class="col-sm-6 col-xl-3">
+    <div class="stat-card">
+      <div>
+        <div class="text-muted small fw-semibold text-uppercase">Today's Appointments</div>
+        <div class="fs-3 fw-bold text-dark mt-1">{{ today_count }}</div>
+      </div>
+      <div class="stat-icon primary">
+        <i class="bi bi-calendar2-day"></i>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-sm-6 col-xl-3">
+    <div class="stat-card">
+      <div>
+        <div class="text-muted small fw-semibold text-uppercase">Waiting In Queue</div>
+        <div class="fs-3 fw-bold text-dark mt-1">{{ waiting_queue_count }}</div>
+      </div>
+      <div class="stat-icon warning">
+        <i class="bi bi-people"></i>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-sm-6 col-xl-3">
+    <div class="stat-card">
+      <div>
+        <div class="text-muted small fw-semibold text-uppercase">Consulted Today</div>
+        <div class="fs-3 fw-bold text-dark mt-1">{{ completed_today_count }}</div>
+      </div>
+      <div class="stat-icon success">
+        <i class="bi bi-clipboard2-check"></i>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-sm-6 col-xl-3">
+    <div class="stat-card">
+      <div>
+        <div class="text-muted small fw-semibold text-uppercase">Total Patients Served</div>
+        <div class="fs-3 fw-bold text-dark mt-1">{{ total_patients_count }}</div>
+      </div>
+      <div class="stat-icon primary">
+        <i class="bi bi-heart-pulse"></i>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Active Queue Table -->
+<div class="cp-card">
+  <div class="cp-card-header d-flex justify-content-between align-items-center">
+    <span><i class="bi bi-hourglass-split me-2 text-warning"></i>Today's Consultation Queue ({{ today_appointments|length }})</span>
+    <a href="{{ url_for('doctor.appointments') }}" class="btn btn-sm btn-outline-primary">All Appointments</a>
+  </div>
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead class="table-light">
+        <tr>
+          <th>Token #</th>
+          <th>Patient Name</th>
+          <th>Gender / Age</th>
+          <th>Time Slot</th>
+          <th>Symptoms / Chief Complaint</th>
+          <th>Status</th>
+          <th class="text-end">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% if today_appointments %}
+          {% for appt in today_appointments %}
+            <tr>
+              <td>
+                <span class="badge bg-primary fs-6 px-3">#{{ "%02d"|format(appt.token_number) }}</span>
+              </td>
+              <td>
+                <div class="fw-semibold text-dark">{{ appt.patient_name }}</div>
+                <small class="text-muted">{{ appt.patient_phone }}</small>
+              </td>
+              <td>
+                <span class="badge bg-light text-dark border">{{ appt.gender }}, {{ appt.age }} yrs</span>
+                <span class="badge bg-secondary-subtle text-secondary">{{ appt.blood_group }}</span>
+              </td>
+              <td>
+                <span class="fw-semibold">{{ appt.appointment_time }}</span>
+              </td>
+              <td>
+                <span class="text-muted small">{{ appt.symptoms or 'General consultation' }}</span>
+              </td>
+              <td>
+                {% if appt.status == 'COMPLETED' %}
+                  <span class="badge badge-status-completed">Completed</span>
+                {% elif appt.status == 'CONFIRMED' %}
+                  <span class="badge badge-status-confirmed">Checked In</span>
+                {% else %}
+                  <span class="badge bg-secondary">{{ appt.status }}</span>
+                {% endif %}
+              </td>
+              <td class="text-end">
+                <a href="{{ url_for('doctor.write_prescription', appointment_id=appt.id) }}" class="btn btn-sm btn-outline-primary">
+                  <i class="bi bi-prescription2 me-1"></i> Consult & Prescribe
+                </a>
+              </td>
+            </tr>
+          {% endfor %}
+        {% else %}
+          <tr>
+            <td colspan="7" class="text-center py-5 text-muted">
+              <i class="bi bi-calendar-check fs-2 d-block mb-2 text-muted"></i>
+              No consultations scheduled for today. Check full appointment history or update your schedule.
+            </td>
+          </tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

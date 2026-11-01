@@ -1,0 +1,107 @@
+{% extends 'dashboard_base.html' %}
+
+{% block title %}Hospital Reports & Analytics — CarePlus Hospital{% endblock %}
+{% block page_title %}Hospital Reports & Analytics Export{% endblock %}
+{% block page_subtitle %}Generate itemized CSV reports, monthly financial statements, and department volumes.{% endblock %}
+
+{% block dashboard_body %}
+<!-- Export Action Cards -->
+<div class="row g-4 mb-4">
+  <div class="col-md-6">
+    <div class="cp-card p-4">
+      <div class="d-flex align-items-center gap-3 mb-3">
+        <div class="rounded-3 bg-success-subtle text-success p-3 fs-3">
+          <i class="bi bi-file-earmark-spreadsheet-fill"></i>
+        </div>
+        <div>
+          <h5 class="fw-bold mb-1">Appointments Operational Export</h5>
+          <p class="text-muted small mb-0">Complete list of booked consultations, tokens, patient details, and statuses.</p>
+        </div>
+      </div>
+      <a href="{{ url_for('admin.export_appointments_csv') }}" class="btn btn-outline-success w-100 py-2">
+        <i class="bi bi-download me-2"></i> Download Appointments Report (CSV)
+      </a>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="cp-card p-4">
+      <div class="d-flex align-items-center gap-3 mb-3">
+        <div class="rounded-3 bg-primary-subtle text-primary p-3 fs-3">
+          <i class="bi bi-cash-coin"></i>
+        </div>
+        <div>
+          <h5 class="fw-bold mb-1">Financial & Revenue Statement</h5>
+          <p class="text-muted small mb-0">Itemized cashier invoices, consultation fees, additional charges, and payment modes.</p>
+        </div>
+      </div>
+      <a href="{{ url_for('admin.export_revenue_csv') }}" class="btn btn-outline-primary w-100 py-2">
+        <i class="bi bi-download me-2"></i> Download Financial Statement (CSV)
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- Department Performance & Monthly Breakdown Tables -->
+<div class="row g-4">
+  <div class="col-lg-6">
+    <div class="cp-card p-4">
+      <h5 class="fw-bold mb-3"><i class="bi bi-hospital text-primary me-2"></i>Department Revenue Performance</h5>
+      <div class="table-responsive">
+        <table class="table table-sm table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>Department</th>
+              <th>Appointments</th>
+              <th class="text-end">Revenue Generated</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for dp in dept_performance %}
+              <tr>
+                <td class="fw-semibold text-dark">{{ dp.name }}</td>
+                <td><span class="badge bg-light text-dark border">{{ dp.total_appointments }} visits</span></td>
+                <td class="text-end fw-bold text-success">${{ "%.2f"|format(dp.total_revenue) }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-6">
+    <div class="cp-card p-4">
+      <h5 class="fw-bold mb-3"><i class="bi bi-calendar3 text-primary me-2"></i>Monthly Financial Collections</h5>
+      <div class="table-responsive">
+        <table class="table table-sm table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>Month</th>
+              <th>Paid Invoices</th>
+              <th class="text-end">Total Collected</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% if monthly_rev %}
+              {% for mr in monthly_rev %}
+                <tr>
+                  <td class="fw-semibold">{{ mr.month }}</td>
+                  <td><span class="badge bg-light text-dark border">{{ mr.invoice_count }} invoices</span></td>
+                  <td class="text-end fw-bold text-primary">${{ "%.2f"|format(mr.total_rev) }}</td>
+                </tr>
+              {% endfor %}
+            {% else %}
+              <tr>
+                <td colspan="3" class="text-center py-4 text-muted">
+                  No monthly billing data available yet.
+                </td>
+              </tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,125 @@
+{% extends 'dashboard_base.html' %}
+
+{% block title %}Clinical Prescription Pad — CarePlus Hospital{% endblock %}
+{% block page_title %}Clinical Consultation & Prescription Pad{% endblock %}
+{% block page_subtitle %}Document clinical diagnosis, prescribe medications, and complete patient consultation.{% endblock %}
+
+{% block dashboard_body %}
+<div class="row">
+  <div class="col-lg-12">
+    <div class="cp-card p-4">
+      <!-- Patient Information Banner -->
+      <div class="alert alert-light border d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+        <div>
+          <div class="d-flex align-items-center gap-2 mb-1">
+            <span class="badge bg-primary">Token #{{ "%02d"|format(appointment.token_number) }}</span>
+            <span class="badge bg-secondary">{{ appointment.appointment_number }}</span>
+          </div>
+          <h4 class="fw-bold text-dark mb-1">{{ appointment.patient_name }}</h4>
+          <div class="text-muted small">
+            {{ appointment.gender }}, {{ appointment.age }} yrs &bull; Blood: <strong>{{ appointment.blood_group }}</strong> &bull; Phone: {{ appointment.patient_phone }}
+          </div>
+        </div>
+        <div class="text-md-end small">
+          <div class="text-muted">Chief Complaint / Symptoms:</div>
+          <strong class="text-dark">{{ appointment.symptoms or 'Routine checkup' }}</strong>
+          {% if appointment.medical_history_summary %}
+            <div class="text-danger small mt-1">
+              <i class="bi bi-exclamation-triangle-fill me-1"></i> History: {{ appointment.medical_history_summary }}
+            </div>
+          {% endif %}
+        </div>
+      </div>
+
+      <form method="POST" action="{{ url_for('doctor.write_prescription', appointment_id=appointment_id) }}">
+        <!-- Clinical Diagnosis -->
+        <div class="mb-4">
+          <label class="form-label fw-semibold" for="diagnosis">
+            <span class="text-danger">*</span> Clinical Diagnosis & Observations
+          </label>
+          <input type="text" class="form-control form-control-lg" id="diagnosis" name="diagnosis" 
+                 value="{{ prescription.diagnosis if prescription else '' }}" 
+                 placeholder="e.g. Essential Hypertension Stage 1, Acute Viral Pharyngitis" required>
+        </div>
+
+        <!-- Prescribed Medications Dynamic Table -->
+        <div class="mb-4">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <label class="form-label fw-semibold mb-0">Prescription Items / Medications</label>
+            <button type="button" class="btn btn-sm btn-outline-primary" id="add_medicine_row">
+              <i class="bi bi-plus-circle me-1"></i> Add Medication
+            </button>
+          </div>
+          
+          <div class="table-responsive">
+            <table class="table table-bordered align-middle">
+              <thead class="table-light">
+                <tr>
+                  <th style="width: 25%;">Medicine Name</th>
+                  <th style="width: 15%;">Dosage</th>
+                  <th style="width: 20%;">Frequency</th>
+                  <th style="width: 15%;">Duration</th>
+                  <th style="width: 20%;">Special Instructions</th>
+                  <th style="width: 5%;" class="text-center">Action</th>
+                </tr>
+              </thead>
+              <tbody id="medicine_items_tbody">
+                {% if items %}
+                  {% for item in items %}
+                    <tr>
+                      <td><input type="text" class="form-control form-control-sm" name="medicine_name[]" value="{{ item.medicine_name }}" required></td>
+                      <td><input type="text" class="form-control form-control-sm" name="dosage[]" value="{{ item.dosage }}" required></td>
+                      <td><input type="text" class="form-control form-control-sm" name="frequency[]" value="{{ item.frequency }}" required></td>
+                      <td><input type="text" class="form-control form-control-sm" name="duration[]" value="{{ item.duration }}" required></td>
+                      <td><input type="text" class="form-control form-control-sm" name="instructions[]" value="{{ item.instructions or '' }}"></td>
+                      <td class="text-center">
+                        <button type="button" class="btn btn-sm btn-outline-danger remove-medicine-row"><i class="bi bi-trash"></i></button>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                {% else %}
+                  <tr>
+                    <td><input type="text" class="form-control form-control-sm" name="medicine_name[]" placeholder="e.g. Telmisartan" required></td>
+                    <td><input type="text" class="form-control form-control-sm" name="dosage[]" placeholder="40 mg" required></td>
+                    <td><input type="text" class="form-control form-control-sm" name="frequency[]" placeholder="1-0-0 (Morning)" required></td>
+                    <td><input type="text" class="form-control form-control-sm" name="duration[]" placeholder="30 Days" required></td>
+                    <td><input type="text" class="form-control form-control-sm" name="instructions[]" placeholder="Take after breakfast"></td>
+                    <td class="text-center">
+                      <button type="button" class="btn btn-sm btn-outline-danger remove-medicine-row"><i class="bi bi-trash"></i></button>
+                    </td>
+                  </tr>
+                {% endif %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Advice and Follow-up -->
+        <div class="row g-3 mb-4">
+          <div class="col-md-8">
+            <label class="form-label fw-semibold" for="advice_notes">Dietary & Lifestyle Advice / Doctor Notes</label>
+            <textarea class="form-control" id="advice_notes" name="advice_notes" rows="3" placeholder="e.g. Low sodium diet, 30 minutes daily brisk walk, monitor blood pressure weekly...">{{ prescription.advice_notes if prescription else '' }}</textarea>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label fw-semibold" for="follow_up_date">Recommended Follow-up Date</label>
+            <input type="date" class="form-control" id="follow_up_date" name="follow_up_date" value="{{ prescription.follow_up_date if prescription else '' }}">
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+          <a href="{{ url_for('doctor.dashboard') }}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i> Back to Queue
+          </a>
+          <button type="submit" class="btn btn-cp-primary px-4 py-2 fs-6 shadow-sm">
+            <i class="bi bi-check2-circle me-1"></i> Save Prescription & Complete Consultation
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/prescription.js') }}"></script>
+{% endblock %}

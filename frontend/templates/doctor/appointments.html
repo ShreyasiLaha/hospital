@@ -1,0 +1,90 @@
+{% extends 'dashboard_base.html' %}
+
+{% block title %}Patient Consultations — CarePlus Hospital{% endblock %}
+{% block page_title %}Patient Consultations History{% endblock %}
+{% block page_subtitle %}Manage all appointment bookings, consultation records, and clinical histories.{% endblock %}
+
+{% block dashboard_body %}
+<div class="cp-card">
+  <div class="cp-card-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">
+    <span><i class="bi bi-people-fill me-2 text-primary"></i>All Patient Appointments ({{ appointments|length }})</span>
+    
+    <!-- Search & Filter Bar -->
+    <form method="GET" action="{{ url_for('doctor.appointments') }}" class="d-flex gap-2">
+      <input type="text" class="form-control form-control-sm" name="q" value="{{ search_query }}" placeholder="Search patient name or appt #">
+      <select class="form-select form-select-sm" name="status" onchange="this.form.submit()">
+        <option value="">All Statuses</option>
+        <option value="CONFIRMED" {% if current_filter == 'CONFIRMED' %}selected{% endif %}>Confirmed</option>
+        <option value="COMPLETED" {% if current_filter == 'COMPLETED' %}selected{% endif %}>Completed</option>
+        <option value="CANCELLED" {% if current_filter == 'CANCELLED' %}selected{% endif %}>Cancelled</option>
+      </select>
+      <button type="submit" class="btn btn-sm btn-outline-primary"><i class="bi bi-search"></i></button>
+    </form>
+  </div>
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead class="table-light">
+        <tr>
+          <th>Appt Code</th>
+          <th>Patient Details</th>
+          <th>Demographics</th>
+          <th>Date & Time</th>
+          <th>Token #</th>
+          <th>Status</th>
+          <th class="text-end">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% if appointments %}
+          {% for appt in appointments %}
+            <tr>
+              <td>
+                <span class="fw-bold text-dark">{{ appt.appointment_number }}</span>
+              </td>
+              <td>
+                <div class="fw-semibold text-dark">{{ appt.patient_name }}</div>
+                <small class="text-muted">{{ appt.patient_phone }}</small>
+              </td>
+              <td>
+                <span class="badge bg-light text-dark border">{{ appt.gender }}, {{ appt.age }} yrs</span>
+                <span class="badge bg-secondary-subtle text-secondary">{{ appt.blood_group }}</span>
+              </td>
+              <td>
+                <div class="fw-semibold">{{ appt.appointment_date }}</div>
+                <small class="text-muted"><i class="bi bi-clock me-1"></i>{{ appt.appointment_time }}</small>
+              </td>
+              <td>
+                <span class="badge bg-primary fs-6 px-3">#{{ "%02d"|format(appt.token_number) }}</span>
+              </td>
+              <td>
+                {% if appt.status == 'COMPLETED' %}
+                  <span class="badge badge-status-completed">Completed</span>
+                {% elif appt.status == 'CONFIRMED' %}
+                  <span class="badge badge-status-confirmed">Confirmed</span>
+                {% elif appt.status == 'CANCELLED' %}
+                  <span class="badge badge-status-cancelled">Cancelled</span>
+                {% else %}
+                  <span class="badge bg-secondary">{{ appt.status }}</span>
+                {% endif %}
+              </td>
+              <td class="text-end">
+                <a href="{{ url_for('doctor.write_prescription', appointment_id=appt.id) }}" class="btn btn-sm {% if appt.status == 'COMPLETED' %}btn-outline-secondary{% else %}btn-outline-primary{% endif %}">
+                  <i class="bi {% if appt.status == 'COMPLETED' %}bi-eye{% else %}bi-pencil-square{% endif %} me-1"></i> 
+                  {{ 'View Rx' if appt.status == 'COMPLETED' else 'Consult' }}
+                </a>
+              </td>
+            </tr>
+          {% endfor %}
+        {% else %}
+          <tr>
+            <td colspan="7" class="text-center py-5 text-muted">
+              <i class="bi bi-search fs-2 d-block mb-2"></i>
+              No patient appointment records found matching the query.
+            </td>
+          </tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

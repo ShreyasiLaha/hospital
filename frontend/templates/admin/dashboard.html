@@ -1,0 +1,123 @@
+{% extends 'dashboard_base.html' %}
+
+{% block title %}Executive Administration — CarePlus Hospital{% endblock %}
+{% block page_title %}Executive Administration Dashboard{% endblock %}
+{% block page_subtitle %}Comprehensive hospital metrics, revenue tracking, and operational audit trail.{% endblock %}
+
+{% block page_actions %}
+  <a href="{{ url_for('admin.reports') }}" class="btn btn-outline-primary">
+    <i class="bi bi-file-earmark-bar-graph me-1"></i> Reports & Analytics
+  </a>
+{% endblock %}
+
+{% block dashboard_body %}
+<!-- Metric Cards -->
+<div class="row g-4 mb-4">
+  <div class="col-sm-6 col-xl-3">
+    <div class="stat-card">
+      <div>
+        <div class="text-muted small fw-semibold text-uppercase">Total Patients</div>
+        <div class="fs-3 fw-bold text-dark mt-1">{{ total_patients }}</div>
+      </div>
+      <div class="stat-icon primary">
+        <i class="bi bi-people-fill"></i>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-sm-6 col-xl-3">
+    <div class="stat-card">
+      <div>
+        <div class="text-muted small fw-semibold text-uppercase">Active Doctors</div>
+        <div class="fs-3 fw-bold text-dark mt-1">{{ active_doctors }}</div>
+      </div>
+      <div class="stat-icon success">
+        <i class="bi bi-person-badge-fill"></i>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-sm-6 col-xl-3">
+    <div class="stat-card">
+      <div>
+        <div class="text-muted small fw-semibold text-uppercase">Total Bookings</div>
+        <div class="fs-3 fw-bold text-dark mt-1">{{ total_bookings }}</div>
+      </div>
+      <div class="stat-icon warning">
+        <i class="bi bi-calendar-check-fill"></i>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-sm-6 col-xl-3">
+    <div class="stat-card">
+      <div>
+        <div class="text-muted small fw-semibold text-uppercase">Total Revenue</div>
+        <div class="fs-3 fw-bold text-dark mt-1">${{ "%.2f"|format(total_revenue) }}</div>
+      </div>
+      <div class="stat-icon danger">
+        <i class="bi bi-graph-up"></i>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Department Distribution & Audit Logs -->
+<div class="row g-4 mb-4">
+  <div class="col-lg-6">
+    <div class="cp-card p-4 h-100">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="fw-bold mb-0"><i class="bi bi-hospital text-primary me-2"></i>Department Activity</h5>
+        <a href="{{ url_for('admin.manage_departments') }}" class="btn btn-sm btn-outline-primary">Manage</a>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-sm table-hover align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>Department</th>
+              <th>Active Doctors</th>
+              <th class="text-end">Total Appointments</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for ds in dept_stats %}
+              <tr>
+                <td class="fw-semibold text-dark">{{ ds.name }}</td>
+                <td><span class="badge bg-light text-dark border">{{ ds.doctor_count }} Doctors</span></td>
+                <td class="text-end fw-bold text-primary">{{ ds.appt_count }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-6">
+    <div class="cp-card p-4 h-100">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="fw-bold mb-0"><i class="bi bi-shield-check text-success me-2"></i>System Audit Trail</h5>
+        <span class="badge bg-light text-muted border">Security Logs</span>
+      </div>
+      <div class="list-group list-group-flush small" style="max-height: 260px; overflow-y: auto;">
+        {% if recent_logs %}
+          {% for log in recent_logs %}
+            <div class="list-group-item px-0 py-2">
+              <div class="d-flex justify-content-between">
+                <strong class="text-dark">{{ log.action }}</strong>
+                <small class="text-muted">{{ log.created_at }}</small>
+              </div>
+              <div class="text-muted">{{ log.details }}</div>
+              <div class="text-xs text-secondary" style="font-size: 0.75rem;">
+                By: {{ log.user_name or 'System' }} ({{ log.user_role or 'Guest' }}) &bull; IP: {{ log.ip_address }}
+              </div>
+            </div>
+          {% endfor %}
+        {% else %}
+          <div class="text-muted text-center py-3">No audit activity logged.</div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

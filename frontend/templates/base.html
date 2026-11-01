@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}CarePlus Hospital - Appointment Management{% endblock %}</title>
+  
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Bootstrap 5 CSS CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  
+  <!-- Bootstrap Icons CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  
+  <!-- Custom Application Styles -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+  
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+  <!-- Reusable Navigation Bar -->
+  {% include 'components/navbar.html' %}
+
+  <!-- Main View Container -->
+  {% block layout_container %}
+    <div class="container py-4 flex-grow-1">
+      {% include 'components/flash_messages.html' %}
+      {% block content %}{% endblock %}
+    </div>
+  {% endblock %}
+
+  <!-- Reusable Footer -->
+  {% include 'components/footer.html' %}
+
+  <!-- Bootstrap 5 Bundle JS CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <!-- Custom Global Application Script -->
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

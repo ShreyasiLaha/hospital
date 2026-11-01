@@ -1,0 +1,201 @@
+{% extends 'dashboard_base.html' %}
+
+{% block title %}Manage Users & Staff — CarePlus Hospital{% endblock %}
+{% block page_title %}Hospital Staff & User Management{% endblock %}
+{% block page_subtitle %}Add, update, or deactivate doctor, receptionist, and patient accounts.{% endblock %}
+
+{% block page_actions %}
+  <button class="btn btn-cp-primary" data-bs-toggle="modal" data-bs-target="#addUserModal">
+    <i class="bi bi-person-plus-fill me-1"></i> Add Doctor or Staff
+  </button>
+{% endblock %}
+
+{% block dashboard_body %}
+<!-- Filter Pills -->
+<div class="d-flex flex-wrap gap-2 mb-4">
+  <a href="{{ url_for('admin.manage_users') }}" class="btn btn-sm {% if not current_role %}btn-primary text-white{% else %}btn-outline-secondary{% endif %} rounded-pill px-3">
+    All Users ({{ users|length }})
+  </a>
+  <a href="{{ url_for('admin.manage_users', role='doctor') }}" class="btn btn-sm {% if current_role == 'doctor' %}btn-primary text-white{% else %}btn-outline-secondary{% endif %} rounded-pill px-3">
+    Doctors
+  </a>
+  <a href="{{ url_for('admin.manage_users', role='receptionist') }}" class="btn btn-sm {% if current_role == 'receptionist' %}btn-primary text-white{% else %}btn-outline-secondary{% endif %} rounded-pill px-3">
+    Receptionists
+  </a>
+  <a href="{{ url_for('admin.manage_users', role='patient') }}" class="btn btn-sm {% if current_role == 'patient' %}btn-primary text-white{% else %}btn-outline-secondary{% endif %} rounded-pill px-3">
+    Patients
+  </a>
+</div>
+
+<!-- Users Table -->
+<div class="cp-card">
+  <div class="cp-card-header">
+    <span><i class="bi bi-people me-2 text-primary"></i>Personnel Directory</span>
+  </div>
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead class="table-light">
+        <tr>
+          <th>User</th>
+          <th>Role</th>
+          <th>Specialization / Dept</th>
+          <th>Phone</th>
+          <th>Status</th>
+          <th class="text-end">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% if users %}
+          {% for u in users %}
+            <tr>
+              <td>
+                <div class="fw-semibold text-dark">{{ u.full_name }}</div>
+                <small class="text-muted">{{ u.email }}</small>
+              </td>
+              <td>
+                {% if u.role == 'admin' %}
+                  <span class="badge bg-danger">Administrator</span>
+                {% elif u.role == 'doctor' %}
+                  <span class="badge bg-primary">Doctor</span>
+                {% elif u.role == 'receptionist' %}
+                  <span class="badge bg-warning text-dark">Receptionist</span>
+                {% else %}
+                  <span class="badge bg-success">Patient</span>
+                {% endif %}
+              </td>
+              <td>
+                {% if u.role == 'doctor' %}
+                  <div class="text-dark">{{ u.specialization or 'Specialist' }}</div>
+                  <small class="text-muted">{{ u.department_name or 'General OPD' }} &bull; {{ u.room_number }}</small>
+                {% else %}
+                  <span class="text-muted small">Standard Access</span>
+                {% endif %}
+              </td>
+              <td>{{ u.phone }}</td>
+              <td>
+                {% if u.is_active %}
+                  <span class="badge bg-success-subtle text-success border border-success">Active</span>
+                {% else %}
+                  <span class="badge bg-danger-subtle text-danger border border-danger">Deactivated</span>
+                {% endif %}
+              </td>
+              <td class="text-end">
+                {% if u.id != current_user_id %}
+                  <form method="POST" action="{{ url_for('admin.toggle_user_status', user_id=u.id) }}" class="d-inline">
+                    <button type="submit" class="btn btn-sm {% if u.is_active %}btn-outline-danger{% else %}btn-outline-success{% endif %}" 
+                            data-confirm="Are you sure you want to {% if u.is_active %}deactivate{% else %}activate{% endif %} {{ u.full_name }}?">
+                      <i class="bi {% if u.is_active %}bi-person-x{% else %}bi-person-check{% endif %} me-1"></i>
+                      {{ 'Deactivate' if u.is_active else 'Activate' }}
+                    </button>
+                  </form>
+                {% else %}
+                  <span class="badge bg-light text-muted border">Current Admin</span>
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        {% else %}
+          <tr>
+            <td colspan="6" class="text-center py-5 text-muted">
+              No users found matching the selected role.
+            </td>
+          </tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Modal: Add New Doctor or Staff -->
+<div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title fw-bold" id="addUserModalLabel"><i class="bi bi-person-plus-fill text-primary me-2"></i>Create Staff Member</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form method="POST" action="{{ url_for('admin.manage_users') }}">
+        <div class="modal-body">
+          <h6 class="text-primary fw-bold text-uppercase small mb-3">1. Login Credentials</h6>
+          <div class="row g-3 mb-4">
+            <div class="col-md-6">
+              <label class="form-label fw-semibold" for="modal_fullname">Full Name</label>
+              <input type="text" class="form-control" id="modal_fullname" name="full_name" placeholder="e.g. Dr. Arthur Doyle" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold" for="modal_email">Email Address</label>
+              <input type="email" class="form-control" id="modal_email" name="email" placeholder="arthur@careplus.com" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold" for="modal_pass">Password</label>
+              <input type="password" class="form-control" id="modal_pass" name="password" placeholder="••••••••" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold" for="modal_phone">Phone Number</label>
+              <input type="tel" class="form-control" id="modal_phone" name="phone" placeholder="+1 800-555-0199" required>
+            </div>
+            <div class="col-md-12">
+              <label class="form-label fw-semibold" for="role_selector">Role</label>
+              <select class="form-select" id="role_selector" name="role" required>
+                <option value="doctor">Doctor</option>
+                <option value="receptionist">Receptionist</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Doctor Specific Fields -->
+          <div id="doctor_specific_fields">
+            <h6 class="text-primary fw-bold text-uppercase small mb-3">2. Clinical Doctor Profile</h6>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label fw-semibold" for="modal_dept">Assigned Department</label>
+                <select class="form-select" id="modal_dept" name="department_id">
+                  {% for dept in departments %}
+                    <option value="{{ dept.id }}">{{ dept.name }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold" for="modal_spec">Specialization</label>
+                <input type="text" class="form-control" id="modal_spec" name="specialization" placeholder="e.g. Neurosurgeon">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold" for="modal_qual">Qualification</label>
+                <input type="text" class="form-control" id="modal_qual" name="qualification" placeholder="MBBS, MS, FRCS">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold" for="modal_fee">Consultation Fee ($)</label>
+                <input type="number" step="0.01" class="form-control" id="modal_fee" name="consultation_fee" value="500.00">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold" for="modal_room">Room Number</label>
+                <input type="text" class="form-control" id="modal_room" name="room_number" placeholder="Room 205">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-cp-primary">Create Staff Account</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const roleSelect = document.getElementById('role_selector');
+  const docFields = document.getElementById('doctor_specific_fields');
+  if (roleSelect && docFields) {
+    roleSelect.addEventListener('change', function() {
+      if (this.value === 'doctor') {
+        docFields.classList.remove('d-none');
+      } else {
+        docFields.classList.add('d-none');
+      }
+    });
+  }
+});
+</script>
+{% endblock %}

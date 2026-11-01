@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block title %}Patient Registration — CarePlus Hospital{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center py-4">
+  <div class="col-lg-8">
+    <div class="cp-card p-4 p-md-5">
+      <div class="mb-4">
+        <h3 class="fw-bold text-dark">Patient Registration</h3>
+        <p class="text-muted">Create your patient profile to book and manage medical appointments online.</p>
+      </div>
+
+      <form method="POST" action="{{ url_for('auth.register') }}">
+        <h6 class="text-primary fw-bold text-uppercase small mb-3 letter-spacing-1">1. Personal & Contact Information</h6>
+        <div class="row g-3 mb-4">
+          <div class="col-md-6">
+            <label class="form-label fw-semibold" for="full_name">Full Legal Name</label>
+            <input type="text" class="form-control" id="full_name" name="full_name" placeholder="e.g. Alex Morgan" required>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-semibold" for="email">Email Address</label>
+            <input type="email" class="form-control" id="email" name="email" placeholder="alex@patient.com" required>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-semibold" for="password">Password</label>
+            <input type="password" class="form-control" id="password" name="password" placeholder="At least 8 characters" required>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-semibold" for="phone">Phone Number</label>
+            <input type="tel" class="form-control" id="phone" name="phone" placeholder="+1 555-019-2834" required>
+          </div>
+        </div>
+
+        <h6 class="text-primary fw-bold text-uppercase small mb-3 letter-spacing-1">2. Health Profile & Address</h6>
+        <div class="row g-3 mb-4">
+          <div class="col-md-4">
+            <label class="form-label fw-semibold" for="date_of_birth">Date of Birth</label>
+            <input type="date" class="form-control" id="date_of_birth" name="date_of_birth" required>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label fw-semibold" for="gender">Gender</label>
+            <select class="form-select" id="gender" name="gender" required>
+              <option value="">Select Gender</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label fw-semibold" for="blood_group">Blood Group</label>
+            <select class="form-select" id="blood_group" name="blood_group">
+              <option value="O+">O+</option>
+              <option value="O-">O-</option>
+              <option value="A+">A+</option>
+              <option value="A-">A-</option>
+              <option value="B+">B+</option>
+              <option value="B-">B-</option>
+              <option value="AB+">AB+</option>
+              <option value="AB-">AB-</option>
+            </select>
+          </div>
+          <div class="col-12">
+            <label class="form-label fw-semibold" for="address">Residential Address</label>
+            <textarea class="form-control" id="address" name="address" rows="2" placeholder="Street, City, State, ZIP" required></textarea>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+          <span class="text-muted small">Already have an account? <a href="{{ url_for('auth.login') }}" class="text-primary fw-semibold">Sign In</a></span>
+          <button type="submit" class="btn btn-cp-primary px-4 py-2">
+            <i class="bi bi-person-check-fill me-1"></i> Register Profile
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

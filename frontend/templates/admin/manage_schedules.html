@@ -1,0 +1,76 @@
+{% extends 'dashboard_base.html' %}
+
+{% block title %}Doctor Rosters & Schedules — CarePlus Hospital{% endblock %}
+{% block page_title %}Doctor Rosters & Duty Schedules{% endblock %}
+{% block page_subtitle %}Administrative overview of specialist consultation rotas, capacity, and slot intervals.{% endblock %}
+
+{% block dashboard_body %}
+<div class="cp-card">
+  <div class="cp-card-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">
+    <span><i class="bi bi-calendar3-range-fill me-2 text-primary"></i>Scheduled Roster Timetables ({{ schedules|length }})</span>
+    
+    <!-- Filter by Doctor -->
+    <form method="GET" action="{{ url_for('admin.manage_schedules') }}" class="d-flex align-items-center gap-2">
+      <label class="small text-muted text-nowrap mb-0">Doctor:</label>
+      <select class="form-select form-select-sm" name="doctor_id" onchange="this.form.submit()">
+        <option value="">All Specialists</option>
+        {% for doc in doctors %}
+          <option value="{{ doc.id }}" {% if doctor_filter == doc.id|string %}selected{% endif %}>{{ doc.full_name }}</option>
+        {% endfor %}
+      </select>
+    </form>
+  </div>
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead class="table-light">
+        <tr>
+          <th>Specialist Doctor</th>
+          <th>Department & Room</th>
+          <th>Day of Week</th>
+          <th>Session Hours</th>
+          <th>Slot Duration</th>
+          <th>Roster Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% if schedules %}
+          {% for sc in schedules %}
+            <tr>
+              <td>
+                <div class="fw-semibold text-dark">{{ sc.doctor_name }}</div>
+                <small class="text-muted">{{ sc.specialization }}</small>
+              </td>
+              <td>
+                <div>{{ sc.department_name }}</div>
+                <small class="text-muted">{{ sc.room_number }}</small>
+              </td>
+              <td>
+                <span class="badge bg-light text-dark border">{{ sc.day_of_week }}</span>
+              </td>
+              <td>
+                <span class="fw-semibold">{{ sc.start_time[:5] }} – {{ sc.end_time[:5] }}</span>
+              </td>
+              <td>
+                <span class="badge bg-secondary-subtle text-secondary">{{ sc.slot_duration_minutes }} Mins</span>
+              </td>
+              <td>
+                {% if sc.is_available %}
+                  <span class="badge bg-success-subtle text-success border border-success">On Duty</span>
+                {% else %}
+                  <span class="badge bg-danger-subtle text-danger border border-danger">Off Duty / Leave</span>
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        {% else %}
+          <tr>
+            <td colspan="6" class="text-center py-5 text-muted">
+              No schedules found matching the filter.
+            </td>
+          </tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,23 @@
+# Python Environment
+venv/
+__pycache__/
+*.py[cod]
+*$py.class
+*.env
+.env
+.DS_Store
+
+# SQLite & Logs
+*.db
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
+*.log
+logs/
+
+# IDE / Editor
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace

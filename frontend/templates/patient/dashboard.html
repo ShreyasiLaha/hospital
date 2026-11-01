@@ -1,0 +1,116 @@
+{% extends 'dashboard_base.html' %}
+
+{% block title %}Patient Dashboard — CarePlus Hospital{% endblock %}
+{% block page_title %}Patient Health Portal{% endblock %}
+{% block page_subtitle %}Hello, {{ current_user_name }}. Welcome to your medical command center.{% endblock %}
+
+{% block page_actions %}
+  <a href="{{ url_for('patient.book_appointment') }}" class="btn btn-cp-primary shadow-sm">
+    <i class="bi bi-calendar2-plus-fill me-1"></i> Book New Appointment
+  </a>
+{% endblock %}
+
+{% block dashboard_body %}
+<!-- Metric Cards -->
+<div class="row g-4 mb-4">
+  <div class="col-sm-6 col-xl-3">
+    <div class="stat-card">
+      <div>
+        <div class="text-muted small fw-semibold text-uppercase">Upcoming Visits</div>
+        <div class="fs-3 fw-bold text-dark mt-1">{{ upcoming_count }}</div>
+      </div>
+      <div class="stat-icon primary">
+        <i class="bi bi-calendar-check"></i>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-sm-6 col-xl-3">
+    <div class="stat-card">
+      <div>
+        <div class="text-muted small fw-semibold text-uppercase">Completed Visits</div>
+        <div class="fs-3 fw-bold text-dark mt-1">{{ completed_count }}</div>
+      </div>
+      <div class="stat-icon success">
+        <i class="bi bi-check2-circle"></i>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-sm-6 col-xl-3">
+    <div class="stat-card">
+      <div>
+        <div class="text-muted small fw-semibold text-uppercase">Prescriptions</div>
+        <div class="fs-3 fw-bold text-dark mt-1">{{ prescription_count }}</div>
+      </div>
+      <div class="stat-icon warning">
+        <i class="bi bi-capsule"></i>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-sm-6 col-xl-3">
+    <div class="stat-card">
+      <div>
+        <div class="text-muted small fw-semibold text-uppercase">Pending Invoices</div>
+        <div class="fs-3 fw-bold text-dark mt-1">{{ unpaid_bills_count }}</div>
+      </div>
+      <div class="stat-icon danger">
+        <i class="bi bi-receipt"></i>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Upcoming Appointment Summary Card -->
+<div class="row g-4">
+  <div class="col-lg-8">
+    <div class="cp-card">
+      <div class="cp-card-header d-flex justify-content-between align-items-center">
+        <span><i class="bi bi-calendar-event me-2 text-primary"></i>Next Scheduled Appointment</span>
+        <a href="{{ url_for('patient.my_appointments') }}" class="btn btn-sm btn-outline-primary">View All Records</a>
+      </div>
+      <div class="p-4">
+        {% if next_appointment %}
+          <div class="alert alert-info border d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-0">
+            <div>
+              <div class="d-flex align-items-center gap-2 mb-1">
+                <span class="badge bg-primary">Token #{{ "%02d"|format(next_appointment.token_number) }}</span>
+                <span class="badge bg-secondary">{{ next_appointment.appointment_number }}</span>
+              </div>
+              <h5 class="fw-bold text-dark mb-1">{{ next_appointment.doctor_name }}</h5>
+              <div class="text-muted small">
+                {{ next_appointment.department_name }} &bull; {{ next_appointment.room_number }}
+              </div>
+            </div>
+            <div class="text-md-end">
+              <div class="fs-5 fw-bold text-primary">{{ next_appointment.appointment_date }}</div>
+              <div class="badge bg-light text-dark border px-3 py-1">Time: {{ next_appointment.appointment_time }}</div>
+            </div>
+          </div>
+        {% else %}
+          <div class="text-center py-4">
+            <i class="bi bi-calendar-x fs-1 text-muted mb-2 d-block"></i>
+            <h6 class="text-muted">No upcoming appointments scheduled</h6>
+            <p class="small text-muted mb-3">Consult our clinical specialists at your convenience.</p>
+            <a href="{{ url_for('patient.book_appointment') }}" class="btn btn-sm btn-cp-primary">Book Consultation</a>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-4">
+    <div class="cp-card p-4">
+      <h6 class="fw-bold mb-3"><i class="bi bi-telephone-plus-fill text-danger me-2"></i>Emergency Hotline</h6>
+      <p class="small text-muted mb-3">For acute conditions, cardiac chest pain, or ambulance dispatch, call immediately.</p>
+      <a href="tel:8005550199" class="btn btn-outline-danger w-100 fw-bold mb-3">
+        <i class="bi bi-telephone-fill me-1"></i> +1 (800) 555-CARE
+      </a>
+      <div class="small text-muted border-top pt-2">
+        <strong>Hospital Address:</strong> 100 Health Avenue, Medical District. Open 24/7.
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

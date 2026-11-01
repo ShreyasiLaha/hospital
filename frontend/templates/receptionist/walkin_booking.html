@@ -1,0 +1,94 @@
+{% extends 'dashboard_base.html' %}
+
+{% block title %}Walk-in Patient Booking — CarePlus Hospital{% endblock %}
+{% block page_title %}Walk-in Patient Registration & Booking{% endblock %}
+{% block page_subtitle %}Instantly register an arriving patient and assign an on-duty consultation token.{% endblock %}
+
+{% block dashboard_body %}
+<div class="row g-4">
+  <div class="col-lg-8">
+    <div class="cp-card p-4">
+      <form method="POST" action="{{ url_for('receptionist.walkin_booking') }}">
+        <h6 class="text-primary fw-bold text-uppercase small mb-3 letter-spacing-1">1. Patient Personal Profile</h6>
+        <div class="row g-3 mb-4">
+          <div class="col-md-6">
+            <label class="form-label fw-semibold" for="patient_name">Patient Legal Full Name</label>
+            <input type="text" class="form-control" id="patient_name" name="patient_name" placeholder="e.g. John Doe" required>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-semibold" for="phone">Phone Number</label>
+            <input type="tel" class="form-control" id="phone" name="phone" placeholder="+1 555-012-3456" required>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label fw-semibold" for="gender">Gender</label>
+            <select class="form-select" id="gender" name="gender" required>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label fw-semibold" for="dob">Date of Birth</label>
+            <input type="date" class="form-control" id="dob" name="dob" value="1992-01-01" required>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label fw-semibold" for="blood_group">Blood Group</label>
+            <select class="form-select" id="blood_group" name="blood_group">
+              <option value="O+">O+</option>
+              <option value="O-">O-</option>
+              <option value="A+">A+</option>
+              <option value="A-">A-</option>
+              <option value="B+">B+</option>
+              <option value="B-">B-</option>
+              <option value="AB+">AB+</option>
+              <option value="AB-">AB-</option>
+            </select>
+          </div>
+        </div>
+
+        <h6 class="text-primary fw-bold text-uppercase small mb-3 letter-spacing-1">2. Department & Doctor Assignment</h6>
+        <div class="row g-3 mb-4">
+          <div class="col-md-6">
+            <label class="form-label fw-semibold" for="department_id">Department</label>
+            <select class="form-select" id="department_id" name="department_id" required>
+              <option value="">-- Choose Department --</option>
+              {% for dept in departments %}
+                <option value="{{ dept.id }}">{{ dept.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-semibold" for="doctor_id">Consulting Doctor</label>
+            <select class="form-select" id="doctor_id" name="doctor_id" required>
+              <option value="">-- Select Specialist Doctor --</option>
+              {% for doc in doctors %}
+                <option value="{{ doc.id }}">{{ doc.full_name }} ({{ doc.specialization }}) - Fee: ${{ "%.2f"|format(doc.consultation_fee) }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-12">
+            <label class="form-label fw-semibold" for="symptoms">Chief Complaint / Symptoms</label>
+            <textarea class="form-control" id="symptoms" name="symptoms" rows="2" placeholder="Describe symptoms or reasons for clinic visit..."></textarea>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-cp-primary btn-lg w-100 shadow-sm">
+          <i class="bi bi-ticket-perforated-fill me-2"></i> Register Patient & Generate Token
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <div class="col-lg-4">
+    <div class="cp-card p-4 mb-4">
+      <h6 class="fw-bold mb-3"><i class="bi bi-info-circle text-primary me-2"></i>Walk-in Booking Protocol</h6>
+      <ul class="text-muted small ps-3 mb-0">
+        <li class="mb-2">If the patient has visited before, entering their phone number will automatically link their profile.</li>
+        <li class="mb-2">A unique token number is queued under the designated doctor immediately.</li>
+        <li class="mb-2">An unfinalized consultation bill is created for the cashier desk.</li>
+        <li>Token slips can be handed directly to the patient.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+{% endblock %}

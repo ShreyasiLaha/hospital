@@ -1,0 +1,80 @@
+{# CarePlus Hospital - Role-Aware Sidebar Component #}
+<div class="dashboard-sidebar py-3">
+  <div class="px-3 mb-4">
+    <div class="text-uppercase text-xs fw-bold text-muted letter-spacing-1 px-3 mb-2" style="font-size: 0.75rem;">
+      {{ current_user_role|upper }} WORKSPACE
+    </div>
+  </div>
+
+  <nav class="nav flex-column">
+    {# 1. PATIENT NAVIGATION #}
+    {% if current_user_role == 'patient' %}
+      <a class="nav-link {% if request.endpoint == 'patient.dashboard' %}active{% endif %}" href="{{ url_for('patient.dashboard') }}">
+        <i class="bi bi-grid-fill"></i> <span>Dashboard</span>
+      </a>
+      <a class="nav-link {% if request.endpoint == 'patient.book_appointment' %}active{% endif %}" href="{{ url_for('patient.book_appointment') }}">
+        <i class="bi bi-calendar-plus-fill"></i> <span>Book Appointment</span>
+      </a>
+      <a class="nav-link {% if request.endpoint == 'patient.my_appointments' %}active{% endif %}" href="{{ url_for('patient.my_appointments') }}">
+        <i class="bi bi-calendar-check-fill"></i> <span>My Appointments</span>
+      </a>
+      <a class="nav-link {% if request.endpoint == 'patient.prescriptions' %}active{% endif %}" href="{{ url_for('patient.prescriptions') }}">
+        <i class="bi bi-file-earmark-medical-fill"></i> <span>Prescriptions</span>
+      </a>
+      <a class="nav-link {% if request.endpoint == 'patient.bills' %}active{% endif %}" href="{{ url_for('patient.bills') }}">
+        <i class="bi bi-receipt-cutoff"></i> <span>Billing Receipts</span>
+      </a>
+
+    {# 2. DOCTOR NAVIGATION #}
+    {% elif current_user_role == 'doctor' %}
+      <a class="nav-link {% if request.endpoint == 'doctor.dashboard' %}active{% endif %}" href="{{ url_for('doctor.dashboard') }}">
+        <i class="bi bi-grid-fill"></i> <span>Dashboard</span>
+      </a>
+      <a class="nav-link {% if request.endpoint == 'doctor.appointments' %}active{% endif %}" href="{{ url_for('doctor.appointments') }}">
+        <i class="bi bi-people-fill"></i> <span>Patient Appointments</span>
+      </a>
+      <a class="nav-link {% if request.endpoint == 'doctor.schedule' %}active{% endif %}" href="{{ url_for('doctor.schedule') }}">
+        <i class="bi bi-clock-history"></i> <span>My Schedule & Hours</span>
+      </a>
+
+    {# 3. RECEPTIONIST NAVIGATION #}
+    {% elif current_user_role == 'receptionist' %}
+      <a class="nav-link {% if request.endpoint == 'receptionist.dashboard' %}active{% endif %}" href="{{ url_for('receptionist.dashboard') }}">
+        <i class="bi bi-grid-fill"></i> <span>Dashboard</span>
+      </a>
+      <a class="nav-link {% if request.endpoint == 'receptionist.walkin_booking' %}active{% endif %}" href="{{ url_for('receptionist.walkin_booking') }}">
+        <i class="bi bi-person-plus-fill"></i> <span>Walk-in Booking</span>
+      </a>
+      <a class="nav-link {% if request.endpoint == 'receptionist.queue' %}active{% endif %}" href="{{ url_for('receptionist.queue') }}">
+        <i class="bi bi-card-checklist"></i> <span>Patient Check-in Queue</span>
+      </a>
+      <a class="nav-link {% if request.endpoint == 'receptionist.billing' %}active{% endif %}" href="{{ url_for('receptionist.billing') }}">
+        <i class="bi bi-credit-card-2-front-fill"></i> <span>Billing & Invoicing</span>
+      </a>
+
+    {# 4. ADMINISTRATOR NAVIGATION #}
+    {% elif current_user_role == 'admin' %}
+      <a class="nav-link {% if request.endpoint == 'admin.dashboard' %}active{% endif %}" href="{{ url_for('admin.dashboard') }}">
+        <i class="bi bi-speedometer2"></i> <span>System Analytics</span>
+      </a>
+      <a class="nav-link {% if request.endpoint == 'admin.manage_users' %}active{% endif %}" href="{{ url_for('admin.manage_users') }}">
+        <i class="bi bi-person-badge-fill"></i> <span>Manage Staff & Users</span>
+      </a>
+      <a class="nav-link {% if request.endpoint == 'admin.manage_departments' %}active{% endif %}" href="{{ url_for('admin.manage_departments') }}">
+        <i class="bi bi-hospital-fill"></i> <span>Medical Departments</span>
+      </a>
+      <a class="nav-link {% if request.endpoint == 'admin.manage_schedules' %}active{% endif %}" href="{{ url_for('admin.manage_schedules') }}">
+        <i class="bi bi-calendar3-range-fill"></i> <span>Doctor Rosters</span>
+      </a>
+      <a class="nav-link {% if request.endpoint == 'admin.reports' %}active{% endif %}" href="{{ url_for('admin.reports') }}">
+        <i class="bi bi-graph-up-arrow"></i> <span>Financial Reports</span>
+      </a>
+    {% endif %}
+
+    <div class="mt-4 pt-3 border-top border-secondary border-opacity-25 px-3">
+      <a class="nav-link text-danger" href="{{ url_for('auth.logout') }}">
+        <i class="bi bi-box-arrow-left"></i> <span>Log Out</span>
+      </a>
+    </div>
+  </nav>
+</div>

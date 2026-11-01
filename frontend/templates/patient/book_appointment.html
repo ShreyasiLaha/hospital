@@ -1,0 +1,113 @@
+{% extends 'dashboard_base.html' %}
+
+{% block title %}Book Appointment — CarePlus Hospital{% endblock %}
+{% block page_title %}Schedule an Appointment{% endblock %}
+{% block page_subtitle %}Select your medical department, specialist, date, and preferred time slot.{% endblock %}
+
+{% block dashboard_body %}
+<div class="row g-4">
+  <div class="col-lg-8">
+    <div class="cp-card p-4">
+      <form method="POST" action="{{ url_for('patient.book_appointment') }}" id="appointment_form">
+        <!-- Hidden input for selected slot -->
+        <input type="hidden" id="selected_slot_time" name="appointment_time" required>
+
+        <!-- Step 1: Department Selection -->
+        <div class="mb-4">
+          <label class="form-label fw-semibold" for="department_select">
+            <span class="badge bg-primary me-2">1</span> Medical Specialization
+          </label>
+          <select class="form-select" id="department_select" name="department_id" required>
+            <option value="">-- Choose Department / Specialization --</option>
+            {% for dept in departments %}
+              <option value="{{ dept.id }}">{{ dept.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <!-- Step 2: Doctor Selection -->
+        <div class="mb-4">
+          <label class="form-label fw-semibold" for="doctor_select">
+            <span class="badge bg-primary me-2">2</span> Consulting Doctor
+          </label>
+          <select class="form-select" id="doctor_select" name="doctor_id" disabled required>
+            <option value="">-- Choose department first --</option>
+          </select>
+        </div>
+
+        <!-- Dynamic Doctor Details Card -->
+        <div id="doctor_info_box" class="alert alert-light border d-none mb-4">
+          <div class="row g-2 text-dark small">
+            <div class="col-sm-4">
+              <span class="text-muted d-block">Room / Location</span>
+              <strong id="info_room">Room 101</strong>
+            </div>
+            <div class="col-sm-4">
+              <span class="text-muted d-block">Consultation Fee</span>
+              <strong id="info_fee" class="text-primary">$500.00</strong>
+            </div>
+            <div class="col-sm-4">
+              <span class="text-muted d-block">Experience</span>
+              <strong id="info_exp">10+ Years</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 3: Date Picker -->
+        <div class="mb-4">
+          <label class="form-label fw-semibold" for="appointment_date">
+            <span class="badge bg-primary me-2">3</span> Consultation Date
+          </label>
+          <input type="date" class="form-control" id="appointment_date" name="appointment_date" required>
+          <div class="form-text">Doctor availability will be dynamically queried for the chosen date.</div>
+        </div>
+
+        <!-- Step 4: Available Time Slots -->
+        <div class="mb-4">
+          <label class="form-label fw-semibold d-block">
+            <span class="badge bg-primary me-2">4</span> Select Time Slot
+          </label>
+          <div id="slot_container" class="p-3 bg-light rounded border">
+            <span class="text-muted small">Select specialist and date to view live availability slots.</span>
+          </div>
+        </div>
+
+        <!-- Step 5: Symptoms / Reason -->
+        <div class="mb-4">
+          <label class="form-label fw-semibold" for="symptoms">
+            <span class="badge bg-primary me-2">5</span> Reason for Visit / Symptoms
+          </label>
+          <textarea class="form-control" id="symptoms" name="symptoms" rows="3" placeholder="Briefly describe your symptoms or reason for consultation..."></textarea>
+        </div>
+
+        <button type="submit" id="submit_booking_btn" class="btn btn-cp-primary btn-lg w-100 shadow-sm" disabled>
+          <i class="bi bi-calendar2-check-fill me-2"></i> Confirm & Book Appointment
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <div class="col-lg-4">
+    <div class="cp-card p-4 mb-4">
+      <h6 class="fw-bold mb-3"><i class="bi bi-shield-check text-primary me-2"></i>Booking Instructions</h6>
+      <ul class="text-muted small ps-3 mb-0">
+        <li class="mb-2">Slots are updated in real time to avoid conflicting appointments.</li>
+        <li class="mb-2">A unique token number and appointment code will be generated upon confirmation.</li>
+        <li class="mb-2">Please present your token at the reception desk on arrival.</li>
+        <li>Online cancellations can be made up to 2 hours prior to the slot.</li>
+      </ul>
+    </div>
+
+    <div class="cp-card p-4">
+      <h6 class="fw-bold mb-2"><i class="bi bi-info-circle text-teal me-2" style="color: #0d9488;"></i>Need Special Assistance?</h6>
+      <p class="small text-muted mb-0">
+        For wheelchair access or emergency care, please contact our 24/7 helpline at <strong>+1 800-555-CARE</strong>.
+      </p>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/booking.js') }}"></script>
+{% endblock %}

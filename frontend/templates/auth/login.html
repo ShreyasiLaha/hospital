@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block title %}Sign In — CarePlus Hospital{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center py-4">
+  <div class="col-md-7 col-lg-6 col-xl-5">
+    <div class="cp-card p-4 p-md-5">
+      <div class="text-center mb-4">
+        <img src="{{ url_for('static', filename='img/logo.svg') }}" alt="CarePlus Hospital" height="48" class="mb-3">
+        <h4 class="fw-bold text-dark">Welcome to CarePlus</h4>
+        <p class="text-muted small">Access your dedicated clinical or patient workspace</p>
+      </div>
+
+      <form method="POST" action="{{ url_for('auth.login') }}">
+        <div class="mb-3">
+          <label class="form-label fw-semibold" for="email">Email Address</label>
+          <div class="input-group">
+            <span class="input-group-text bg-white"><i class="bi bi-envelope text-muted"></i></span>
+            <input type="email" class="form-control" id="email" name="email" placeholder="name@careplus.com" required>
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label fw-semibold" for="password">Password</label>
+          <div class="input-group">
+            <span class="input-group-text bg-white"><i class="bi bi-lock text-muted"></i></span>
+            <input type="password" class="form-control" id="password" name="password" placeholder="••••••••" required>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-cp-primary w-100 py-2 fs-6 shadow-sm">
+          <i class="bi bi-box-arrow-in-right me-1"></i> Sign In to Portal
+        </button>
+      </form>
+
+      <!-- Demo Accounts Card for Academic Viva & Instant Evaluation -->
+      <div class="mt-4 pt-3 border-top">
+        <div class="d-flex align-items-center justify-content-between mb-2">
+          <span class="text-uppercase fw-bold text-muted small" style="font-size: 0.75rem;">
+            <i class="bi bi-lightning-charge-fill text-warning me-1"></i> Quick Test Credentials
+          </span>
+          <span class="badge bg-light text-muted border">Click to auto-fill</span>
+        </div>
+        
+        <div class="d-grid gap-2">
+          <div class="btn-group btn-group-sm" role="group">
+            <button type="button" class="btn btn-outline-secondary demo-fill-btn text-start py-2" data-email="admin@careplus.com" data-pass="Admin@123">
+              <span class="badge bg-danger me-1">Admin</span> admin@careplus.com
+            </button>
+            <button type="button" class="btn btn-outline-secondary demo-fill-btn text-start py-2" data-email="dr.chen@careplus.com" data-pass="Doctor@123">
+              <span class="badge bg-primary me-1">Doctor</span> dr.chen@careplus.com
+            </button>
+          </div>
+          <div class="btn-group btn-group-sm" role="group">
+            <button type="button" class="btn btn-outline-secondary demo-fill-btn text-start py-2" data-email="reception@careplus.com" data-pass="Reception@123">
+              <span class="badge bg-warning text-dark me-1">Reception</span> reception@careplus.com
+            </button>
+            <button type="button" class="btn btn-outline-secondary demo-fill-btn text-start py-2" data-email="alex@patient.com" data-pass="Patient@123">
+              <span class="badge bg-success me-1">Patient</span> alex@patient.com
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-4 text-center text-muted small">
+        New patient? <a href="{{ url_for('auth.register') }}" class="text-primary fw-semibold text-decoration-none">Register a new profile</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const buttons = document.querySelectorAll('.demo-fill-btn');
+  buttons.forEach(btn => {
+    btn.addEventListener('click', function() {
+      document.getElementById('email').value = this.getAttribute('data-email');
+      document.getElementById('password').value = this.getAttribute('data-pass');
+    });
+  });
+});
+</script>
+{% endblock %}

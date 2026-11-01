@@ -1,0 +1,75 @@
+{% extends 'dashboard_base.html' %}
+
+{% block title %}Medical Departments — CarePlus Hospital{% endblock %}
+{% block page_title %}Medical Departments & Specialties{% endblock %}
+{% block page_subtitle %}Configure clinical specialties, service descriptions, and doctor department assignments.{% endblock %}
+
+{% block page_actions %}
+  <button class="btn btn-cp-primary" data-bs-toggle="modal" data-bs-target="#addDeptModal">
+    <i class="bi bi-plus-lg me-1"></i> Add New Department
+  </button>
+{% endblock %}
+
+{% block dashboard_body %}
+<div class="row g-4">
+  {% if departments %}
+    {% for dept in departments %}
+      <div class="col-md-6 col-xl-4">
+        <div class="cp-card p-4 h-100 d-flex flex-column justify-content-between">
+          <div>
+            <div class="d-flex align-items-center justify-content-between mb-3">
+              <div class="rounded-3 bg-primary-subtle text-primary p-2 fs-4">
+                <i class="bi {{ dept.icon_class or 'bi-hospital' }}"></i>
+              </div>
+              <span class="badge bg-light text-dark border">{{ dept.doctor_count }} Specialists</span>
+            </div>
+            <h5 class="fw-bold text-dark mb-2">{{ dept.name }}</h5>
+            <p class="text-muted small mb-0">{{ dept.description or 'Specialized clinical healthcare services.' }}</p>
+          </div>
+          <div class="pt-3 mt-3 border-top d-flex justify-content-between align-items-center">
+            <span class="badge bg-success-subtle text-success border border-success">Active Department</span>
+            <small class="text-muted">ID: #{{ dept.id }}</small>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  {% else %}
+    <div class="col-12 text-center py-5 text-muted">
+      No departments registered yet.
+    </div>
+  {% endif %}
+</div>
+
+<!-- Modal: Add New Department -->
+<div class="modal fade" id="addDeptModal" tabindex="-1" aria-labelledby="addDeptModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title fw-bold" id="addDeptModalLabel"><i class="bi bi-hospital text-primary me-2"></i>Create Medical Department</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form method="POST" action="{{ url_for('admin.manage_departments') }}">
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label fw-semibold" for="dept_name">Department Name</label>
+            <input type="text" class="form-control" id="dept_name" name="name" placeholder="e.g. Oncology, Urology, ENT" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold" for="dept_icon">Bootstrap Icon Class</label>
+            <input type="text" class="form-control" id="dept_icon" name="icon_class" value="bi-heart-pulse" placeholder="bi-heart-pulse">
+            <div class="form-text">Choose from Bootstrap Icons (e.g. bi-heart-pulse, bi-activity, bi-bandaid)</div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold" for="dept_desc">Service Description</label>
+            <textarea class="form-control" id="dept_desc" name="description" rows="3" placeholder="Clinical care focus, diagnostic procedures, treatments offered..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-cp-primary">Create Department</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

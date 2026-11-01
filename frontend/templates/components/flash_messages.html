@@ -1,0 +1,14 @@
+{# CarePlus Hospital - Flash Message Component #}
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="flash-messages-container mb-4">
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category if category != 'error' else 'danger' }} alert-dismissible fade show shadow-sm d-flex align-items-center" role="alert">
+          <i class="bi {% if category == 'success' %}bi-check-circle-fill text-success{% elif category == 'danger' or category == 'error' %}bi-exclamation-triangle-fill text-danger{% elif category == 'warning' %}bi-exclamation-circle-fill text-warning{% else %}bi-info-circle-fill text-primary{% endif %} me-2 fs-5"></i>
+          <div>{{ message }}</div>
+          <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}

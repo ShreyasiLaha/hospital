@@ -1,0 +1,99 @@
+/* ====================================================================
+   CarePlus Hospital - Core Design System & Global Styles
+   ==================================================================== */
+
+:root {
+    --cp-primary: #0284c7;        /* Medical Sky Blue */
+    --cp-primary-dark: #0369a1;   /* Deep Navy Slate */
+    --cp-primary-light: #e0f2fe;  /* Ice Blue Tint */
+    --cp-secondary: #0d9488;      /* Teal Accent */
+    --cp-accent: #2563eb;         /* Bright Royal Blue */
+    --cp-success: #10b981;        /* Health Green */
+    --cp-warning: #f59e0b;        /* Amber */
+    --cp-danger: #ef4444;         /* Emergency Red */
+    
+    --cp-bg: #f8fafc;             /* Page Background */
+    --cp-card-bg: #ffffff;        /* Surface Card */
+    --cp-text-main: #0f172a;      /* Slate 900 */
+    --cp-text-muted: #64748b;     /* Slate 500 */
+    --cp-border: #e2e8f0;         /* Slate 200 */
+    
+    --cp-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --cp-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --cp-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --cp-radius: 0.75rem;
+    --cp-radius-lg: 1rem;
+}
+
+body {
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: var(--cp-bg);
+    color: var(--cp-text-main);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Reusable CarePlus Card */
+.cp-card {
+    background: var(--cp-card-bg);
+    border: 1px solid var(--cp-border);
+    border-radius: var(--cp-radius);
+    box-shadow: var(--cp-shadow-sm);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.cp-card:hover {
+    box-shadow: var(--cp-shadow);
+}
+
+.cp-card-header {
+    background: transparent;
+    border-bottom: 1px solid var(--cp-border);
+    padding: 1.25rem 1.5rem;
+    font-weight: 600;
+}
+
+/* Custom Buttons */
+.btn-cp-primary {
+    background-color: var(--cp-primary);
+    border-color: var(--cp-primary);
+    color: #ffffff;
+    font-weight: 500;
+    border-radius: 0.5rem;
+    padding: 0.6rem 1.25rem;
+    transition: all 0.2s ease;
+}
+
+.btn-cp-primary:hover {
+    background-color: var(--cp-primary-dark);
+    border-color: var(--cp-primary-dark);
+    color: #ffffff;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
+}
+
+/* Status Badges */
+.badge-status-pending {
+    background-color: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fde68a;
+}
+
+.badge-status-confirmed {
+    background-color: #dbeafe;
+    color: #1e40af;
+    border: 1px solid #bfdbfe;
+}
+
+.badge-status-completed {
+    background-color: #d1fae5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+}
+
+.badge-status-cancelled {
+    background-color: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+}

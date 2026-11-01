@@ -1,0 +1,31 @@
+"""
+CarePlus Hospital - Configuration Settings
+Loads configuration parameters from environment variables or sensible defaults.
+"""
+import os
+from dotenv import load_dotenv
+
+# Load .env file if available
+load_dotenv()
+
+class Config:
+    """Base application configuration."""
+    SECRET_KEY = os.getenv('SECRET_KEY', 'careplus_default_dev_secret_key_2026')
+    
+    # Database Type: 'mysql' or 'sqlite'
+    DB_TYPE = os.getenv('DB_TYPE', 'auto') # 'auto' tries MySQL first, then SQLite
+    
+    # MySQL Database Settings
+    DB_HOST = os.getenv('DB_HOST', 'localhost')
+    DB_USER = os.getenv('DB_USER', 'root')
+    DB_PASSWORD = os.getenv('DB_PASSWORD', '')
+    DB_NAME = os.getenv('DB_NAME', 'careplus_hospital_db')
+    DB_PORT = int(os.getenv('DB_PORT', 3306))
+    
+    # SQLite Database Fallback Path
+    SQLITE_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'database', 'careplus_hospital.db')
+    
+    # Application Settings
+    HOSPITAL_NAME = "CarePlus Hospital"
+    HOSPITAL_TAGLINE = "Excellence in Healthcare & Compassionate Patient Management"
+    DEBUG = os.getenv('FLASK_DEBUG', '1') == '1'

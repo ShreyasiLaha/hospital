@@ -1,0 +1,111 @@
+{% extends 'dashboard_base.html' %}
+
+{% block title %}Patient Check-in Queue — CarePlus Hospital{% endblock %}
+{% block page_title %}Patient Check-in & Queue Manager{% endblock %}
+{% block page_subtitle %}Live waiting room tracking, arrival check-ins, and token queue management.{% endblock %}
+
+{% block page_actions %}
+  <a href="{{ url_for('receptionist.walkin_booking') }}" class="btn btn-cp-primary">
+    <i class="bi bi-person-plus-fill me-1"></i> New Walk-in
+  </a>
+{% endblock %}
+
+{% block dashboard_body %}
+<div class="cp-card">
+  <div class="cp-card-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">
+    <span><i class="bi bi-card-checklist me-2 text-primary"></i>Today's Token Queue ({{ appointments|length }})</span>
+    
+    <!-- Filter by Doctor -->
+    <form method="GET" action="{{ url_for('receptionist.queue') }}" class="d-flex align-items-center gap-2">
+      <label class="small text-muted text-nowrap mb-0">Doctor:</label>
+      <select class="form-select form-select-sm" name="doctor_id" onchange="this.form.submit()">
+        <option value="">All On-Duty Doctors</option>
+        {% for doc in doctors %}
+          <option value="{{ doc.id }}" {% if doctor_filter == doc.id|string %}selected{% endif %}>{{ doc.full_name }}</option>
+        {% endfor %}
+      </select>
+    </form>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead class="table-light">
+        <tr>
+          <th>Token #</th>
+          <th>Appt Code</th>
+          <th>Patient Name & Phone</th>
+          <th>Consulting Doctor</th>
+          <th>Scheduled Time</th>
+          <th>Queue Status</th>
+          <th>Billing Status</th>
+          <th class="text-end">Desk Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% if appointments %}
+          {% for appt in appointments %}
+            <tr>
+              <td>
+                <span class="badge bg-primary fs-6 px-3">#{{ "%02d"|format(appt.token_number) }}</span>
+              </td>
+              <td>
+                <span class="fw-bold text-dark">{{ appt.appointment_number }}</span>
+              </td>
+              <td>
+                <div class="fw-semibold text-dark">{{ appt.patient_name }}</div>
+                <small class="text-muted">{{ appt.patient_phone }} &bull; {{ appt.gender }} ({{ appt.blood_group }})</small>
+              </td>
+              <td>
+                <div class="fw-semibold">{{ appt.doctor_name }}</div>
+                <small class="text-muted">{{ appt.department_name }}</small>
+              </td>
+              <td>
+                <span class="fw-semibold">{{ appt.appointment_time }}</span>
+              </td>
+              <td>
+                {% if appt.status == 'COMPLETED' %}
+                  <span class="badge badge-status-completed">Completed</span>
+                {% elif appt.status == 'CONFIRMED' %}
+                  <span class="badge badge-status-confirmed">Checked In / Waiting</span>
+                {% elif appt.status == 'PENDING' %}
+                  <span class="badge badge-status-pending">Awaiting Check-in</span>
+                {% else %}
+                  <span class="badge bg-secondary">{{ appt.status }}</span>
+                {% endif %}
+              </td>
+              <td>
+                {% if appt.bill_payment_status == 'PAID' %}
+                  <span class="badge bg-success-subtle text-success border border-success">PAID</span>
+                {% else %}
+                  <span class="badge bg-warning-subtle text-warning border border-warning">UNPAID</span>
+                {% endif %}
+              </td>
+              <td class="text-end">
+                <div class="d-inline-flex gap-1">
+                  {% if appt.status == 'PENDING' %}
+                    <form method="POST" action="{{ url_for('receptionist.check_in', appointment_id=appt.id) }}">
+                      <button type="submit" class="btn btn-sm btn-outline-success">
+                        <i class="bi bi-check-lg me-1"></i> Check In
+                      </button>
+                    </form>
+                  {% endif %}
+                  <a href="{{ url_for('receptionist.billing') }}" class="btn btn-sm btn-outline-primary">
+                    <i class="bi bi-receipt me-1"></i> Bill
+                  </a>
+                </div>
+              </td>
+            </tr>
+          {% endfor %}
+        {% else %}
+          <tr>
+            <td colspan="8" class="text-center py-5 text-muted">
+              <i class="bi bi-clock-history fs-2 d-block mb-2"></i>
+              No active appointments in the queue for today.
+            </td>
+          </tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
