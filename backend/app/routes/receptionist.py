@@ -21,12 +21,12 @@ def dashboard():
     # Metrics
     checkins_count = query_db("""
         SELECT COUNT(*) as cnt FROM appointments 
-        WHERE appointment_date = %s AND status != 'CANCELLED'
+        WHERE appointment_date = %s AND status NOT IN ('Cancelled', 'CANCELLED')
     """, (today_str,), one=True)['cnt']
 
     waiting_lounge_count = query_db("""
         SELECT COUNT(*) as cnt FROM appointments 
-        WHERE appointment_date = %s AND status = 'CONFIRMED'
+        WHERE appointment_date = %s AND status IN ('Confirmed', 'CONFIRMED')
     """, (today_str,), one=True)['cnt']
 
     active_doctors_count = query_db("""
@@ -53,7 +53,7 @@ def dashboard():
         JOIN users doc_u ON d.user_id = doc_u.id
         JOIN departments dept ON a.department_id = dept.id
         LEFT JOIN bills b ON a.id = b.appointment_id
-        WHERE a.appointment_date = %s AND a.status != 'CANCELLED'
+        WHERE a.appointment_date = %s AND a.status NOT IN ('Cancelled', 'CANCELLED')
         ORDER BY a.token_number ASC
     """, (today_str,))
 
@@ -125,7 +125,7 @@ def walkin_booking():
                 INSERT INTO appointments (
                     appointment_number, patient_id, doctor_id, department_id, 
                     appointment_date, appointment_time, token_number, status, symptoms, booked_by
-                ) VALUES (%s, %s, %s, %s, %s, %s, %s, 'CONFIRMED', %s, 'RECEPTIONIST')
+                ) VALUES (%s, %s, %s, %s, %s, %s, %s, 'Confirmed', %s, 'RECEPTIONIST')
             """, (appt_num, patient_id, doctor_id, department_id, today_str, current_time_str, token_number, symptoms))
 
             # 4. Create Bill
@@ -192,7 +192,7 @@ def queue():
 @role_required('receptionist')
 def check_in(appointment_id):
     """Marks patient as checked-in."""
-    execute_db("UPDATE appointments SET status = 'CONFIRMED' WHERE id = %s", (appointment_id,))
+    execute_db("UPDATE appointments SET status = 'Confirmed' WHERE id = %s", (appointment_id,))
     flash('Patient checked-in successfully and added to doctor queue.', 'success')
     return redirect(url_for('receptionist.queue'))
 

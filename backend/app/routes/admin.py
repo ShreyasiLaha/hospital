@@ -30,14 +30,14 @@ def dashboard():
     today_bookings = query_db("SELECT COUNT(*) as cnt FROM appointments WHERE appointment_date = %s", (today_str,), one=True)['cnt']
 
     # Status Breakdown
-    confirmed_count = query_db("SELECT COUNT(*) as cnt FROM appointments WHERE status = 'CONFIRMED'", one=True)['cnt']
-    completed_count = query_db("SELECT COUNT(*) as cnt FROM appointments WHERE status = 'COMPLETED'", one=True)['cnt']
-    cancelled_count = query_db("SELECT COUNT(*) as cnt FROM appointments WHERE status = 'CANCELLED'", one=True)['cnt']
+    confirmed_count = query_db("SELECT COUNT(*) as cnt FROM appointments WHERE status IN ('Confirmed', 'CONFIRMED')", one=True)['cnt']
+    completed_count = query_db("SELECT COUNT(*) as cnt FROM appointments WHERE status IN ('Completed', 'COMPLETED')", one=True)['cnt']
+    cancelled_count = query_db("SELECT COUNT(*) as cnt FROM appointments WHERE status IN ('Cancelled', 'CANCELLED')", one=True)['cnt']
 
-    # Recent Audit Logs
+    # Recent Activity Logs
     recent_logs = query_db("""
         SELECT l.*, u.full_name as user_name, u.role as user_role 
-        FROM audit_logs l 
+        FROM activity_logs l 
         LEFT JOIN users u ON l.user_id = u.id 
         ORDER BY l.created_at DESC 
         LIMIT 8

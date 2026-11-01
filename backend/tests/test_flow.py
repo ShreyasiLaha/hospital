@@ -82,8 +82,8 @@ def run_tests():
         items = query_db("SELECT * FROM prescription_items WHERE prescription_id = %s", (rx['id'],))
         assert len(items) == 2, f"Expected 2 medications, got {len(items)}"
         updated_appt = query_db("SELECT status FROM appointments WHERE id = %s", (appt_id,), one=True)
-        assert updated_appt['status'] == 'COMPLETED', "Appointment not marked COMPLETED"
-        print(f"  [OK] Prescription #{rx['id']} saved with {len(items)} medicines & Appt status marked COMPLETED")
+        assert updated_appt['status'] in ('Completed', 'COMPLETED'), f"Appointment not marked Completed (got {updated_appt['status']})"
+        print(f"  [OK] Prescription #{rx['id']} saved with {len(items)} medicines & Appt status marked Completed")
 
     # 4. TEST RECEPTIONIST WALK-IN BOOKING
     print("\n[4/7] Testing Receptionist Walk-in Patient Booking...")

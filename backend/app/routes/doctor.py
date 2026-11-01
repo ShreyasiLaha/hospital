@@ -42,22 +42,22 @@ def dashboard():
     # Metrics
     today_count = query_db("""
         SELECT COUNT(*) as cnt FROM appointments 
-        WHERE doctor_id = %s AND appointment_date = %s AND status != 'CANCELLED'
+        WHERE doctor_id = %s AND appointment_date = %s AND status NOT IN ('Cancelled', 'CANCELLED')
     """, (doctor_id, today_str), one=True)['cnt']
 
     waiting_queue_count = query_db("""
         SELECT COUNT(*) as cnt FROM appointments 
-        WHERE doctor_id = %s AND appointment_date = %s AND status IN ('PENDING', 'CONFIRMED')
+        WHERE doctor_id = %s AND appointment_date = %s AND status IN ('Pending', 'Confirmed', 'PENDING', 'CONFIRMED')
     """, (doctor_id, today_str), one=True)['cnt']
 
     completed_today_count = query_db("""
         SELECT COUNT(*) as cnt FROM appointments 
-        WHERE doctor_id = %s AND appointment_date = %s AND status = 'COMPLETED'
+        WHERE doctor_id = %s AND appointment_date = %s AND status IN ('Completed', 'COMPLETED')
     """, (doctor_id, today_str), one=True)['cnt']
 
     total_patients_count = query_db("""
         SELECT COUNT(DISTINCT patient_id) as cnt FROM appointments 
-        WHERE doctor_id = %s AND status = 'COMPLETED'
+        WHERE doctor_id = %s AND status IN ('Completed', 'COMPLETED')
     """, (doctor_id,), one=True)['cnt']
 
     # Today's Queue List
@@ -254,7 +254,7 @@ def write_prescription(appointment_id):
                     """, (rx_id, m_name, m_dose, m_freq, m_dur, m_inst))
 
             # Mark appointment COMPLETED
-            execute_db("UPDATE appointments SET status = 'COMPLETED' WHERE id = %s", (appointment_id,))
+            execute_db("UPDATE appointments SET status = 'Completed' WHERE id = %s", (appointment_id,))
 
             log_audit(session['user_id'], 'WRITE_PRESCRIPTION', f"Prescription #{rx_id} issued for Appt #{appt['appointment_number']}")
             flash(f"Prescription successfully saved and consultation completed for {appt['patient_name']}!", 'success')

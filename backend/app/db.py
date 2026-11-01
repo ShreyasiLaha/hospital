@@ -125,3 +125,17 @@ def execute_db(query, args=(), commit=True):
     except Exception as e:
         conn.rollback()
         raise e
+
+def test_db_connection():
+    """
+    Tests the database connection, returning connection metadata.
+    """
+    conn = get_db()
+    backend = getattr(g, 'db_backend', 'mysql')
+    db_name = current_app.config.get('DB_NAME') if backend == 'mysql' else os.path.basename(current_app.config.get('SQLITE_PATH'))
+    return {
+        'status': 'connected',
+        'backend': backend,
+        'database': db_name
+    }
+

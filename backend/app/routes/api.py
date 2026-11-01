@@ -103,7 +103,7 @@ def get_available_slots():
     # Query booked appointments for this doctor on this date
     booked_records = query_db("""
         SELECT appointment_time FROM appointments 
-        WHERE doctor_id = %s AND appointment_date = %s AND status != 'CANCELLED'
+        WHERE doctor_id = %s AND appointment_date = %s AND status NOT IN ('Cancelled', 'CANCELLED', 'Rejected', 'REJECTED')
     """, (doctor_id, date_str))
 
     booked_times = {to_time_str(r['appointment_time']) for r in booked_records}

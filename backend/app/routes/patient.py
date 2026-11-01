@@ -30,12 +30,12 @@ def dashboard():
     # 1. Metrics counters
     upcoming_count = query_db("""
         SELECT COUNT(*) as cnt FROM appointments 
-        WHERE patient_id = %s AND status IN ('PENDING', 'CONFIRMED') AND appointment_date >= %s
+        WHERE patient_id = %s AND status IN ('Pending', 'Confirmed', 'PENDING', 'CONFIRMED') AND appointment_date >= %s
     """, (patient_id, today_str), one=True)['cnt']
 
     completed_count = query_db("""
         SELECT COUNT(*) as cnt FROM appointments 
-        WHERE patient_id = %s AND status = 'COMPLETED'
+        WHERE patient_id = %s AND status IN ('Completed', 'COMPLETED')
     """, (patient_id,), one=True)['cnt']
 
     prescription_count = query_db("""
@@ -55,7 +55,7 @@ def dashboard():
         JOIN doctors d ON a.doctor_id = d.id
         JOIN users u ON d.user_id = u.id
         JOIN departments dept ON a.department_id = dept.id
-        WHERE a.patient_id = %s AND a.status IN ('PENDING', 'CONFIRMED') AND a.appointment_date >= %s
+        WHERE a.patient_id = %s AND a.status IN ('Pending', 'Confirmed', 'PENDING', 'CONFIRMED') AND a.appointment_date >= %s
         ORDER BY a.appointment_date ASC, a.appointment_time ASC
         LIMIT 1
     """, (patient_id, today_str), one=True)
@@ -116,7 +116,7 @@ def book_appointment():
                 INSERT INTO appointments (
                     appointment_number, patient_id, doctor_id, department_id, 
                     appointment_date, appointment_time, token_number, status, symptoms, booked_by
-                ) VALUES (%s, %s, %s, %s, %s, %s, %s, 'CONFIRMED', %s, 'PATIENT')
+                ) VALUES (%s, %s, %s, %s, %s, %s, %s, 'Pending', %s, 'PATIENT')
             """, (appointment_num, patient_id, doctor_id, department_id, 
                   appointment_date, appointment_time, token_number, symptoms))
 
@@ -129,7 +129,7 @@ def book_appointment():
             """, (invoice_num, appt_id, patient_id, fee, fee, fee))
 
             log_audit(session['user_id'], 'BOOK_APPOINTMENT', f"Booked appointment {appointment_num} with Token #{token_number}")
-            flash(f"Appointment successfully confirmed! Your Token number is #{token_number:02d} ({appointment_num}).", 'success')
+            flash(f"Appointment successfully submitted! Your Token number is #{token_number:02d} ({appointment_num}).", 'success')
             return redirect(url_for('patient.my_appointments'))
 
         except Exception as e:
@@ -167,11 +167,11 @@ def cancel_appointment(appointment_id):
         flash("Appointment not found or unauthorized.", "danger")
         return redirect(url_for('patient.my_appointments'))
 
-    if appt['status'] in ('COMPLETED', 'CANCELLED'):
+    if str(appt['status']).upper() in ('COMPLETED', 'CANCELLED', 'REJECTED'):
         flash(f"Cannot cancel appointment with status '{appt['status']}'.", "warning")
         return redirect(url_for('patient.my_appointments'))
 
-    execute_db("UPDATE appointments SET status = 'CANCELLED' WHERE id = %s", (appointment_id,))
+    execute_db("UPDATE appointments SET status = 'Cancelled' WHERE id = %s", (appointment_id,))
     log_audit(session['user_id'], 'CANCEL_APPOINTMENT', f"Cancelled appointment {appt['appointment_number']}")
     flash(f"Appointment {appt['appointment_number']} has been successfully cancelled.", "info")
     return redirect(url_for('patient.my_appointments'))

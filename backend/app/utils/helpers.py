@@ -28,13 +28,24 @@ def format_currency(amount):
         return "$0.00"
 
 def log_audit(user_id, action, details):
-    """Logs system activity to the audit_logs table."""
+    """Logs system activity to the activity_logs table."""
     try:
         ip = request.remote_addr if request else '127.0.0.1'
         execute_db(
-            "INSERT INTO audit_logs (user_id, action, details, ip_address) VALUES (%s, %s, %s, %s)",
+            "INSERT INTO activity_logs (user_id, action, details, ip_address) VALUES (%s, %s, %s, %s)",
             (user_id, action, details, ip)
         )
     except Exception as e:
         # Avoid crashing app if logging fails
-        print(f"[Audit Log Warning] Failed to log action '{action}': {e}")
+        print(f"[Activity Log Warning] Failed to log action '{action}': {e}")
+
+def create_notification(user_id, title, message, notif_type='APPOINTMENT'):
+    """Creates an in-app alert in the notifications table for a user."""
+    try:
+        execute_db(
+            "INSERT INTO notifications (user_id, title, message, type, is_read) VALUES (%s, %s, %s, %s, 0)",
+            (user_id, title, message, notif_type)
+        )
+    except Exception as e:
+        print(f"[Notification Warning] Failed to send notification to user {user_id}: {e}")
+
