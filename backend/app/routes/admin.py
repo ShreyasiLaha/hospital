@@ -114,6 +114,18 @@ def manage_users():
                         VALUES (%s, %s, '09:00:00', '13:00:00', 30, 1)
                     """, (doc_id, day))
 
+            elif role == 'receptionist':
+                execute_db("""
+                    INSERT INTO receptionists (user_id, desk_number, shift, qualification)
+                    VALUES (%s, 'Front Desk - Main Wing A', 'Morning', 'Front Desk Operations')
+                """, (user_id,))
+
+            elif role == 'patient':
+                execute_db("""
+                    INSERT INTO patients (user_id, date_of_birth, gender, blood_group, address)
+                    VALUES (%s, '1990-01-01', 'Other', 'O+', 'Registered via Administration')
+                """, (user_id,))
+
             log_audit(session['user_id'], 'CREATE_USER', f"Created {role} account for {email}")
             flash(f"New {role.capitalize()} '{full_name}' created successfully!", 'success')
             return redirect(url_for('admin.manage_users'))
@@ -307,8 +319,11 @@ def export_revenue_csv():
     for b in bills:
         writer.writerow([
             b['invoice_number'], b['appointment_number'], b['patient_name'], b['doctor_name'],
-            f"{b['consultation_fee']:.2f}", f"{b['additional_charges']:.2f}", f"{b['discount']:.2f}",
-            f"{b['payable_amount']:.2f}", b['payment_status'], b['payment_method'], b['paid_at'] or 'N/A'
+            f"{float(b['consultation_fee'] or 0.0):.2f}",
+            f"{float(b['additional_charges'] or 0.0):.2f}",
+            f"{float(b['discount'] or 0.0):.2f}",
+            f"{float(b['payable_amount'] or 0.0):.2f}",
+            b['payment_status'], b['payment_method'], b['paid_at'] or 'N/A'
         ])
 
     csv_data = output.getvalue()

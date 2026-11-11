@@ -1,13 +1,97 @@
-{# CarePlus Hospital - Footer Component #}
-<footer class="bg-white border-top py-3 mt-auto text-center text-muted" style="font-size: 0.85rem;">
-  <div class="container-fluid px-4 d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2">
-    <div>
-      &copy; 2026 <strong>CarePlus Hospital</strong>. Hospital Appointment Management System (HAMS).
+{# CarePlus Hospital - Reusable Comprehensive Footer Component #}
+<footer class="cp-footer bg-cp-navy text-white pt-5 pb-3 mt-auto">
+  <div class="container-xl">
+    <div class="row g-4 pb-5 border-bottom border-secondary border-opacity-25">
+      
+      <!-- Brand & Mission Column -->
+      <div class="col-lg-4 col-md-6">
+        <div class="d-flex align-items-center mb-3">
+          <div class="rounded-3 bg-white p-1 me-2 shadow-sm d-inline-block">
+            <img src="{{ url_for('static', filename='img/logo.svg') }}" alt="CarePlus Hospital Logo" height="42">
+          </div>
+        </div>
+        <p class="text-white-50 mb-4 pe-lg-4" style="line-height: 1.7; font-size: 0.92rem;">
+          CarePlus Hospital is a premier multidisciplinary healthcare center committed to patient-centered clinical excellence, cutting-edge medical technologies, and effortless digital appointment booking.
+        </p>
+        <div class="d-flex align-items-center gap-2 mb-3">
+          <div class="rounded-circle bg-danger text-white p-2 d-flex align-items-center justify-content-center" style="width: 38px; height: 38px;">
+            <i class="bi bi-telephone-inbound-fill"></i>
+          </div>
+          <div>
+            <div class="text-uppercase text-white-50" style="font-size: 0.72rem; letter-spacing: 1px;">24/7 Emergency Line</div>
+            <a href="tel:+18005550199" class="text-white fw-bold text-decoration-none fs-6">+1 (800) 555-CARE (0199)</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Navigation Column -->
+      <div class="col-lg-2 col-md-6 col-6">
+        <h6 class="text-uppercase text-cp-teal-accent fw-bold mb-3" style="font-size: 0.85rem; letter-spacing: 1px;">Quick Links</h6>
+        <ul class="list-unstyled mb-0 d-flex flex-column gap-2" style="font-size: 0.9rem;">
+          <li><a href="{{ url_for('index') }}#home" class="text-white-50 text-decoration-none footer-link"><i class="bi bi-chevron-right text-cp-teal me-1"></i> Home</a></li>
+          <li><a href="{{ url_for('index') }}#about" class="text-white-50 text-decoration-none footer-link"><i class="bi bi-chevron-right text-cp-teal me-1"></i> About Us</a></li>
+          <li><a href="{{ url_for('index') }}#departments" class="text-white-50 text-decoration-none footer-link"><i class="bi bi-chevron-right text-cp-teal me-1"></i> Departments</a></li>
+          <li><a href="{{ url_for('index') }}#doctors" class="text-white-50 text-decoration-none footer-link"><i class="bi bi-chevron-right text-cp-teal me-1"></i> Our Doctors</a></li>
+          <li><a href="{{ url_for('index') }}#services" class="text-white-50 text-decoration-none footer-link"><i class="bi bi-chevron-right text-cp-teal me-1"></i> Hospital Services</a></li>
+          <li><a href="{{ url_for('index') }}#why-us" class="text-white-50 text-decoration-none footer-link"><i class="bi bi-chevron-right text-cp-teal me-1"></i> Why Choose Us</a></li>
+          <li><a href="{{ url_for('auth.login') }}" class="text-white-50 text-decoration-none footer-link"><i class="bi bi-chevron-right text-cp-teal me-1"></i> Portal Sign In</a></li>
+        </ul>
+      </div>
+
+      <!-- Medical Departments Column -->
+      <div class="col-lg-3 col-md-6 col-6">
+        <h6 class="text-uppercase text-cp-teal-accent fw-bold mb-3" style="font-size: 0.85rem; letter-spacing: 1px;">Medical Specialties</h6>
+        <ul class="list-unstyled mb-0 d-flex flex-column gap-2" style="font-size: 0.9rem;">
+          <li><a href="{{ url_for('index') }}#departments" class="text-white-50 text-decoration-none footer-link"><i class="bi bi-heart-pulse text-cp-teal me-2"></i> Cardiology</a></li>
+          <li><a href="{{ url_for('index') }}#departments" class="text-white-50 text-decoration-none footer-link"><i class="bi bi-activity text-cp-teal me-2"></i> Neurology</a></li>
+          <li><a href="{{ url_for('index') }}#departments" class="text-white-50 text-decoration-none footer-link"><i class="bi bi-bandaid text-cp-teal me-2"></i> Orthopedics</a></li>
+          <li><a href="{{ url_for('index') }}#departments" class="text-white-50 text-decoration-none footer-link"><i class="bi bi-emoji-smile text-cp-teal me-2"></i> Dermatology</a></li>
+          <li><a href="{{ url_for('index') }}#departments" class="text-white-50 text-decoration-none footer-link"><i class="bi bi-person-heart text-cp-teal me-2"></i> Pediatrics & Neonatal</a></li>
+          <li><a href="{{ url_for('index') }}#departments" class="text-white-50 text-decoration-none footer-link"><i class="bi bi-clipboard2-pulse text-cp-teal me-2"></i> General Medicine</a></li>
+        </ul>
+      </div>
+
+      <!-- Contact Details & Working Hours -->
+      <div class="col-lg-3 col-md-6">
+        <h6 class="text-uppercase text-cp-teal-accent fw-bold mb-3" style="font-size: 0.85rem; letter-spacing: 1px;">Hospital Contact</h6>
+        <ul class="list-unstyled mb-3 d-flex flex-column gap-2 text-white-50" style="font-size: 0.9rem;">
+          <li class="d-flex align-items-start gap-2">
+            <i class="bi bi-geo-alt-fill text-cp-teal mt-1"></i>
+            <span>100 CarePlus Parkway, Medical District, Springfield, IL 62704</span>
+          </li>
+          <li class="d-flex align-items-center gap-2">
+            <i class="bi bi-telephone-fill text-cp-teal"></i>
+            <span>+1 (800) 555-0199 / (555) 014-CARE</span>
+          </li>
+          <li class="d-flex align-items-center gap-2">
+            <i class="bi bi-envelope-fill text-cp-teal"></i>
+            <span>info@careplus-hospital.example</span>
+          </li>
+        </ul>
+
+        <div class="p-3 rounded-3 bg-white bg-opacity-10 border border-white border-opacity-10 text-white-50" style="font-size: 0.82rem;">
+          <div class="fw-semibold text-white mb-1"><i class="bi bi-clock-history text-cp-teal me-1"></i> Clinical Hours</div>
+          <div>Outpatient (OPD): Mon - Sat: 8:00 AM - 8:00 PM</div>
+          <div>Emergency & Trauma: 24/7 (365 Days)</div>
+        </div>
+      </div>
     </div>
-    <div class="d-flex gap-3">
-      <span class="text-secondary"><i class="bi bi-shield-lock-fill text-success me-1"></i>Secure Clinical Data Vault</span>
-      <span>&bull;</span>
-      <span>Emergency: +1 (800) 555-CARE</span>
+
+    <!-- Bottom Bar: Social Icons & Copyright -->
+    <div class="row pt-4 align-items-center" style="font-size: 0.85rem;">
+      <div class="col-md-6 text-center text-md-start text-white-50 mb-3 mb-md-0">
+        &copy; 2026 <strong class="text-white">CarePlus Hospital</strong>. Hospital Appointment Management System (HAMS). All Rights Reserved.
+      </div>
+      <div class="col-md-6 text-center text-md-end">
+        <div class="d-flex justify-content-center justify-content-md-end align-items-center gap-3">
+          <span class="text-white-50">Follow Us:</span>
+          <a href="#" class="social-icon-btn rounded-circle bg-white bg-opacity-10 text-white d-inline-flex align-items-center justify-content-center" style="width: 32px; height: 32px;"><i class="bi bi-facebook"></i></a>
+          <a href="#" class="social-icon-btn rounded-circle bg-white bg-opacity-10 text-white d-inline-flex align-items-center justify-content-center" style="width: 32px; height: 32px;"><i class="bi bi-twitter-x"></i></a>
+          <a href="#" class="social-icon-btn rounded-circle bg-white bg-opacity-10 text-white d-inline-flex align-items-center justify-content-center" style="width: 32px; height: 32px;"><i class="bi bi-linkedin"></i></a>
+          <a href="#" class="social-icon-btn rounded-circle bg-white bg-opacity-10 text-white d-inline-flex align-items-center justify-content-center" style="width: 32px; height: 32px;"><i class="bi bi-instagram"></i></a>
+          <a href="#" class="social-icon-btn rounded-circle bg-white bg-opacity-10 text-white d-inline-flex align-items-center justify-content-center" style="width: 32px; height: 32px;"><i class="bi bi-youtube"></i></a>
+        </div>
+      </div>
     </div>
   </div>
 </footer>

@@ -35,7 +35,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Attach remove listener
             tr.querySelector('.remove-medicine-row').addEventListener('click', function () {
-                tr.remove();
+                if (medicineTableBody.querySelectorAll('tr').length > 1) {
+                    tr.remove();
+                } else {
+                    alert('Prescription must contain at least one medication item.');
+                }
             });
 
             medicineTableBody.appendChild(tr);

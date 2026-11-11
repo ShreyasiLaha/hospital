@@ -1,60 +1,125 @@
-{# CarePlus Hospital - Global Navigation Bar #}
-<nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom sticky-top shadow-sm py-2">
-  <div class="container-fluid px-4">
+{# CarePlus Hospital - Global Navigation Bar & Top Emergency Banner #}
+<!-- Top Announcement & Contact Bar -->
+<div class="cp-topbar py-1 d-none d-lg-block">
+  <div class="container-xl d-flex justify-content-between align-items-center text-white" style="font-size: 0.82rem;">
+    <div class="d-flex align-items-center gap-4">
+      <span><i class="bi bi-geo-alt-fill text-teal-accent me-1"></i> 100 CarePlus Parkway, Springfield, IL</span>
+      <span><i class="bi bi-clock-fill text-teal-accent me-1"></i> OPD Hours: Mon - Sat 8:00 AM - 8:00 PM</span>
+      <span class="badge bg-danger text-white rounded-pill px-2 py-1"><i class="bi bi-lightning-charge-fill me-1"></i>24/7 Emergency</span>
+    </div>
+    <div class="d-flex align-items-center gap-3">
+      <a href="tel:+18005550199" class="text-white text-decoration-none fw-semibold">
+        <i class="bi bi-telephone-fill text-teal-accent me-1"></i> Emergency Hotline: +1 (800) 555-CARE
+      </a>
+      <span class="text-white-50">|</span>
+      <div class="d-flex gap-2">
+        <a href="#" class="text-white-50 text-hover-white"><i class="bi bi-facebook"></i></a>
+        <a href="#" class="text-white-50 text-hover-white"><i class="bi bi-twitter-x"></i></a>
+        <a href="#" class="text-white-50 text-hover-white"><i class="bi bi-linkedin"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Main Sticky Navigation Bar -->
+<nav class="navbar navbar-expand-xl navbar-light bg-white border-bottom sticky-top cp-navbar shadow-sm py-2" id="mainNavbar">
+  <div class="container-xl">
     <!-- Brand Logo -->
-    <a class="navbar-brand d-flex align-items-center" href="{{ url_for('index') }}">
-      <img src="{{ url_for('static', filename='img/logo.svg') }}" alt="CarePlus Hospital" height="42">
+    <a class="navbar-brand d-flex align-items-center me-4" href="{{ url_for('index') }}#home">
+      <img src="{{ url_for('static', filename='img/logo.svg') }}" alt="CarePlus Hospital" height="46">
     </a>
 
     <!-- Mobile Toggle -->
-    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#careplusNavbar">
+    <button class="navbar-toggler border-0 p-2 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#careplusNavbar" aria-controls="careplusNavbar" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
     <div class="collapse navbar-collapse" id="careplusNavbar">
-      <ul class="navbar-nav ms-auto align-items-center gap-2">
+      <!-- Section Navigation Links -->
+      <ul class="navbar-nav me-auto mb-2 mb-xl-0 align-items-xl-center">
+        <li class="nav-item">
+          <a class="nav-link cp-nav-link active" href="{{ url_for('index') }}#home">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link cp-nav-link" href="{{ url_for('index') }}#about">About Us</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link cp-nav-link" href="{{ url_for('index') }}#departments">Departments</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link cp-nav-link" href="{{ url_for('index') }}#doctors">Our Doctors</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link cp-nav-link" href="{{ url_for('index') }}#services">Services</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link cp-nav-link" href="{{ url_for('index') }}#why-us">Why Choose Us</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link cp-nav-link" href="{{ url_for('index') }}#contact">Contact</a>
+        </li>
+      </ul>
+
+      <!-- Action & Auth Area -->
+      <div class="d-flex flex-column flex-xl-row align-items-xl-center gap-2 mt-3 mt-xl-0">
         {% if is_logged_in %}
-          <!-- Role-based Badge -->
-          <li class="nav-item">
-            <span class="badge bg-light text-dark border px-3 py-2 text-capitalize">
-              <i class="bi bi-shield-check text-primary me-1"></i> Role: {{ current_user_role }}
-            </span>
-          </li>
-          
+          <!-- Role-based Dashboard Button -->
+          {% set dashboard_route = 'patient.dashboard' %}
+          {% if current_user_role == 'admin' %}
+            {% set dashboard_route = 'admin.dashboard' %}
+          {% elif current_user_role == 'doctor' %}
+            {% set dashboard_route = 'doctor.dashboard' %}
+          {% elif current_user_role == 'receptionist' %}
+            {% set dashboard_route = 'receptionist.dashboard' %}
+          {% endif %}
+          <a href="{{ url_for(dashboard_route) }}" class="btn btn-outline-cp-navy rounded-pill px-3 py-2 fw-semibold">
+            <i class="bi bi-speedometer2 me-1"></i> My Dashboard
+          </a>
+
           <!-- User Profile Dropdown -->
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle d-flex align-items-center gap-2 fw-semibold" href="#" role="button" data-bs-toggle="dropdown">
-              <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center" style="width: 34px; height: 34px; font-size: 0.9rem;">
+          <div class="dropdown">
+            <button class="btn btn-cp-light dropdown-toggle d-flex align-items-center gap-2 rounded-pill px-3 py-1 border shadow-none" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <div class="rounded-circle bg-cp-navy text-white d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; font-size: 0.85rem; font-weight: 700;">
                 {{ current_user_name[0]|upper if current_user_name else 'U' }}
               </div>
-              <span>{{ current_user_name }}</span>
-            </a>
-            <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-2">
-              <li><h6 class="dropdown-header">Signed in as <strong>{{ current_user_role|capitalize }}</strong></h6></li>
-              <li><a class="dropdown-item" href="{{ url_for('auth.change_password') }}"><i class="bi bi-key me-2"></i>Change Password</a></li>
+              <span class="fw-semibold text-cp-navy">{{ current_user_name }}</span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2 rounded-3 py-2">
+              <li><h6 class="dropdown-header text-uppercase text-muted fw-bold" style="font-size: 0.72rem;">Role: {{ current_user_role }}</h6></li>
+              <li><a class="dropdown-item" href="{{ url_for(dashboard_route) }}"><i class="bi bi-grid-fill me-2 text-cp-teal"></i>Dashboard</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('auth.change_password') }}"><i class="bi bi-key-fill me-2 text-muted"></i>Change Password</a></li>
               <li><hr class="dropdown-divider"></li>
               <li><a class="dropdown-item text-danger" href="{{ url_for('auth.logout') }}"><i class="bi bi-box-arrow-right me-2"></i>Sign Out</a></li>
             </ul>
-          </li>
+          </div>
+
         {% else %}
-          <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('index') }}">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('auth.login') }}">Doctor / Staff Portal</a>
-          </li>
-          <li class="nav-item ms-lg-2">
-            <a class="btn btn-outline-primary px-3 rounded-pill" href="{{ url_for('auth.login') }}">
-              <i class="bi bi-person-fill me-1"></i> Sign In
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="btn btn-primary px-3 rounded-pill text-white" href="{{ url_for('auth.register') }}">
-              <i class="bi bi-calendar2-plus me-1"></i> Book Appointment
-            </a>
-          </li>
+          <!-- Auth Dropdown (Login / Register) -->
+          <div class="dropdown">
+            <button class="btn btn-outline-cp-navy rounded-pill px-3 py-2 fw-semibold dropdown-toggle shadow-none" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="bi bi-person-circle me-1"></i> Login / Register
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2 rounded-3 py-2">
+              <li><h6 class="dropdown-header text-uppercase text-muted fw-bold" style="font-size: 0.72rem;">Account Access</h6></li>
+              <li>
+                <a class="dropdown-item py-2" href="{{ url_for('auth.login') }}">
+                  <i class="bi bi-box-arrow-in-right me-2 text-cp-navy"></i> Login (Staff & Patient)
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item py-2" href="{{ url_for('auth.register') }}">
+                  <i class="bi bi-person-plus-fill me-2 text-cp-teal"></i> Patient Registration
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Prominent Book Appointment Button -->
+          <a href="{{ url_for('patient.book_appointment') if is_logged_in else url_for('auth.login') }}" class="btn btn-cp-teal rounded-pill px-4 py-2 text-white fw-bold shadow-sm cp-btn-cta">
+            <i class="bi bi-calendar2-check-fill me-2"></i> Book Appointment
+          </a>
         {% endif %}
-      </ul>
+      </div>
     </div>
   </div>
 </nav>

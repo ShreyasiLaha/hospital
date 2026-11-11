@@ -12,10 +12,24 @@ document.addEventListener('DOMContentLoaded', function () {
     const doctorInfoBox = document.getElementById('doctor_info_box');
     const submitBtn = document.getElementById('submit_booking_btn');
 
-    // Restrict date picker to today or future dates
+    // Restrict date picker to today or future dates (using local timezone)
     if (appointmentDate) {
-        const todayStr = new Date().toISOString().split('T')[0];
-        appointmentDate.setAttribute('min', todayStr);
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const day = String(now.getDate()).padStart(2, '0');
+        appointmentDate.setAttribute('min', `${year}-${month}-${day}`);
+    }
+
+    // Form submit check: ensure a slot was chosen
+    const appointmentForm = document.getElementById('appointment_form');
+    if (appointmentForm) {
+        appointmentForm.addEventListener('submit', function (e) {
+            if (!selectedSlotInput || !selectedSlotInput.value) {
+                e.preventDefault();
+                alert('Please select an available consultation time slot.');
+            }
+        });
     }
 
     // 1. Department Change: Fetch doctors
@@ -39,26 +53,29 @@ document.addEventListener('DOMContentLoaded', function () {
             fetch(`/api/doctors-by-department/${deptId}`)
                 .then(res => res.json())
                 .then(data => {
-                    if (data.status === 'success' && data.doctors.length > 0) {
+                    if (data.status === 'success' && data.doctors && data.doctors.length > 0) {
                         doctorSelect.innerHTML = '<option value="">-- Choose Specialist Doctor --</option>';
                         data.doctors.forEach(doc => {
                             const opt = document.createElement('option');
                             opt.value = doc.id;
-                            opt.textContent = `${doc.name} (${doc.specialization}) - Fee: $${doc.fee.toFixed(2)}`;
-                            opt.dataset.fee = doc.fee;
-                            opt.dataset.room = doc.room;
-                            opt.dataset.exp = doc.experience;
-                            opt.dataset.qual = doc.qualification;
+                            const fee = typeof doc.fee === 'number' ? doc.fee : parseFloat(doc.fee || 0);
+                            opt.textContent = `${doc.name} (${doc.specialization}) - Fee: $${fee.toFixed(2)}`;
+                            opt.dataset.fee = fee;
+                            opt.dataset.room = doc.room || 'General OPD';
+                            opt.dataset.exp = doc.experience || 0;
+                            opt.dataset.qual = doc.qualification || '';
                             doctorSelect.appendChild(opt);
                         });
                         doctorSelect.disabled = false;
                     } else {
                         doctorSelect.innerHTML = '<option value="">No active doctors in this department</option>';
+                        doctorSelect.disabled = true;
                     }
                 })
                 .catch(err => {
                     console.error('Error fetching doctors:', err);
                     doctorSelect.innerHTML = '<option value="">Error loading doctors</option>';
+                    doctorSelect.disabled = true;
                 });
         });
     }
@@ -68,9 +85,12 @@ document.addEventListener('DOMContentLoaded', function () {
         doctorSelect.addEventListener('change', function () {
             const opt = this.options[this.selectedIndex];
             if (opt && opt.value && doctorInfoBox) {
-                document.getElementById('info_room').textContent = opt.dataset.room || 'General OPD';
-                document.getElementById('info_fee').textContent = `$${parseFloat(opt.dataset.fee).toFixed(2)}`;
-                document.getElementById('info_exp').textContent = `${opt.dataset.exp} Years Experience`;
+                const roomEl = document.getElementById('info_room');
+                const feeEl = document.getElementById('info_fee');
+                const expEl = document.getElementById('info_exp');
+                if (roomEl) roomEl.textContent = opt.dataset.room || 'General OPD';
+                if (feeEl) feeEl.textContent = `$${parseFloat(opt.dataset.fee || 0).toFixed(2)}`;
+                if (expEl) expEl.textContent = `${opt.dataset.exp || 0} Years Experience`;
                 doctorInfoBox.classList.remove('d-none');
             } else if (doctorInfoBox) {
                 doctorInfoBox.classList.add('d-none');
@@ -121,14 +141,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
                         if (slot.is_available) {
                             hasAvailable = true;
-                            btn.className = 'btn btn-outline-primary btn-sm slot-btn rounded-pill px-3 py-1';
+                            btn.className = 'btn btn-outline-cp-navy btn-sm slot-btn rounded-pill px-3 py-2 fw-semibold';
                             btn.addEventListener('click', function () {
                                 document.querySelectorAll('.slot-btn').forEach(b => {
-                                    b.classList.remove('btn-primary', 'text-white');
-                                    b.classList.add('btn-outline-primary');
+                                    b.classList.remove('btn-cp-teal', 'text-white', 'shadow-sm');
+                                    b.classList.add('btn-outline-cp-navy');
                                 });
-                                this.classList.remove('btn-outline-primary');
-                                this.classList.add('btn-primary', 'text-white');
+                                this.classList.remove('btn-outline-cp-navy');
+                                this.classList.add('btn-cp-teal', 'text-white', 'shadow-sm');
 
                                 selectedSlotInput.value = this.dataset.time;
                                 if (submitBtn) submitBtn.disabled = false;

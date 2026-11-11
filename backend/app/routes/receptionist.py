@@ -21,7 +21,7 @@ def dashboard():
     # Metrics
     checkins_count = query_db("""
         SELECT COUNT(*) as cnt FROM appointments 
-        WHERE appointment_date = %s AND status NOT IN ('Cancelled', 'CANCELLED')
+        WHERE appointment_date = %s AND UPPER(status) NOT IN ('CANCELLED', 'REJECTED')
     """, (today_str,), one=True)['cnt']
 
     waiting_lounge_count = query_db("""
@@ -53,7 +53,7 @@ def dashboard():
         JOIN users doc_u ON d.user_id = doc_u.id
         JOIN departments dept ON a.department_id = dept.id
         LEFT JOIN bills b ON a.id = b.appointment_id
-        WHERE a.appointment_date = %s AND a.status NOT IN ('Cancelled', 'CANCELLED')
+        WHERE a.appointment_date = %s AND UPPER(a.status) NOT IN ('CANCELLED', 'REJECTED')
         ORDER BY a.token_number ASC
     """, (today_str,))
 
@@ -202,6 +202,10 @@ def billing():
     """Cashier interface for calculating fees, discounts, and recording payments."""
     if request.method == 'POST':
         bill_id = request.form.get('bill_id')
+        if not bill_id:
+            flash('Bill ID is required to process payment.', 'danger')
+            return redirect(url_for('receptionist.billing'))
+
         consultation_fee = float(request.form.get('consultation_fee', 0) or 0)
         additional_charges = float(request.form.get('additional_charges', 0) or 0)
         discount = float(request.form.get('discount', 0) or 0)

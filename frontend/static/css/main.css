@@ -1,99 +1,743 @@
 /* ====================================================================
-   CarePlus Hospital - Core Design System & Global Styles
+   CarePlus Hospital - Modern Healthcare Design System
+   Color Palette: Navy Blue (#0A1E3A), Teal (#0D9488), White (#FFFFFF), Light Grey (#F8FAFC)
+   Typography: Plus Jakarta Sans / Inter
    ==================================================================== */
 
 :root {
-    --cp-primary: #0284c7;        /* Medical Sky Blue */
-    --cp-primary-dark: #0369a1;   /* Deep Navy Slate */
-    --cp-primary-light: #e0f2fe;  /* Ice Blue Tint */
-    --cp-secondary: #0d9488;      /* Teal Accent */
-    --cp-accent: #2563eb;         /* Bright Royal Blue */
-    --cp-success: #10b981;        /* Health Green */
-    --cp-warning: #f59e0b;        /* Amber */
-    --cp-danger: #ef4444;         /* Emergency Red */
-    
-    --cp-bg: #f8fafc;             /* Page Background */
-    --cp-card-bg: #ffffff;        /* Surface Card */
-    --cp-text-main: #0f172a;      /* Slate 900 */
-    --cp-text-muted: #64748b;     /* Slate 500 */
-    --cp-border: #e2e8f0;         /* Slate 200 */
-    
-    --cp-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-    --cp-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-    --cp-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-    --cp-radius: 0.75rem;
-    --cp-radius-lg: 1rem;
+  /* Brand Color Palette */
+  --cp-navy: #0A1E3A;
+  --cp-navy-dark: #061325;
+  --cp-navy-light: #132D52;
+  --cp-navy-subtle: #EDF2F7;
+  
+  --cp-teal: #0D9488;
+  --cp-teal-dark: #0F766E;
+  --cp-teal-light: #F0FDFA;
+  --cp-teal-accent: #14B8A6;
+  
+  --cp-white: #FFFFFF;
+  --cp-light-bg: #F8FAFC;
+  --cp-light-slate: #F1F5F9;
+  --cp-border: #E2E8F0;
+  --cp-border-light: #F1F5F9;
+  
+  --cp-text-main: #0F172A;
+  --cp-text-muted: #64748B;
+  --cp-text-light: #94A3B8;
+  
+  --cp-success: #10B981;
+  --cp-warning: #F59E0B;
+  --cp-danger: #EF4444;
+  
+  /* Elevation Shadows */
+  --cp-shadow-xs: 0 1px 2px 0 rgba(10, 30, 58, 0.05);
+  --cp-shadow-sm: 0 2px 4px 0 rgba(10, 30, 58, 0.06);
+  --cp-shadow: 0 8px 20px -4px rgba(10, 30, 58, 0.08), 0 4px 6px -2px rgba(10, 30, 58, 0.04);
+  --cp-shadow-lg: 0 20px 25px -5px rgba(10, 30, 58, 0.1), 0 8px 10px -6px rgba(10, 30, 58, 0.04);
+  --cp-shadow-glow: 0 0 25px rgba(13, 148, 136, 0.35);
+
+  --cp-radius-sm: 0.5rem;
+  --cp-radius: 0.75rem;
+  --cp-radius-lg: 1.125rem;
+  --cp-radius-pill: 50rem;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 85px;
 }
 
 body {
-    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    background-color: var(--cp-bg);
-    color: var(--cp-text-main);
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
+  font-family: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: var(--cp-light-bg);
+  color: var(--cp-text-main);
+  line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
-/* Reusable CarePlus Card */
+/* ====================================================================
+   Typography & Utility Classes
+   ==================================================================== */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  color: var(--cp-navy);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.text-cp-navy { color: var(--cp-navy) !important; }
+.text-cp-teal { color: var(--cp-teal) !important; }
+.text-cp-teal-accent { color: var(--cp-teal-accent) !important; }
+.bg-cp-navy { background-color: var(--cp-navy) !important; }
+.bg-cp-teal { background-color: var(--cp-teal) !important; }
+.bg-cp-teal-light { background-color: var(--cp-teal-light) !important; }
+.bg-cp-light-slate { background-color: var(--cp-light-slate) !important; }
+
+/* Section Header Component */
+.cp-section-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background-color: var(--cp-teal-light);
+  color: var(--cp-teal-dark);
+  border: 1px solid rgba(13, 148, 136, 0.2);
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 0.4rem 1rem;
+  border-radius: var(--cp-radius-pill);
+  margin-bottom: 0.75rem;
+}
+
+.cp-section-title {
+  font-size: 2.25rem;
+  font-weight: 800;
+  color: var(--cp-navy);
+  margin-bottom: 0.85rem;
+  line-height: 1.25;
+}
+
+@media (min-width: 992px) {
+  .cp-section-title {
+    font-size: 2.6rem;
+  }
+}
+
+.cp-section-desc {
+  color: var(--cp-text-muted);
+  font-size: 1.05rem;
+  max-width: 680px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ====================================================================
+   Navigation Bar Styles
+   ==================================================================== */
+.cp-topbar {
+  background-color: var(--cp-navy-dark);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.cp-navbar {
+  transition: all 0.25s ease;
+}
+
+.cp-nav-link {
+  color: var(--cp-navy) !important;
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 0.5rem 0.85rem !important;
+  border-radius: var(--cp-radius-sm);
+  position: relative;
+  transition: color 0.2s ease;
+}
+
+.cp-nav-link:hover,
+.cp-nav-link.active {
+  color: var(--cp-teal) !important;
+}
+
+.cp-nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background-color: var(--cp-teal);
+  transition: all 0.25s ease;
+  transform: translateX(-50%);
+}
+
+.cp-nav-link:hover::after,
+.cp-nav-link.active::after {
+  width: 70%;
+}
+
+/* Buttons */
+.btn-cp-teal {
+  background-color: var(--cp-teal);
+  border: 1px solid var(--cp-teal);
+  color: var(--cp-white);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-cp-teal:hover {
+  background-color: var(--cp-teal-dark);
+  border-color: var(--cp-teal-dark);
+  color: var(--cp-white);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(13, 148, 136, 0.3);
+}
+
+.btn-outline-cp-navy {
+  color: var(--cp-navy);
+  border: 1.5px solid var(--cp-navy);
+  background-color: transparent;
+  transition: all 0.2s ease;
+}
+
+.btn-outline-cp-navy:hover {
+  background-color: var(--cp-navy);
+  color: var(--cp-white);
+  transform: translateY(-1px);
+}
+
+.btn-cp-navy {
+  background-color: var(--cp-navy);
+  border: 1px solid var(--cp-navy);
+  color: var(--cp-white);
+  transition: all 0.25s ease;
+}
+
+.btn-cp-navy:hover {
+  background-color: var(--cp-navy-light);
+  border-color: var(--cp-navy-light);
+  color: var(--cp-white);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(10, 30, 58, 0.25);
+}
+
+.cp-btn-cta {
+  background: linear-gradient(135deg, var(--cp-teal) 0%, var(--cp-teal-dark) 100%);
+  border: none;
+}
+
+.cp-btn-cta:hover {
+  box-shadow: var(--cp-shadow-glow);
+}
+
+/* ====================================================================
+   1. Hero Section
+   ==================================================================== */
+.cp-hero-section {
+  position: relative;
+  background: 
+    linear-gradient(135deg, rgba(10, 30, 58, 0.94) 0%, rgba(6, 19, 37, 0.93) 55%, rgba(13, 78, 91, 0.88) 100%),
+    url('../img/hero-hospital.jpg') center center / cover no-repeat;
+  color: var(--cp-white);
+  overflow: hidden;
+  padding: 5rem 0 6rem 0;
+}
+
+.cp-hero-bg-overlay {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-image: radial-gradient(circle at 85% 30%, rgba(13, 148, 136, 0.25) 0%, transparent 60%),
+                    radial-gradient(circle at 15% 80%, rgba(20, 184, 166, 0.15) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.cp-hero-title {
+  font-size: 2.75rem;
+  font-weight: 800;
+  line-height: 1.15;
+  color: #FFFFFF;
+  letter-spacing: -0.03em;
+}
+
+@media (min-width: 992px) {
+  .cp-hero-title {
+    font-size: 3.5rem;
+  }
+}
+
+.cp-hero-lead {
+  font-size: 1.15rem;
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1.7;
+}
+
+.cp-hero-image-frame {
+  position: relative;
+  border-radius: var(--cp-radius-lg);
+  overflow: visible;
+}
+
+.cp-hero-img {
+  width: 100%;
+  border-radius: var(--cp-radius-lg);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  border: 4px solid rgba(255, 255, 255, 0.15);
+  transition: transform 0.4s ease;
+}
+
+.cp-hero-float-card {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: var(--cp-radius);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+  padding: 0.9rem 1.25rem;
+  z-index: 2;
+  animation: floatChip 5s ease-in-out infinite;
+}
+
+.cp-hero-float-card.top-card {
+  top: -20px;
+  left: -20px;
+}
+
+.cp-hero-float-card.bottom-card {
+  bottom: -25px;
+  right: -20px;
+  animation-delay: 2.5s;
+}
+
+@keyframes floatChip {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+/* Hero Stat Counters Strip */
+.cp-hero-stats-strip {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--cp-radius-lg);
+  padding: 1.5rem 2rem;
+  margin-top: 3.5rem;
+}
+
+.cp-hero-stat-item {
+  border-right: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+@media (max-width: 767.98px) {
+  .cp-hero-stat-item {
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+  }
+}
+
+.cp-stat-number {
+  font-size: 2.1rem;
+  font-weight: 800;
+  color: var(--cp-teal-accent);
+  line-height: 1;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.cp-stat-label {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.75);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 0.35rem;
+}
+
+/* ====================================================================
+   2. About Hospital Section
+   ==================================================================== */
+.cp-feature-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: var(--cp-white);
+  border: 1px solid var(--cp-border);
+  border-radius: var(--cp-radius);
+  box-shadow: var(--cp-shadow-xs);
+  transition: all 0.2s ease;
+}
+
+.cp-feature-pill:hover {
+  border-color: var(--cp-teal);
+  box-shadow: var(--cp-shadow-sm);
+  transform: translateX(4px);
+}
+
+.cp-mission-card {
+  background: var(--cp-white);
+  border-radius: var(--cp-radius-lg);
+  border: 1px solid var(--cp-border);
+  padding: 2rem;
+  height: 100%;
+  box-shadow: var(--cp-shadow-sm);
+  transition: all 0.3s ease;
+}
+
+.cp-mission-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--cp-teal);
+  box-shadow: var(--cp-shadow);
+}
+
+/* ====================================================================
+   3. Medical Departments Section
+   ==================================================================== */
+.cp-dept-card {
+  background: var(--cp-white);
+  border: 1px solid var(--cp-border);
+  border-radius: var(--cp-radius-lg);
+  padding: 2.25rem 1.75rem;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.cp-dept-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, var(--cp-teal) 0%, var(--cp-navy) 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.cp-dept-card:hover {
+  transform: translateY(-8px);
+  border-color: rgba(13, 148, 136, 0.3);
+  box-shadow: var(--cp-shadow-lg);
+}
+
+.cp-dept-card:hover::before {
+  opacity: 1;
+}
+
+.cp-dept-icon-wrapper {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--cp-radius);
+  background: linear-gradient(135deg, var(--cp-teal-light) 0%, #E6FFFA 100%);
+  color: var(--cp-teal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.85rem;
+  margin-bottom: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.cp-dept-card:hover .cp-dept-icon-wrapper {
+  background: var(--cp-teal);
+  color: var(--cp-white);
+  transform: scale(1.08) rotate(3deg);
+}
+
+/* ====================================================================
+   4. Our Doctors Section
+   ==================================================================== */
+.cp-doctor-card {
+  background: var(--cp-white);
+  border: 1px solid var(--cp-border);
+  border-radius: var(--cp-radius-lg);
+  overflow: hidden;
+  box-shadow: var(--cp-shadow-sm);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.cp-doctor-card:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--cp-shadow-lg);
+  border-color: rgba(13, 148, 136, 0.4);
+}
+
+.cp-doctor-img-container {
+  position: relative;
+  width: 100%;
+  height: 300px;
+  overflow: hidden;
+  background-color: var(--cp-light-slate);
+}
+
+.cp-doctor-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  transition: transform 0.4s ease;
+}
+
+.cp-doctor-card:hover .cp-doctor-img {
+  transform: scale(1.04);
+}
+
+.cp-doctor-badge {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: rgba(10, 30, 58, 0.85);
+  backdrop-filter: blur(8px);
+  color: var(--cp-white);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.35rem 0.8rem;
+  border-radius: var(--cp-radius-pill);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.cp-doctor-body {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+/* ====================================================================
+   5. Our Services Section
+   ==================================================================== */
+.cp-service-card {
+  background: var(--cp-white);
+  border: 1px solid var(--cp-border);
+  border-radius: var(--cp-radius-lg);
+  padding: 2.25rem 2rem;
+  height: 100%;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.cp-service-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--cp-teal);
+  box-shadow: var(--cp-shadow-lg);
+}
+
+.cp-service-icon {
+  width: 58px;
+  height: 58px;
+  border-radius: var(--cp-radius);
+  background-color: var(--cp-navy-subtle);
+  color: var(--cp-navy);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  margin-bottom: 1.25rem;
+  transition: all 0.3s ease;
+}
+
+.cp-service-card:hover .cp-service-icon {
+  background-color: var(--cp-teal);
+  color: var(--cp-white);
+}
+
+/* ====================================================================
+   6. Why Choose Us Section
+   ==================================================================== */
+.cp-why-box {
+  background: var(--cp-white);
+  border: 1px solid var(--cp-border);
+  border-radius: var(--cp-radius);
+  padding: 1.5rem;
+  box-shadow: var(--cp-shadow-xs);
+  transition: all 0.25s ease;
+  height: 100%;
+}
+
+.cp-why-box:hover {
+  border-color: var(--cp-teal);
+  box-shadow: var(--cp-shadow-sm);
+  transform: translateY(-4px);
+}
+
+.cp-badge-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--cp-radius-sm);
+  background: var(--cp-teal-light);
+  color: var(--cp-teal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.35rem;
+  flex-shrink: 0;
+}
+
+/* ====================================================================
+   7. Appointment Call-To-Action Banner
+   ==================================================================== */
+.cp-cta-banner {
+  background: linear-gradient(135deg, #0A1E3A 0%, #061325 60%, #0D4E5B 100%);
+  border-radius: var(--cp-radius-lg);
+  padding: 3.5rem 2.5rem;
+  color: var(--cp-white);
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--cp-shadow-lg);
+}
+
+.cp-cta-banner::before {
+  content: '';
+  position: absolute;
+  top: -50px;
+  right: -50px;
+  width: 250px;
+  height: 250px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(13, 148, 136, 0.3) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* ====================================================================
+   8. Contact Section
+   ==================================================================== */
+.cp-contact-info-card {
+  background: var(--cp-white);
+  border: 1px solid var(--cp-border);
+  border-radius: var(--cp-radius-lg);
+  padding: 2.25rem 2rem;
+  box-shadow: var(--cp-shadow-sm);
+  height: 100%;
+}
+
+.cp-contact-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.25rem;
+  margin-bottom: 1.75rem;
+}
+
+.cp-contact-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--cp-radius);
+  background-color: var(--cp-teal-light);
+  color: var(--cp-teal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.35rem;
+  flex-shrink: 0;
+}
+
+.cp-contact-form-card {
+  background: var(--cp-white);
+  border: 1px solid var(--cp-border);
+  border-radius: var(--cp-radius-lg);
+  padding: 2.5rem 2.25rem;
+  box-shadow: var(--cp-shadow);
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--cp-teal);
+  box-shadow: 0 0 0 0.25rem rgba(13, 148, 136, 0.18);
+}
+
+/* ====================================================================
+   Footer Enhancements
+   ==================================================================== */
+.footer-link {
+  transition: all 0.2s ease;
+}
+
+.footer-link:hover {
+  color: var(--cp-teal-accent) !important;
+  transform: translateX(3px);
+  display: inline-block;
+}
+
+.social-icon-btn {
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.social-icon-btn:hover {
+  background-color: var(--cp-teal) !important;
+  color: var(--cp-white) !important;
+  transform: translateY(-2px);
+}
+
+/* Back to top floating button */
+.cp-back-to-top {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--cp-navy);
+  color: var(--cp-white);
+  border: none;
+  box-shadow: 0 4px 12px rgba(10, 30, 58, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  cursor: pointer;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  z-index: 999;
+}
+
+.cp-back-to-top.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.cp-back-to-top:hover {
+  background: var(--cp-teal);
+  transform: translateY(-3px);
+}
+
+/* ====================================================================
+   Card & Authentication View Styles
+   ==================================================================== */
 .cp-card {
-    background: var(--cp-card-bg);
-    border: 1px solid var(--cp-border);
-    border-radius: var(--cp-radius);
-    box-shadow: var(--cp-shadow-sm);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  background: var(--cp-white);
+  border: 1px solid var(--cp-border);
+  border-radius: var(--cp-radius-lg);
+  box-shadow: var(--cp-shadow-lg);
+  transition: all 0.3s ease;
 }
 
-.cp-card:hover {
-    box-shadow: var(--cp-shadow);
-}
-
-.cp-card-header {
-    background: transparent;
-    border-bottom: 1px solid var(--cp-border);
-    padding: 1.25rem 1.5rem;
-    font-weight: 600;
-}
-
-/* Custom Buttons */
 .btn-cp-primary {
-    background-color: var(--cp-primary);
-    border-color: var(--cp-primary);
-    color: #ffffff;
-    font-weight: 500;
-    border-radius: 0.5rem;
-    padding: 0.6rem 1.25rem;
-    transition: all 0.2s ease;
+  background: linear-gradient(135deg, var(--cp-navy) 0%, var(--cp-navy-light) 100%);
+  border: 1px solid var(--cp-navy);
+  color: var(--cp-white);
+  font-weight: 700;
+  border-radius: var(--cp-radius-pill);
+  transition: all 0.25s ease;
 }
 
 .btn-cp-primary:hover {
-    background-color: var(--cp-primary-dark);
-    border-color: var(--cp-primary-dark);
-    color: #ffffff;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
+  background: linear-gradient(135deg, var(--cp-teal) 0%, var(--cp-teal-dark) 100%);
+  border-color: var(--cp-teal);
+  color: var(--cp-white);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(13, 148, 136, 0.35);
 }
 
-/* Status Badges */
-.badge-status-pending {
-    background-color: #fef3c7;
-    color: #92400e;
-    border: 1px solid #fde68a;
+.demo-fill-card {
+  background: var(--cp-light-slate);
+  border: 1px solid var(--cp-border);
+  border-radius: var(--cp-radius);
+  padding: 0.65rem 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
 }
 
-.badge-status-confirmed {
-    background-color: #dbeafe;
-    color: #1e40af;
-    border: 1px solid #bfdbfe;
+.demo-fill-card:hover {
+  background: var(--cp-teal-light);
+  border-color: var(--cp-teal);
+  transform: translateY(-2px);
+  box-shadow: var(--cp-shadow-xs);
 }
 
-.badge-status-completed {
-    background-color: #d1fae5;
-    color: #065f46;
-    border: 1px solid #a7f3d0;
-}
-
-.badge-status-cancelled {
-    background-color: #fee2e2;
-    color: #991b1b;
-    border: 1px solid #fecaca;
-}

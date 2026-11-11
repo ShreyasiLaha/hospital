@@ -6,7 +6,7 @@ from datetime import datetime, date
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 from app.db import query_db, execute_db
 from app.utils.decorators import role_required
-from app.utils.helpers import log_audit
+from app.utils.helpers import log_audit, format_time_hhmm
 
 doctor_bp = Blueprint('doctor', __name__, url_prefix='/doctor')
 
@@ -42,7 +42,7 @@ def dashboard():
     # Metrics
     today_count = query_db("""
         SELECT COUNT(*) as cnt FROM appointments 
-        WHERE doctor_id = %s AND appointment_date = %s AND status NOT IN ('Cancelled', 'CANCELLED')
+        WHERE doctor_id = %s AND appointment_date = %s AND UPPER(status) NOT IN ('CANCELLED', 'REJECTED')
     """, (doctor_id, today_str), one=True)['cnt']
 
     waiting_queue_count = query_db("""
@@ -67,7 +67,7 @@ def dashboard():
         FROM appointments a
         JOIN patients p ON a.patient_id = p.id
         JOIN users u ON p.user_id = u.id
-        WHERE a.doctor_id = %s AND a.appointment_date = %s AND a.status != 'CANCELLED'
+        WHERE a.doctor_id = %s AND a.appointment_date = %s AND UPPER(a.status) NOT IN ('CANCELLED', 'REJECTED')
         ORDER BY a.token_number ASC
     """, (doctor_id, today_str))
 
@@ -165,8 +165,8 @@ def schedule():
     schedule_map = {}
     for s in schedules_raw:
         # Standardize time strings to HH:MM
-        st = str(s['start_time'])[:5]
-        et = str(s['end_time'])[:5]
+        st = format_time_hhmm(s['start_time'])
+        et = format_time_hhmm(s['end_time'])
         schedule_map[s['day_of_week']] = {
             'is_available': bool(s['is_available']),
             'start_time': st,

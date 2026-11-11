@@ -1,19 +1,20 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 60" width="240" height="60">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 60" width="250" height="60">
   <defs>
     <linearGradient id="careplus-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#0284c7" />
-      <stop offset="100%" stop-color="#0d9488" />
+      <stop offset="0%" stop-color="#0A1E3A" />
+      <stop offset="100%" stop-color="#0D9488" />
     </linearGradient>
   </defs>
-  <!-- Medical Cross & Heart Icon -->
-  <rect x="10" y="10" width="40" height="40" rx="12" fill="url(#careplus-grad)" />
+  <!-- Medical Cross Shield Icon -->
+  <rect x="8" y="8" width="44" height="44" rx="12" fill="url(#careplus-grad)" />
   <path d="M30 18 v24 M18 30 h24" stroke="#ffffff" stroke-width="4.5" stroke-linecap="round" />
+  <circle cx="30" cy="30" r="3" fill="#ffffff" opacity="0.7" />
   
   <!-- Text Brand -->
-  <text x="62" y="34" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="22" font-weight="700" fill="#0f172a">
-    Care<tspan fill="#0284c7">Plus</tspan>
+  <text x="64" y="34" font-family="'Plus Jakarta Sans', system-ui, -apple-system, sans-serif" font-size="23" font-weight="800" fill="#0A1E3A" letter-spacing="-0.5">
+    Care<tspan fill="#0D9488">Plus</tspan>
   </text>
-  <text x="63" y="47" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="10" font-weight="600" fill="#64748b" letter-spacing="1.5">
+  <text x="65" y="47" font-family="'Plus Jakarta Sans', system-ui, -apple-system, sans-serif" font-size="10.5" font-weight="700" fill="#64748B" letter-spacing="2">
     HOSPITAL
   </text>
 </svg>

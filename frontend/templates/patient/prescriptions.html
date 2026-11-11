@@ -59,8 +59,8 @@
                       </tr>
                     </thead>
                     <tbody>
-                      {% if rx.items %}
-                        {% for item in rx.items %}
+                      {% if rx['items'] %}
+                        {% for item in rx['items'] %}
                           <tr>
                             <td>{{ loop.index }}</td>
                             <td class="fw-bold text-dark">{{ item.medicine_name }}</td>

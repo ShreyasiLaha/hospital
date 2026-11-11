@@ -77,18 +77,24 @@ def book_appointment():
         department_id = request.form.get('department_id')
         doctor_id = request.form.get('doctor_id')
         appointment_date = request.form.get('appointment_date')
-        appointment_time = request.form.get('appointment_time')
+        appointment_time = (request.form.get('appointment_time') or '').strip()
         symptoms = request.form.get('symptoms', '').strip()
 
         if not (department_id and doctor_id and appointment_date and appointment_time):
             flash('Please select department, doctor, date, and an available time slot.', 'warning')
             return redirect(url_for('patient.book_appointment'))
 
-        # Check for double-booking conflict
+        # Normalize appointment_time to both HH:MM and HH:MM:00 for cross-backend safety
+        short_appt_time = appointment_time[:5]
+        full_appt_time = f"{short_appt_time}:00" if len(short_appt_time) == 5 else appointment_time
+
+        # Check for double-booking conflict (ignoring cancelled and rejected appointments)
         conflict = query_db("""
             SELECT id FROM appointments 
-            WHERE doctor_id = %s AND appointment_date = %s AND appointment_time = %s AND status != 'CANCELLED'
-        """, (doctor_id, appointment_date, appointment_time), one=True)
+            WHERE doctor_id = %s AND appointment_date = %s 
+              AND (appointment_time = %s OR appointment_time = %s)
+              AND UPPER(status) NOT IN ('CANCELLED', 'REJECTED')
+        """, (doctor_id, appointment_date, short_appt_time, full_appt_time), one=True)
 
         if conflict:
             flash('The selected time slot was just booked by another patient. Please choose another slot.', 'danger')
@@ -111,14 +117,14 @@ def book_appointment():
             doctor = query_db("SELECT consultation_fee FROM doctors WHERE id = %s", (doctor_id,), one=True)
             fee = float(doctor['consultation_fee']) if doctor else 500.00
 
-            # Insert Appointment
+            # Insert Appointment with normalized time
             appt_id = execute_db("""
                 INSERT INTO appointments (
                     appointment_number, patient_id, doctor_id, department_id, 
                     appointment_date, appointment_time, token_number, status, symptoms, booked_by
                 ) VALUES (%s, %s, %s, %s, %s, %s, %s, 'Pending', %s, 'PATIENT')
             """, (appointment_num, patient_id, doctor_id, department_id, 
-                  appointment_date, appointment_time, token_number, symptoms))
+                  appointment_date, full_appt_time, token_number, symptoms))
 
             # Auto-generate Bill record
             execute_db("""
@@ -196,6 +202,7 @@ def prescriptions():
     for rx in rx_list:
         items = query_db("SELECT * FROM prescription_items WHERE prescription_id = %s", (rx['id'],))
         rx['items'] = items
+        rx['medications'] = items
 
     return render_template('patient/prescriptions.html', prescriptions=rx_list)
 

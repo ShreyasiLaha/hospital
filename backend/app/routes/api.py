@@ -5,6 +5,7 @@ Provides dynamic JSON endpoints for department doctors and available slot calcul
 from datetime import datetime, timedelta
 from flask import Blueprint, jsonify, request
 from app.db import query_db
+from app.utils.helpers import format_time_hhmm
 
 api_bp = Blueprint('api', __name__, url_prefix='/api')
 
@@ -27,9 +28,9 @@ def get_doctors_by_department(department_id):
                 'name': doc['full_name'],
                 'specialization': doc['specialization'],
                 'qualification': doc['qualification'],
-                'fee': float(doc['consultation_fee']),
-                'room': doc['room_number'],
-                'experience': doc['experience_years']
+                'fee': float(doc['consultation_fee'] or 0.0),
+                'room': doc.get('room_number') or 'General OPD',
+                'experience': doc.get('experience_years') or 0
             } for doc in doctors
         ]
     })
@@ -40,12 +41,18 @@ def get_available_slots():
     Calculates and returns available time slots for a specified doctor and date.
     Query params: doctor_id, date (YYYY-MM-DD)
     """
-    doctor_id = request.args.get('doctor_id')
-    date_str = request.args.get('date')
+    raw_doctor_id = request.args.get('doctor_id')
+    raw_date_str = request.args.get('date')
 
-    if not doctor_id or not date_str:
+    if not raw_doctor_id or not raw_date_str:
         return jsonify({'status': 'error', 'message': 'Doctor and date parameters are required.', 'slots': []}), 400
 
+    try:
+        doctor_id = int(str(raw_doctor_id).strip())
+    except (ValueError, TypeError):
+        return jsonify({'status': 'error', 'message': 'Invalid doctor ID parameter.', 'slots': []}), 400
+
+    date_str = raw_date_str.strip()
     try:
         booking_date = datetime.strptime(date_str, '%Y-%m-%d').date()
     except ValueError:
@@ -72,26 +79,15 @@ def get_available_slots():
             'slots': []
         })
 
-    # Generate time slots between start_time and end_time
-    # Handles start_time and end_time whether returned as str (HH:MM or HH:MM:SS) or timedelta
-    def to_time_str(val):
-        if isinstance(val, str):
-            return val[:5]
-        if isinstance(val, timedelta):
-            total_sec = int(val.total_seconds())
-            h = total_sec // 3600
-            m = (total_sec % 3600) // 60
-            return f"{h:02d}:{m:02d}"
-        if hasattr(val, 'strftime'):
-            return val.strftime('%H:%M')
-        return str(val)[:5]
-
-    start_str = to_time_str(schedule['start_time'])
-    end_str = to_time_str(schedule['end_time'])
+    start_str = format_time_hhmm(schedule['start_time'])
+    end_str = format_time_hhmm(schedule['end_time'])
     slot_minutes = int(schedule.get('slot_duration_minutes', 30) or 30)
 
-    start_dt = datetime.strptime(start_str, '%H:%M')
-    end_dt = datetime.strptime(end_str, '%H:%M')
+    try:
+        start_dt = datetime.strptime(start_str, '%H:%M')
+        end_dt = datetime.strptime(end_str, '%H:%M')
+    except ValueError:
+        return jsonify({'status': 'error', 'message': 'Invalid doctor schedule time configuration.', 'slots': []}), 500
 
     all_slots = []
     curr = start_dt
@@ -103,10 +99,10 @@ def get_available_slots():
     # Query booked appointments for this doctor on this date
     booked_records = query_db("""
         SELECT appointment_time FROM appointments 
-        WHERE doctor_id = %s AND appointment_date = %s AND status NOT IN ('Cancelled', 'CANCELLED', 'Rejected', 'REJECTED')
+        WHERE doctor_id = %s AND appointment_date = %s AND UPPER(status) NOT IN ('CANCELLED', 'REJECTED')
     """, (doctor_id, date_str))
 
-    booked_times = {to_time_str(r['appointment_time']) for r in booked_records}
+    booked_times = {format_time_hhmm(r['appointment_time']) for r in booked_records}
 
     # If booking for today, filter out past time slots
     current_time_str = datetime.now().strftime('%H:%M')

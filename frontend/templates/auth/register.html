@@ -4,74 +4,110 @@
 
 {% block content %}
 <div class="row justify-content-center py-4">
-  <div class="col-lg-8">
+  <div class="col-lg-9 col-xl-8">
     <div class="cp-card p-4 p-md-5">
-      <div class="mb-4">
-        <h3 class="fw-bold text-dark">Patient Registration</h3>
-        <p class="text-muted">Create your patient profile to book and manage medical appointments online.</p>
+      <div class="d-flex align-items-center gap-3 mb-4 pb-3 border-bottom">
+        <img src="{{ url_for('static', filename='img/logo.svg') }}" alt="CarePlus Hospital" height="46">
+        <div>
+          <h3 class="fw-bold text-cp-navy mb-0">Patient Registration</h3>
+          <p class="text-muted small mb-0">Create your digital patient profile to schedule and manage consultations.</p>
+        </div>
       </div>
 
       <form method="POST" action="{{ url_for('auth.register') }}">
-        <h6 class="text-primary fw-bold text-uppercase small mb-3 letter-spacing-1">1. Personal & Contact Information</h6>
+        
+        <!-- Step 1: Personal Information -->
+        <div class="d-flex align-items-center gap-2 mb-3">
+          <span class="badge bg-cp-teal text-white rounded-pill px-2 py-1">1</span>
+          <h5 class="fw-bold text-cp-navy mb-0">Personal & Account Information</h5>
+        </div>
+
         <div class="row g-3 mb-4">
           <div class="col-md-6">
-            <label class="form-label fw-semibold" for="full_name">Full Legal Name</label>
-            <input type="text" class="form-control" id="full_name" name="full_name" placeholder="e.g. Alex Morgan" required>
+            <label class="form-label fw-semibold text-cp-navy small" for="full_name">Full Legal Name <span class="text-danger">*</span></label>
+            <div class="input-group">
+              <span class="input-group-text bg-white text-muted"><i class="bi bi-person"></i></span>
+              <input type="text" class="form-control py-2 fs-6" id="full_name" name="full_name" placeholder="e.g. Alex Morgan" required>
+            </div>
           </div>
+
           <div class="col-md-6">
-            <label class="form-label fw-semibold" for="email">Email Address</label>
-            <input type="email" class="form-control" id="email" name="email" placeholder="alex@patient.com" required>
+            <label class="form-label fw-semibold text-cp-navy small" for="email">Email Address <span class="text-danger">*</span></label>
+            <div class="input-group">
+              <span class="input-group-text bg-white text-muted"><i class="bi bi-envelope"></i></span>
+              <input type="email" class="form-control py-2 fs-6" id="email" name="email" placeholder="alex@patient.com" required>
+            </div>
           </div>
+
           <div class="col-md-6">
-            <label class="form-label fw-semibold" for="password">Password</label>
-            <input type="password" class="form-control" id="password" name="password" placeholder="At least 8 characters" required>
+            <label class="form-label fw-semibold text-cp-navy small" for="password">Password <span class="text-danger">*</span></label>
+            <div class="input-group">
+              <span class="input-group-text bg-white text-muted"><i class="bi bi-lock"></i></span>
+              <input type="password" class="form-control py-2 fs-6" id="password" name="password" placeholder="At least 8 characters" required>
+            </div>
           </div>
+
           <div class="col-md-6">
-            <label class="form-label fw-semibold" for="phone">Phone Number</label>
-            <input type="tel" class="form-control" id="phone" name="phone" placeholder="+1 555-019-2834" required>
+            <label class="form-label fw-semibold text-cp-navy small" for="phone">Phone Number <span class="text-danger">*</span></label>
+            <div class="input-group">
+              <span class="input-group-text bg-white text-muted"><i class="bi bi-telephone"></i></span>
+              <input type="tel" class="form-control py-2 fs-6" id="phone" name="phone" placeholder="+1 555-019-2834" required>
+            </div>
           </div>
         </div>
 
-        <h6 class="text-primary fw-bold text-uppercase small mb-3 letter-spacing-1">2. Health Profile & Address</h6>
+        <!-- Step 2: Health Profile & Address -->
+        <div class="d-flex align-items-center gap-2 mb-3 pt-2">
+          <span class="badge bg-cp-teal text-white rounded-pill px-2 py-1">2</span>
+          <h5 class="fw-bold text-cp-navy mb-0">Clinical Details & Demographics</h5>
+        </div>
+
         <div class="row g-3 mb-4">
           <div class="col-md-4">
-            <label class="form-label fw-semibold" for="date_of_birth">Date of Birth</label>
-            <input type="date" class="form-control" id="date_of_birth" name="date_of_birth" required>
+            <label class="form-label fw-semibold text-cp-navy small" for="date_of_birth">Date of Birth <span class="text-danger">*</span></label>
+            <input type="date" class="form-control py-2 fs-6" id="date_of_birth" name="date_of_birth" required>
           </div>
+
           <div class="col-md-4">
-            <label class="form-label fw-semibold" for="gender">Gender</label>
-            <select class="form-select" id="gender" name="gender" required>
-              <option value="">Select Gender</option>
+            <label class="form-label fw-semibold text-cp-navy small" for="gender">Gender <span class="text-danger">*</span></label>
+            <select class="form-select py-2 fs-6" id="gender" name="gender" required>
+              <option value="" selected disabled>Select Gender</option>
               <option value="Male">Male</option>
               <option value="Female">Female</option>
               <option value="Other">Other</option>
             </select>
           </div>
+
           <div class="col-md-4">
-            <label class="form-label fw-semibold" for="blood_group">Blood Group</label>
-            <select class="form-select" id="blood_group" name="blood_group">
-              <option value="O+">O+</option>
-              <option value="O-">O-</option>
-              <option value="A+">A+</option>
-              <option value="A-">A-</option>
-              <option value="B+">B+</option>
-              <option value="B-">B-</option>
-              <option value="AB+">AB+</option>
-              <option value="AB-">AB-</option>
+            <label class="form-label fw-semibold text-cp-navy small" for="blood_group">Blood Group</label>
+            <select class="form-select py-2 fs-6" id="blood_group" name="blood_group">
+              <option value="O+" selected>O+ (Positive)</option>
+              <option value="O-">O- (Negative)</option>
+              <option value="A+">A+ (Positive)</option>
+              <option value="A-">A- (Negative)</option>
+              <option value="B+">B+ (Positive)</option>
+              <option value="B-">B- (Negative)</option>
+              <option value="AB+">AB+ (Positive)</option>
+              <option value="AB-">AB- (Negative)</option>
             </select>
           </div>
+
           <div class="col-12">
-            <label class="form-label fw-semibold" for="address">Residential Address</label>
-            <textarea class="form-control" id="address" name="address" rows="2" placeholder="Street, City, State, ZIP" required></textarea>
+            <label class="form-label fw-semibold text-cp-navy small" for="address">Residential Address <span class="text-danger">*</span></label>
+            <textarea class="form-control fs-6" id="address" name="address" rows="2" placeholder="Street address, City, State, ZIP code" required></textarea>
           </div>
         </div>
 
-        <div class="d-flex justify-content-between align-items-center pt-3 border-top">
-          <span class="text-muted small">Already have an account? <a href="{{ url_for('auth.login') }}" class="text-primary fw-semibold">Sign In</a></span>
-          <button type="submit" class="btn btn-cp-primary px-4 py-2">
-            <i class="bi bi-person-check-fill me-1"></i> Register Profile
+        <!-- Submission Row -->
+        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center gap-3 pt-3 border-top">
+          <span class="text-muted small">
+            Already registered? <a href="{{ url_for('auth.login') }}" class="text-cp-teal fw-bold text-decoration-none">Sign In to Account</a>
+          </span>
+          <button type="submit" class="btn btn-cp-primary px-5 py-3 fs-6 shadow-sm">
+            <i class="bi bi-person-check-fill me-2"></i> Complete Registration
           </button>
         </div>
+
       </form>
     </div>
   </div>

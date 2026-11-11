@@ -22,8 +22,9 @@ class Config:
     DB_NAME = os.getenv('DB_NAME', 'hospital_db')
     DB_PORT = int(os.getenv('DB_PORT', 3306))
     
-    # SQLite Database Fallback Path
-    SQLITE_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'database', 'hospital_db.sqlite')
+    # SQLite Database Fallback Path (points to authoritative database in backend/database)
+    _backend_db = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'backend', 'database', 'hospital_db.sqlite')
+    SQLITE_PATH = _backend_db if os.path.exists(os.path.dirname(_backend_db)) else os.path.join(os.path.dirname(os.path.abspath(__file__)), 'database', 'hospital_db.sqlite')
     
     # Application Branding
     HOSPITAL_NAME = "CarePlus Hospital"

@@ -168,5 +168,9 @@ def run_tests():
     print("   ALL TESTS PASSED! CAREPLUS SYSTEM VERIFIED!    ")
     print("==================================================")
 
+def test_system_flow():
+    """Pytest hook for end-to-end system flow tests."""
+    run_tests()
+
 if __name__ == '__main__':
     run_tests()

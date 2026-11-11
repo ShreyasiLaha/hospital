@@ -27,6 +27,26 @@ def format_currency(amount):
     except (ValueError, TypeError):
         return "$0.00"
 
+def format_time_hhmm(val):
+    """Formats datetime, timedelta, time, or string time into normalized HH:MM."""
+    if not val:
+        return "09:00"
+    if hasattr(val, 'total_seconds'):  # datetime.timedelta
+        total_sec = int(val.total_seconds())
+        h = (total_sec // 3600) % 24
+        m = (total_sec % 3600) // 60
+        return f"{h:02d}:{m:02d}"
+    if hasattr(val, 'strftime'):  # datetime.datetime or datetime.time
+        return val.strftime('%H:%M')
+    val_str = str(val).strip()
+    parts = val_str.split(':')
+    if len(parts) >= 2:
+        try:
+            return f"{int(parts[0]):02d}:{int(parts[1]):02d}"
+        except ValueError:
+            pass
+    return val_str[:5]
+
 def log_audit(user_id, action, details):
     """Logs system activity to the activity_logs table."""
     try:

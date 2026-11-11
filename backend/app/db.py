@@ -74,6 +74,11 @@ def _adapt_query(query, backend):
         # Adapt MySQL specific functions
         adapted = re.sub(r'NOW\(\)', "datetime('now', 'localtime')", adapted, flags=re.IGNORECASE)
         adapted = re.sub(r'CURDATE\(\)', "date('now', 'localtime')", adapted, flags=re.IGNORECASE)
+        adapted = re.sub(r"DATE_FORMAT\(\s*([^,]+)\s*,\s*('%[^']+')\s*\)", r"strftime(\2, \1)", adapted, flags=re.IGNORECASE)
+        return adapted
+    elif backend == 'mysql':
+        # Adapt SQLite strftime to MySQL DATE_FORMAT if present
+        adapted = re.sub(r"strftime\(\s*('%[^']+')\s*,\s*([^)]+)\)", r"DATE_FORMAT(\2, \1)", query, flags=re.IGNORECASE)
         return adapted
     return query
 

@@ -4,67 +4,97 @@
 
 {% block content %}
 <div class="row justify-content-center py-4">
-  <div class="col-md-7 col-lg-6 col-xl-5">
+  <div class="col-md-8 col-lg-6 col-xl-5">
     <div class="cp-card p-4 p-md-5">
       <div class="text-center mb-4">
-        <img src="{{ url_for('static', filename='img/logo.svg') }}" alt="CarePlus Hospital" height="48" class="mb-3">
-        <h4 class="fw-bold text-dark">Welcome to CarePlus</h4>
-        <p class="text-muted small">Access your dedicated clinical or patient workspace</p>
+        <img src="{{ url_for('static', filename='img/logo.svg') }}" alt="CarePlus Hospital" height="50" class="mb-3">
+        <h3 class="fw-bold text-cp-navy mb-1">Welcome to CarePlus</h3>
+        <p class="text-muted small">Sign in to access your clinical or patient portal</p>
       </div>
 
       <form method="POST" action="{{ url_for('auth.login') }}">
         <div class="mb-3">
-          <label class="form-label fw-semibold" for="email">Email Address</label>
+          <label class="form-label fw-semibold text-cp-navy small" for="email">Email Address</label>
           <div class="input-group">
-            <span class="input-group-text bg-white"><i class="bi bi-envelope text-muted"></i></span>
-            <input type="email" class="form-control" id="email" name="email" placeholder="name@careplus.com" required>
+            <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-envelope"></i></span>
+            <input type="email" class="form-control border-start-0 py-2 fs-6" id="email" name="email" placeholder="name@careplus.com" required>
           </div>
         </div>
 
         <div class="mb-4">
-          <label class="form-label fw-semibold" for="password">Password</label>
+          <label class="form-label fw-semibold text-cp-navy small" for="password">Password</label>
           <div class="input-group">
-            <span class="input-group-text bg-white"><i class="bi bi-lock text-muted"></i></span>
-            <input type="password" class="form-control" id="password" name="password" placeholder="••••••••" required>
+            <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-lock"></i></span>
+            <input type="password" class="form-control border-start-0 border-end-0 py-2 fs-6" id="password" name="password" placeholder="••••••••" required>
+            <button class="btn btn-outline-secondary border-start-0 bg-white text-muted" type="button" id="togglePasswordBtn">
+              <i class="bi bi-eye" id="togglePasswordIcon"></i>
+            </button>
           </div>
         </div>
 
-        <button type="submit" class="btn btn-cp-primary w-100 py-2 fs-6 shadow-sm">
-          <i class="bi bi-box-arrow-in-right me-1"></i> Sign In to Portal
+        <button type="submit" class="btn btn-cp-primary w-100 py-3 fs-6 shadow-sm">
+          <i class="bi bi-box-arrow-in-right me-2"></i> Sign In to Portal
         </button>
       </form>
 
       <!-- Demo Accounts Card for Academic Viva & Instant Evaluation -->
-      <div class="mt-4 pt-3 border-top">
-        <div class="d-flex align-items-center justify-content-between mb-2">
-          <span class="text-uppercase fw-bold text-muted small" style="font-size: 0.75rem;">
+      <div class="mt-4 pt-4 border-top">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <span class="text-uppercase fw-bold text-cp-navy" style="font-size: 0.78rem; letter-spacing: 0.5px;">
             <i class="bi bi-lightning-charge-fill text-warning me-1"></i> Quick Test Credentials
           </span>
-          <span class="badge bg-light text-muted border">Click to auto-fill</span>
+          <span class="badge bg-cp-teal-light text-cp-teal border border-teal-subtle">Click to auto-fill</span>
         </div>
         
-        <div class="d-grid gap-2">
-          <div class="btn-group btn-group-sm" role="group">
-            <button type="button" class="btn btn-outline-secondary demo-fill-btn text-start py-2" data-email="admin@careplus.com" data-pass="Admin@123">
-              <span class="badge bg-danger me-1">Admin</span> admin@careplus.com
-            </button>
-            <button type="button" class="btn btn-outline-secondary demo-fill-btn text-start py-2" data-email="dr.chen@careplus.com" data-pass="Doctor@123">
-              <span class="badge bg-primary me-1">Doctor</span> dr.chen@careplus.com
+        <div class="row g-2">
+          <!-- Admin -->
+          <div class="col-6">
+            <button type="button" class="demo-fill-card demo-fill-btn" data-email="admin@careplus.com" data-pass="Admin@123">
+              <div>
+                <span class="badge bg-danger rounded-pill mb-1">Admin</span>
+                <div class="text-truncate fw-semibold text-cp-navy small" style="max-width: 140px;">admin@careplus.com</div>
+              </div>
+              <i class="bi bi-arrow-right-short text-muted fs-5"></i>
             </button>
           </div>
-          <div class="btn-group btn-group-sm" role="group">
-            <button type="button" class="btn btn-outline-secondary demo-fill-btn text-start py-2" data-email="reception@careplus.com" data-pass="Reception@123">
-              <span class="badge bg-warning text-dark me-1">Reception</span> reception@careplus.com
+
+          <!-- Doctor -->
+          <div class="col-6">
+            <button type="button" class="demo-fill-card demo-fill-btn" data-email="dr.chen@careplus.com" data-pass="Doctor@123">
+              <div>
+                <span class="badge bg-primary rounded-pill mb-1">Doctor</span>
+                <div class="text-truncate fw-semibold text-cp-navy small" style="max-width: 140px;">dr.chen@careplus.com</div>
+              </div>
+              <i class="bi bi-arrow-right-short text-muted fs-5"></i>
             </button>
-            <button type="button" class="btn btn-outline-secondary demo-fill-btn text-start py-2" data-email="alex@patient.com" data-pass="Patient@123">
-              <span class="badge bg-success me-1">Patient</span> alex@patient.com
+          </div>
+
+          <!-- Receptionist -->
+          <div class="col-6">
+            <button type="button" class="demo-fill-card demo-fill-btn" data-email="reception@careplus.com" data-pass="Reception@123">
+              <div>
+                <span class="badge bg-warning text-dark rounded-pill mb-1">Reception</span>
+                <div class="text-truncate fw-semibold text-cp-navy small" style="max-width: 140px;">reception@careplus.com</div>
+              </div>
+              <i class="bi bi-arrow-right-short text-muted fs-5"></i>
+            </button>
+          </div>
+
+          <!-- Patient -->
+          <div class="col-6">
+            <button type="button" class="demo-fill-card demo-fill-btn" data-email="alex@patient.com" data-pass="Patient@123">
+              <div>
+                <span class="badge bg-success rounded-pill mb-1">Patient</span>
+                <div class="text-truncate fw-semibold text-cp-navy small" style="max-width: 140px;">alex@patient.com</div>
+              </div>
+              <i class="bi bi-arrow-right-short text-muted fs-5"></i>
             </button>
           </div>
         </div>
       </div>
 
-      <div class="mt-4 text-center text-muted small">
-        New patient? <a href="{{ url_for('auth.register') }}" class="text-primary fw-semibold text-decoration-none">Register a new profile</a>
+      <div class="mt-4 pt-3 text-center border-top text-muted small">
+        New patient? <a href="{{ url_for('auth.register') }}" class="text-cp-teal fw-bold text-decoration-none">Register a new profile <i class="bi bi-arrow-right"></i></a>
       </div>
     </div>
   </div>
@@ -72,6 +102,7 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+  // 1. One-click Demo Credentials Auto-Fill
   const buttons = document.querySelectorAll('.demo-fill-btn');
   buttons.forEach(btn => {
     btn.addEventListener('click', function() {
@@ -79,6 +110,20 @@ document.addEventListener('DOMContentLoaded', function() {
       document.getElementById('password').value = this.getAttribute('data-pass');
     });
   });
+
+  // 2. Password Visibility Toggle
+  const toggleBtn = document.getElementById('togglePasswordBtn');
+  const passwordInput = document.getElementById('password');
+  const toggleIcon = document.getElementById('togglePasswordIcon');
+
+  if (toggleBtn && passwordInput && toggleIcon) {
+    toggleBtn.addEventListener('click', function() {
+      const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+      passwordInput.setAttribute('type', type);
+      toggleIcon.classList.toggle('bi-eye');
+      toggleIcon.classList.toggle('bi-eye-slash');
+    });
+  }
 });
 </script>
 {% endblock %}

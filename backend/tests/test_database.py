@@ -184,5 +184,9 @@ def run_tests():
     print(" ALL 11 DATABASE TESTS PASSED SUCCESSFULLY!")
     print("=" * 75)
 
+def test_database_verification():
+    """Pytest hook for database verification suite."""
+    run_tests()
+
 if __name__ == '__main__':
     run_tests()

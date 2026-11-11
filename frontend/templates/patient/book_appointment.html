@@ -10,7 +10,7 @@
     <div class="cp-card p-4">
       <form method="POST" action="{{ url_for('patient.book_appointment') }}" id="appointment_form">
         <!-- Hidden input for selected slot -->
-        <input type="hidden" id="selected_slot_time" name="appointment_time" required>
+        <input type="hidden" id="selected_slot_time" name="appointment_time">
 
         <!-- Step 1: Department Selection -->
         <div class="mb-4">
