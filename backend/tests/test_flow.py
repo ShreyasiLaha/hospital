@@ -35,7 +35,6 @@ def run_tests():
     print("\n[2/7] Testing Patient Appointment Booking & Slots...")
     c_patient = app.test_client()
     c_patient.post('/auth/login', data={'email': 'alex@patient.com', 'password': 'Patient@123'})
-<<<<<<< Updated upstream
 
     # Calculate next Monday (Doctor 1 consultation day) dynamically
     from datetime import date, timedelta
@@ -52,44 +51,19 @@ def run_tests():
     slots_data = res_slots.json
     assert slots_data.get('status') == 'success', "Slot calculation status error"
     print(f"  [OK] Slot API returned {len(slots_data['slots'])} slots for {target_date_str} (Doctor 1)")
-=======
-    
-    # Calculate next Monday (Doctor 1 works Mondays 09:00 - 13:00)
-    from datetime import datetime, timedelta
-    today = datetime.now().date()
-    days_ahead = (0 - today.weekday() + 7) % 7
-    if days_ahead == 0:
-        days_ahead = 7
-    target_date = (today + timedelta(days=days_ahead)).strftime('%Y-%m-%d')
-
-    # Check slots API
-    res_slots = c_patient.get(f'/api/available-slots?doctor_id=1&date={target_date}')
-    assert res_slots.status_code == 200, f"Slots API failed with status {res_slots.status_code}"
-    slots_data = res_slots.json
-    assert slots_data.get('status') == 'success', "Slot calculation status error"
-    print(f"  [OK] Slot API returned {len(slots_data['slots'])} slots for {target_date} (Doctor 1)")
->>>>>>> Stashed changes
 
     # Book appointment
     res_book = c_patient.post('/patient/book-appointment', data={
         'department_id': '1',
         'doctor_id': '1',
-<<<<<<< Updated upstream
         'appointment_date': target_date_str,
-=======
-        'appointment_date': target_date,
->>>>>>> Stashed changes
         'appointment_time': '10:00',
         'symptoms': 'Cardiovascular health routine evaluation'
     })
     assert res_book.status_code == 302, "Appointment booking failed"
     
     with app.app_context():
-<<<<<<< Updated upstream
         latest_appt = query_db("SELECT * FROM appointments WHERE appointment_date=%s AND doctor_id=1 ORDER BY id DESC LIMIT 1", (target_date_str,), one=True)
-=======
-        latest_appt = query_db(f"SELECT * FROM appointments WHERE appointment_date='{target_date}' AND doctor_id=1 ORDER BY id DESC LIMIT 1", one=True)
->>>>>>> Stashed changes
         assert latest_appt is not None, "Appointment not found in database"
         appt_id = latest_appt['id']
         print(f"  [OK] Created Appointment {latest_appt['appointment_number']} (Token #{latest_appt['token_number']})")
@@ -188,7 +162,7 @@ def run_tests():
         print(f"  [OK] Created Department '{dept_onco['name']}' (ID #{dept_onco['id']})")
 
     # 7. TEST ADMIN CSV EXPORTS
-    print("\n[7/7] Testing CSV Report Generation...")
+    print("\n[7/9] Testing CSV Report Generation...")
     res_csv_appt = c_admin.get('/admin/export-appointments-csv')
     assert res_csv_appt.status_code == 200, "Appointments CSV export failed"
     assert b"Appt Number,Date,Time" in res_csv_appt.data, "Invalid appointments CSV headers"
@@ -199,8 +173,60 @@ def run_tests():
     assert b"Invoice Number,Appt Code" in res_csv_rev.data, "Invalid revenue CSV headers"
     print("  [OK] Financial Revenue CSV statement generated successfully")
 
+    # 8. TEST IN-APP NOTIFICATIONS SYSTEM & API
+    print("\n[8/9] Testing In-App Notifications API...")
+    res_notif = c_patient.get('/api/notifications')
+    assert res_notif.status_code == 200, "Notifications API failed"
+    notif_data = res_notif.json
+    assert notif_data.get('status') == 'success', "Notification response status error"
+    notifs = notif_data.get('notifications', [])
+    assert len(notifs) > 0, "Expected notifications for patient after booking/invoicing"
+    first_notif_id = notifs[0]['id']
+    print(f"  [OK] Fetched {len(notifs)} notifications for patient (Unread: {notif_data.get('unread_count')})")
+
+    # Test mark single notification as read
+    res_read = c_patient.post(f'/api/notifications/{first_notif_id}/read')
+    assert res_read.status_code == 200, "Mark notification read failed"
+
+    # Test mark all as read
+    res_read_all = c_patient.post('/api/notifications/read-all')
+    assert res_read_all.status_code == 200, "Mark all notifications read failed"
+    print("  [OK] Notifications read-tracking and mark-all endpoints verified")
+
+    # 9. TEST FORGOT PASSWORD & RECOVERY WORKFLOW
+    print("\n[9/9] Testing Password Reset (Forgot Password) Flow...")
+    from app.utils.helpers import generate_reset_token, verify_reset_token
+    with app.app_context():
+        token = generate_reset_token('alex@patient.com')
+        verified_email = verify_reset_token(token)
+    assert verified_email == 'alex@patient.com', "Token verification failed"
+
+    c_guest = app.test_client()
+    # Test valid reset token GET
+    res_reset_get = c_guest.get(f'/auth/reset-password/{token}')
+    assert res_reset_get.status_code == 200, "Reset password page GET failed"
+
+    # Test password update POST
+    res_reset_post = c_guest.post(f'/auth/reset-password/{token}', data={
+        'new_password': 'UpdatedPass@123',
+        'confirm_password': 'UpdatedPass@123'
+    })
+    assert res_reset_post.status_code == 302, "Password reset POST failed"
+
+    # Verify login with new password works
+    res_new_login = c_guest.post('/auth/login', data={'email': 'alex@patient.com', 'password': 'UpdatedPass@123'})
+    assert res_new_login.status_code == 302, "Login with updated password failed"
+
+    # Restore default demo password
+    from werkzeug.security import generate_password_hash
+    from app.db import execute_db
+    with app.app_context():
+        execute_db("UPDATE users SET password_hash = %s WHERE email = 'alex@patient.com'",
+                   (generate_password_hash('Patient@123'),))
+    print("  [OK] Password reset token generated, verified, updated, and tested successfully")
+
     print("\n==================================================")
-    print("   ALL TESTS PASSED! CAREPLUS SYSTEM VERIFIED!    ")
+    print("   ALL 9 INTEGRATION TEST SUITES PASSED (100%)!   ")
     print("==================================================")
 
 def test_system_flow():

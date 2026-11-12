@@ -125,3 +125,65 @@ def get_available_slots():
         'day': day_name,
         'slots': available_slots
     })
+
+@api_bp.route('/notifications')
+def get_user_notifications():
+    """Returns unread count and latest 15 notifications for the authenticated user."""
+    from flask import session
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({'status': 'error', 'message': 'Authentication required.'}), 401
+
+    notifications = query_db("""
+        SELECT id, title, message, type, is_read, created_at
+        FROM notifications
+        WHERE user_id = %s
+        ORDER BY created_at DESC
+        LIMIT 15
+    """, (user_id,))
+
+    unread_count_row = query_db("""
+        SELECT COUNT(*) as cnt FROM notifications
+        WHERE user_id = %s AND is_read = 0
+    """, (user_id,), one=True)
+    unread_count = unread_count_row['cnt'] if unread_count_row else 0
+
+    return jsonify({
+        'status': 'success',
+        'unread_count': unread_count,
+        'notifications': [
+            {
+                'id': n['id'],
+                'title': n['title'],
+                'message': n['message'],
+                'type': n['type'],
+                'is_read': bool(n['is_read']),
+                'created_at': str(n['created_at'])
+            } for n in notifications
+        ]
+    })
+
+@api_bp.route('/notifications/<int:notification_id>/read', methods=['POST'])
+def mark_notification_read(notification_id):
+    """Marks a single notification as read."""
+    from flask import session
+    from app.db import execute_db
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({'status': 'error', 'message': 'Authentication required.'}), 401
+
+    execute_db("UPDATE notifications SET is_read = 1 WHERE id = %s AND user_id = %s", (notification_id, user_id))
+    return jsonify({'status': 'success', 'message': 'Notification marked as read.'})
+
+@api_bp.route('/notifications/read-all', methods=['POST'])
+def mark_all_notifications_read():
+    """Marks all notifications as read for current user."""
+    from flask import session
+    from app.db import execute_db
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({'status': 'error', 'message': 'Authentication required.'}), 401
+
+    execute_db("UPDATE notifications SET is_read = 1 WHERE user_id = %s", (user_id,))
+    return jsonify({'status': 'success', 'message': 'All notifications marked as read.'})
+

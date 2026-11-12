@@ -6,7 +6,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from werkzeug.security import generate_password_hash, check_password_hash
 from app.db import query_db, execute_db
 from app.utils.decorators import login_required
-from app.utils.helpers import log_audit
+from app.utils.helpers import log_audit, generate_reset_token, verify_reset_token
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -175,3 +175,68 @@ def change_password():
         return redirect(url_for(dashboard_map.get(session.get('role'), 'index')))
 
     return render_template('auth/change_password.html')
+
+@auth_bp.route('/forgot-password', methods=['GET', 'POST'])
+def forgot_password():
+    """Generates password reset token and link for user recovery."""
+    reset_link = None
+    if request.method == 'POST':
+        email = request.form.get('email', '').strip()
+        if not email:
+            flash('Please enter your registered email address.', 'warning')
+            return render_template('auth/forgot_password.html')
+
+        user = query_db("SELECT id, email, full_name, is_active FROM users WHERE email = %s", (email,), one=True)
+        if not user:
+            # Prevent email enumeration attacks by showing a generic message
+            flash('If an active account exists with that email, a password reset link has been generated.', 'info')
+            return render_template('auth/forgot_password.html')
+
+        if not user.get('is_active', 1):
+            flash('Your account has been deactivated. Please contact support.', 'danger')
+            return render_template('auth/forgot_password.html')
+
+        token = generate_reset_token(user['email'])
+        reset_link = url_for('auth.reset_password', token=token, _external=True)
+        log_audit(user['id'], 'FORGOT_PASSWORD_REQUEST', f"Password reset requested for {user['email']}")
+        flash('Password reset link generated successfully! (Valid for 1 hour)', 'success')
+
+    return render_template('auth/forgot_password.html', reset_link=reset_link)
+
+@auth_bp.route('/reset-password/<token>', methods=['GET', 'POST'])
+def reset_password(token):
+    """Verifies token and sets a new password."""
+    email = verify_reset_token(token, max_age_seconds=3600)
+    if not email:
+        flash('The password reset link is invalid or has expired. Please request a new one.', 'danger')
+        return redirect(url_for('auth.forgot_password'))
+
+    user = query_db("SELECT id, email, full_name FROM users WHERE email = %s", (email,), one=True)
+    if not user:
+        flash('User account not found.', 'danger')
+        return redirect(url_for('auth.forgot_password'))
+
+    if request.method == 'POST':
+        new_password = request.form.get('new_password', '').strip()
+        confirm_password = request.form.get('confirm_password', '').strip()
+
+        if not new_password or not confirm_password:
+            flash('Please enter and confirm your new password.', 'warning')
+            return render_template('auth/reset_password.html', token=token, email=email)
+
+        if new_password != confirm_password:
+            flash('Passwords do not match.', 'danger')
+            return render_template('auth/reset_password.html', token=token, email=email)
+
+        if len(new_password) < 6:
+            flash('Password must be at least 6 characters.', 'warning')
+            return render_template('auth/reset_password.html', token=token, email=email)
+
+        new_hash = generate_password_hash(new_password)
+        execute_db("UPDATE users SET password_hash = %s WHERE id = %s", (new_hash, user['id']))
+        log_audit(user['id'], 'RESET_PASSWORD_SUCCESS', f"Password reset successfully for {email}")
+        flash('Your password has been successfully reset! You can now log in.', 'success')
+        return redirect(url_for('auth.login'))
+
+    return render_template('auth/reset_password.html', token=token, email=email)
+

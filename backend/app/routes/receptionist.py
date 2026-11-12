@@ -7,7 +7,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from werkzeug.security import generate_password_hash
 from app.db import query_db, execute_db
 from app.utils.decorators import role_required
-from app.utils.helpers import generate_appointment_number, generate_invoice_number, log_audit
+from app.utils.helpers import generate_appointment_number, generate_invoice_number, log_audit, create_notification
 
 receptionist_bp = Blueprint('receptionist', __name__, url_prefix='/receptionist')
 
@@ -136,6 +136,14 @@ def walkin_booking():
                 ) VALUES (%s, %s, %s, %s, 0.00, %s, 0.00, %s, 'UNPAID', 'CASH', %s)
             """, (invoice_num, appt_id, patient_id, fee, fee, fee, session.get('user_id')))
 
+            # Trigger notifications
+            create_notification(user_id, 'Walk-in Registered',
+                                f"Walk-in appointment {appt_num} confirmed with Token #{token_number:02d}.", 'APPOINTMENT')
+            doc_user = query_db("SELECT user_id FROM doctors WHERE id = %s", (doctor_id,), one=True)
+            if doc_user:
+                create_notification(doc_user['user_id'], 'New Walk-in Patient',
+                                    f"Walk-in patient {patient_name} assigned Token #{token_number:02d} ({appt_num}).", 'APPOINTMENT')
+
             log_audit(session['user_id'], 'WALKIN_BOOKING', f"Walk-in appointment {appt_num} issued Token #{token_number}")
             flash(f"Walk-in patient {patient_name} registered successfully! Assigned Token #{token_number:02d} ({appt_num}).", 'success')
             return redirect(url_for('receptionist.queue'))
@@ -193,6 +201,21 @@ def queue():
 def check_in(appointment_id):
     """Marks patient as checked-in."""
     execute_db("UPDATE appointments SET status = 'Confirmed' WHERE id = %s", (appointment_id,))
+    
+    appt = query_db("""
+        SELECT a.*, p.user_id as patient_user_id, d.user_id as doc_user_id, u.full_name as patient_name 
+        FROM appointments a 
+        JOIN patients p ON a.patient_id = p.id 
+        JOIN users u ON p.user_id = u.id 
+        JOIN doctors d ON a.doctor_id = d.id 
+        WHERE a.id = %s
+    """, (appointment_id,), one=True)
+    if appt:
+        create_notification(appt['doc_user_id'], 'Patient Checked In',
+                            f"Token #{appt['token_number']:02d} ({appt['patient_name']}) has checked in at reception.", 'APPOINTMENT')
+        create_notification(appt['patient_user_id'], 'Check-in Confirmed',
+                            f"You are checked in for appointment {appt['appointment_number']}. Please proceed to the waiting area.", 'APPOINTMENT')
+
     flash('Patient checked-in successfully and added to doctor queue.', 'success')
     return redirect(url_for('receptionist.queue'))
 
@@ -223,8 +246,17 @@ def billing():
                 WHERE id = %s
             """, (consultation_fee, additional_charges, discount, total, payable, payment_method, session['user_id'], bill_id))
 
-            bill = query_db("SELECT invoice_number FROM bills WHERE id = %s", (bill_id,), one=True)
+            bill = query_db("""
+                SELECT b.invoice_number, p.user_id as patient_user_id 
+                FROM bills b 
+                JOIN patients p ON b.patient_id = p.id 
+                WHERE b.id = %s
+            """, (bill_id,), one=True)
             inv_code = bill['invoice_number'] if bill else ''
+            if bill and bill.get('patient_user_id'):
+                create_notification(bill['patient_user_id'], 'Payment Receipt',
+                                    f"Payment of ${payable:.2f} received for Invoice {inv_code}. Receipt generated.", 'BILLING')
+
             log_audit(session['user_id'], 'COLLECT_PAYMENT', f"Collected payment of ${payable:.2f} for Invoice {inv_code}")
             flash(f"Payment of ${payable:.2f} recorded successfully for {inv_code} via {payment_method}!", 'success')
             return redirect(url_for('receptionist.billing'))

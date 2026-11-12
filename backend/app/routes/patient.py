@@ -6,7 +6,7 @@ from datetime import datetime
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 from app.db import query_db, execute_db
 from app.utils.decorators import role_required
-from app.utils.helpers import generate_appointment_number, generate_invoice_number, log_audit
+from app.utils.helpers import generate_appointment_number, generate_invoice_number, log_audit, create_notification, paginate_query
 
 patient_bp = Blueprint('patient', __name__, url_prefix='/patient')
 
@@ -134,6 +134,14 @@ def book_appointment():
                 ) VALUES (%s, %s, %s, %s, 0.00, %s, 0.00, %s, 'UNPAID', 'CASH')
             """, (invoice_num, appt_id, patient_id, fee, fee, fee))
 
+            # Trigger in-app notifications
+            create_notification(session['user_id'], 'Appointment Submitted',
+                                f"Appointment {appointment_num} booked for {appointment_date} at {short_appt_time} (Token #{token_number:02d}).", 'APPOINTMENT')
+            doc_user = query_db("SELECT user_id FROM doctors WHERE id = %s", (doctor_id,), one=True)
+            if doc_user:
+                create_notification(doc_user['user_id'], 'New Appointment Request',
+                                    f"New patient booking {appointment_num} on {appointment_date} at {short_appt_time}.", 'APPOINTMENT')
+
             log_audit(session['user_id'], 'BOOK_APPOINTMENT', f"Booked appointment {appointment_num} with Token #{token_number}")
             flash(f"Appointment successfully submitted! Your Token number is #{token_number:02d} ({appointment_num}).", 'success')
             return redirect(url_for('patient.my_appointments'))
@@ -148,9 +156,11 @@ def book_appointment():
 @patient_bp.route('/my-appointments')
 @role_required('patient')
 def my_appointments():
-    """Lists past and upcoming appointments for logged-in patient."""
+    """Lists past and upcoming appointments for logged-in patient with pagination."""
     patient_id = get_current_patient_id()
-    appointments = query_db("""
+    page = request.args.get('page', 1)
+
+    sql = """
         SELECT a.*, u.full_name as doctor_name, d.qualification, d.specialization, d.room_number, dept.name as department_name
         FROM appointments a
         JOIN doctors d ON a.doctor_id = d.id
@@ -158,9 +168,11 @@ def my_appointments():
         JOIN departments dept ON a.department_id = dept.id
         WHERE a.patient_id = %s
         ORDER BY a.appointment_date DESC, a.appointment_time DESC
-    """, (patient_id,))
+    """
+    count_sql = "SELECT COUNT(*) as cnt FROM appointments WHERE patient_id = %s"
 
-    return render_template('patient/my_appointments.html', appointments=appointments)
+    paginated = paginate_query(sql, count_sql, (patient_id,), page=page, per_page=10)
+    return render_template('patient/my_appointments.html', appointments=paginated['items'], pagination=paginated)
 
 @patient_bp.route('/cancel-appointment/<int:appointment_id>', methods=['POST'])
 @role_required('patient')
@@ -178,6 +190,15 @@ def cancel_appointment(appointment_id):
         return redirect(url_for('patient.my_appointments'))
 
     execute_db("UPDATE appointments SET status = 'Cancelled' WHERE id = %s", (appointment_id,))
+
+    # Trigger cancellation notifications
+    create_notification(session['user_id'], 'Appointment Cancelled',
+                        f"You cancelled appointment {appt['appointment_number']}.", 'APPOINTMENT')
+    doc_user = query_db("SELECT user_id FROM doctors WHERE id = %s", (appt['doctor_id'],), one=True)
+    if doc_user:
+        create_notification(doc_user['user_id'], 'Appointment Cancelled',
+                            f"Appointment {appt['appointment_number']} on {appt['appointment_date']} was cancelled by patient.", 'APPOINTMENT')
+
     log_audit(session['user_id'], 'CANCEL_APPOINTMENT', f"Cancelled appointment {appt['appointment_number']}")
     flash(f"Appointment {appt['appointment_number']} has been successfully cancelled.", "info")
     return redirect(url_for('patient.my_appointments'))

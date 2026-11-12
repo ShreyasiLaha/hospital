@@ -9,7 +9,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from werkzeug.security import generate_password_hash
 from app.db import query_db, execute_db
 from app.utils.decorators import role_required
-from app.utils.helpers import log_audit
+from app.utils.helpers import log_audit, paginate_query
 
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
 
@@ -135,23 +135,37 @@ def manage_users():
             return redirect(url_for('admin.manage_users'))
 
     role_filter = request.args.get('role', '')
-    sql = """
+    search_q = request.args.get('q', '').strip()
+    page = request.args.get('page', 1)
+
+    where_clause = "WHERE 1=1"
+    params = []
+    if role_filter:
+        where_clause += " AND u.role = %s"
+        params.append(role_filter)
+    if search_q:
+        where_clause += " AND (u.full_name LIKE %s OR u.email LIKE %s OR u.phone LIKE %s)"
+        params.extend([f"%{search_q}%", f"%{search_q}%", f"%{search_q}%"])
+
+    sql = f"""
         SELECT u.*, d.specialization, dept.name as department_name, d.room_number, d.consultation_fee
         FROM users u
         LEFT JOIN doctors d ON u.id = d.user_id
         LEFT JOIN departments dept ON d.department_id = dept.id
-        WHERE 1=1
+        {where_clause}
+        ORDER BY u.created_at DESC
     """
-    params = []
-    if role_filter:
-        sql += " AND u.role = %s"
-        params.append(role_filter)
+    count_sql = f"SELECT COUNT(*) as cnt FROM users u {where_clause}"
 
-    sql += " ORDER BY u.created_at DESC"
-    users_list = query_db(sql, tuple(params))
+    paginated = paginate_query(sql, count_sql, tuple(params), page=page, per_page=15)
     departments = query_db("SELECT id, name FROM departments WHERE is_active = 1 ORDER BY name ASC")
 
-    return render_template('admin/manage_users.html', users=users_list, departments=departments, current_role=role_filter)
+    return render_template('admin/manage_users.html', 
+                           users=paginated['items'], 
+                           pagination=paginated,
+                           departments=departments, 
+                           current_role=role_filter,
+                           search_query=search_q)
 
 @admin_bp.route('/toggle-user-status/<int:user_id>', methods=['POST'])
 @role_required('admin')
