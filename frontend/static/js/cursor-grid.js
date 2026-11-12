@@ -523,3 +523,4 @@
 
   window.initCursorGrid = initCursorGrid;
 })();
+
