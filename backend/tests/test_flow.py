@@ -35,6 +35,7 @@ def run_tests():
     print("\n[2/7] Testing Patient Appointment Booking & Slots...")
     c_patient = app.test_client()
     c_patient.post('/auth/login', data={'email': 'alex@patient.com', 'password': 'Patient@123'})
+<<<<<<< Updated upstream
 
     # Calculate next Monday (Doctor 1 consultation day) dynamically
     from datetime import date, timedelta
@@ -51,19 +52,44 @@ def run_tests():
     slots_data = res_slots.json
     assert slots_data.get('status') == 'success', "Slot calculation status error"
     print(f"  [OK] Slot API returned {len(slots_data['slots'])} slots for {target_date_str} (Doctor 1)")
+=======
+    
+    # Calculate next Monday (Doctor 1 works Mondays 09:00 - 13:00)
+    from datetime import datetime, timedelta
+    today = datetime.now().date()
+    days_ahead = (0 - today.weekday() + 7) % 7
+    if days_ahead == 0:
+        days_ahead = 7
+    target_date = (today + timedelta(days=days_ahead)).strftime('%Y-%m-%d')
+
+    # Check slots API
+    res_slots = c_patient.get(f'/api/available-slots?doctor_id=1&date={target_date}')
+    assert res_slots.status_code == 200, f"Slots API failed with status {res_slots.status_code}"
+    slots_data = res_slots.json
+    assert slots_data.get('status') == 'success', "Slot calculation status error"
+    print(f"  [OK] Slot API returned {len(slots_data['slots'])} slots for {target_date} (Doctor 1)")
+>>>>>>> Stashed changes
 
     # Book appointment
     res_book = c_patient.post('/patient/book-appointment', data={
         'department_id': '1',
         'doctor_id': '1',
+<<<<<<< Updated upstream
         'appointment_date': target_date_str,
+=======
+        'appointment_date': target_date,
+>>>>>>> Stashed changes
         'appointment_time': '10:00',
         'symptoms': 'Cardiovascular health routine evaluation'
     })
     assert res_book.status_code == 302, "Appointment booking failed"
     
     with app.app_context():
+<<<<<<< Updated upstream
         latest_appt = query_db("SELECT * FROM appointments WHERE appointment_date=%s AND doctor_id=1 ORDER BY id DESC LIMIT 1", (target_date_str,), one=True)
+=======
+        latest_appt = query_db(f"SELECT * FROM appointments WHERE appointment_date='{target_date}' AND doctor_id=1 ORDER BY id DESC LIMIT 1", one=True)
+>>>>>>> Stashed changes
         assert latest_appt is not None, "Appointment not found in database"
         appt_id = latest_appt['id']
         print(f"  [OK] Created Appointment {latest_appt['appointment_number']} (Token #{latest_appt['token_number']})")
