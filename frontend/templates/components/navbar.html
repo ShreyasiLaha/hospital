@@ -1,21 +1,21 @@
 {# CarePlus Hospital - Global Navigation Bar & Top Emergency Banner #}
-<!-- Top Announcement & Contact Bar -->
-<div class="cp-topbar py-1 d-none d-lg-block">
-  <div class="container-xl d-flex justify-content-between align-items-center text-white" style="font-size: 0.82rem;">
+<!-- Top Announcement & Contact Bar (Unified Light Theme) -->
+<div class="cp-topbar py-1 d-none d-lg-block border-bottom bg-cp-light-bg">
+  <div class="container-xl d-flex justify-content-between align-items-center text-secondary" style="font-size: 0.84rem;">
     <div class="d-flex align-items-center gap-4">
-      <span><i class="bi bi-geo-alt-fill text-teal-accent me-1"></i> 100 CarePlus Parkway, Springfield, IL</span>
-      <span><i class="bi bi-clock-fill text-teal-accent me-1"></i> OPD Hours: Mon - Sat 8:00 AM - 8:00 PM</span>
+      <span><i class="bi bi-geo-alt-fill text-cp-teal me-1"></i> 100 CarePlus Parkway, Springfield, IL</span>
+      <span><i class="bi bi-clock-fill text-cp-teal me-1"></i> OPD Hours: Mon - Sat 8:00 AM - 8:00 PM</span>
       <span class="badge bg-danger text-white rounded-pill px-2 py-1"><i class="bi bi-lightning-charge-fill me-1"></i>24/7 Emergency</span>
     </div>
     <div class="d-flex align-items-center gap-3">
-      <a href="tel:+18005550199" class="text-white text-decoration-none fw-semibold">
-        <i class="bi bi-telephone-fill text-teal-accent me-1"></i> Emergency Hotline: +1 (800) 555-CARE
+      <a href="tel:+18005550199" class="text-cp-navy text-decoration-none fw-bold">
+        <i class="bi bi-telephone-fill text-cp-teal me-1"></i> Emergency Hotline: +1 (800) 555-CARE
       </a>
-      <span class="text-white-50">|</span>
+      <span class="text-muted opacity-50">|</span>
       <div class="d-flex gap-2">
-        <a href="#" class="text-white-50 text-hover-white"><i class="bi bi-facebook"></i></a>
-        <a href="#" class="text-white-50 text-hover-white"><i class="bi bi-twitter-x"></i></a>
-        <a href="#" class="text-white-50 text-hover-white"><i class="bi bi-linkedin"></i></a>
+        <a href="#" class="text-secondary text-hover-teal"><i class="bi bi-facebook"></i></a>
+        <a href="#" class="text-secondary text-hover-teal"><i class="bi bi-twitter-x"></i></a>
+        <a href="#" class="text-secondary text-hover-teal"><i class="bi bi-linkedin"></i></a>
       </div>
     </div>
   </div>
@@ -35,25 +35,19 @@
     </button>
 
     <div class="collapse navbar-collapse" id="careplusNavbar">
-      <!-- Section Navigation Links -->
+      <!-- Section Navigation Links (Streamlined, Single Line) -->
       <ul class="navbar-nav me-auto mb-2 mb-xl-0 align-items-xl-center">
         <li class="nav-item">
           <a class="nav-link cp-nav-link active" href="{{ url_for('index') }}#home">Home</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link cp-nav-link" href="{{ url_for('index') }}#about">About Us</a>
-        </li>
-        <li class="nav-item">
           <a class="nav-link cp-nav-link" href="{{ url_for('index') }}#departments">Departments</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link cp-nav-link" href="{{ url_for('index') }}#doctors">Our Doctors</a>
+          <a class="nav-link cp-nav-link" href="{{ url_for('index') }}#doctors">Specialists</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link cp-nav-link" href="{{ url_for('index') }}#services">Services</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link cp-nav-link" href="{{ url_for('index') }}#why-us">Why Choose Us</a>
+          <a class="nav-link cp-nav-link" href="{{ url_for('index') }}#services">Facilities</a>
         </li>
         <li class="nav-item">
           <a class="nav-link cp-nav-link" href="{{ url_for('index') }}#contact">Contact</a>

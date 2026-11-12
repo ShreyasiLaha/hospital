@@ -137,25 +137,32 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* ====================================================================
-   Navigation Bar Styles
+   Navigation Bar Styles (Unified Light Theme)
    ==================================================================== */
 .cp-topbar {
-  background-color: var(--cp-navy-dark);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background-color: var(--cp-light-bg) !important;
+  border-bottom: 1px solid var(--cp-border);
+  color: var(--cp-text-muted);
 }
 
 .cp-navbar {
   transition: all 0.25s ease;
+  background-color: #FFFFFF !important;
 }
 
 .cp-nav-link {
   color: var(--cp-navy) !important;
-  font-weight: 600;
-  font-size: 0.95rem;
-  padding: 0.5rem 0.85rem !important;
+  font-weight: 700;
+  font-size: 0.98rem;
+  padding: 0.5rem 0.9rem !important;
   border-radius: var(--cp-radius-sm);
   position: relative;
+  white-space: nowrap !important;
   transition: color 0.2s ease;
+}
+
+.text-hover-teal:hover {
+  color: var(--cp-teal) !important;
 }
 
 .cp-nav-link:hover,
