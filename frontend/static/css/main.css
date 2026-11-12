@@ -48,15 +48,35 @@ html {
   scroll-padding-top: 85px;
 }
 
+/* Bold Icons & Enhanced Typography */
+i.bi, .bi {
+  -webkit-text-stroke: 0.45px currentColor;
+  font-weight: 700 !important;
+  display: inline-block;
+  vertical-align: -0.125em;
+}
+
 body {
   font-family: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, sans-serif;
   background-color: var(--cp-light-bg);
   color: var(--cp-text-main);
-  line-height: 1.6;
+  font-size: 1.05rem;
+  line-height: 1.65;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
+
+h1, .h1 { font-size: 2.75rem; font-weight: 800; line-height: 1.2; letter-spacing: -0.025em; color: var(--cp-navy); }
+h2, .h2 { font-size: 2.15rem; font-weight: 800; line-height: 1.25; color: var(--cp-navy); }
+h3, .h3 { font-size: 1.65rem; font-weight: 700; line-height: 1.3; color: var(--cp-navy); }
+h4, .h4 { font-size: 1.35rem; font-weight: 700; color: var(--cp-navy); }
+h5, .h5 { font-size: 1.15rem; font-weight: 700; color: var(--cp-navy); }
+h6, .h6 { font-size: 1.02rem; font-weight: 700; color: var(--cp-navy); }
+p { font-size: 1.05rem; }
+.small, small { font-size: 0.9rem; }
+.btn { font-size: 1.02rem; font-weight: 700; }
+.nav-link { font-size: 1.02rem; font-weight: 600; }
 
 /* ====================================================================
    Typography & Utility Classes
@@ -214,14 +234,15 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* ====================================================================
-   1. Hero Section
+   1. Hero Section (Unified Light Theme)
    ==================================================================== */
 .cp-hero-section {
   position: relative;
-  background: #0A1E3A;
-  color: var(--cp-white);
+  background: var(--cp-light-bg);
+  color: var(--cp-navy);
   overflow: hidden;
-  padding: 5rem 0 5.5rem 0;
+  padding: 4.5rem 0 5rem 0;
+  border-bottom: 1px solid var(--cp-border);
 }
 
 .cp-hero-bg-overlay {
@@ -229,22 +250,22 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .cp-hero-title {
-  font-size: 2.75rem;
+  font-size: 2.9rem;
   font-weight: 800;
-  line-height: 1.15;
-  color: #FFFFFF;
+  line-height: 1.18;
+  color: var(--cp-navy);
   letter-spacing: -0.03em;
 }
 
 @media (min-width: 992px) {
   .cp-hero-title {
-    font-size: 3.5rem;
+    font-size: 3.4rem;
   }
 }
 
 .cp-hero-lead {
   font-size: 1.15rem;
-  color: rgba(255, 255, 255, 0.85);
+  color: var(--cp-text-muted);
   line-height: 1.7;
 }
 
@@ -257,18 +278,17 @@ h1, h2, h3, h4, h5, h6 {
 .cp-hero-img {
   width: 100%;
   border-radius: var(--cp-radius-lg);
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-  border: 4px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 20px 40px -10px rgba(10, 30, 58, 0.15);
+  border: 4px solid #FFFFFF;
   transition: transform 0.4s ease;
 }
 
 .cp-hero-float-card {
   position: absolute;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.8);
+  background: #FFFFFF;
+  border: 1px solid var(--cp-border);
   border-radius: var(--cp-radius);
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 10px 25px rgba(10, 30, 58, 0.1);
   padding: 0.9rem 1.25rem;
   z-index: 2;
   animation: floatChip 5s ease-in-out infinite;
@@ -292,39 +312,40 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Hero Stat Counters Strip */
 .cp-hero-stats-strip {
-  background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: #FFFFFF;
+  border: 1px solid var(--cp-border);
+  box-shadow: 0 4px 16px rgba(10, 30, 58, 0.05);
   border-radius: var(--cp-radius-lg);
   padding: 1.5rem 2rem;
-  margin-top: 3.5rem;
+  margin-top: 2.5rem;
 }
 
 .cp-hero-stat-item {
-  border-right: 1px solid rgba(255, 255, 255, 0.15);
+  border-right: 1px solid var(--cp-border);
 }
 
 @media (max-width: 767.98px) {
   .cp-hero-stat-item {
     border-right: none;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--cp-border);
     padding-bottom: 1rem;
     margin-bottom: 1rem;
   }
 }
 
 .cp-stat-number {
-  font-size: 2.1rem;
+  font-size: 2.3rem;
   font-weight: 800;
-  color: var(--cp-teal-accent);
+  color: var(--cp-teal);
   line-height: 1;
   font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
 .cp-stat-label {
-  font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.75);
+  font-size: 0.88rem;
+  color: var(--cp-text-muted);
   text-transform: uppercase;
+  font-weight: 700;
   letter-spacing: 0.5px;
   margin-top: 0.35rem;
 }
@@ -734,19 +755,19 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* ====================================================================
-   PRELOADER / LOADING ANIMATION  (Enhanced – longer, richer)
+   PRELOADER / LOADING ANIMATION (Light Theme & Animated Stethoscope)
    ==================================================================== */
 .cp-preloader {
   position: fixed;
   inset: 0;
   z-index: 99999;
-  background: radial-gradient(ellipse at 30% 40%, #1a3a6a 0%, #0A1E3A 55%, #061227 100%);
+  background: radial-gradient(ellipse at center, #FFFFFF 0%, #F1F5F9 70%, #E2E8F0 100%);
   display: flex;
   align-items: center;
   justify-content: center;
   opacity: 1;
   visibility: visible;
-  transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.7s ease;
+  transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.6s ease;
   overflow: hidden;
 }
 
@@ -767,19 +788,19 @@ h1, h2, h3, h4, h5, h6 {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: rgba(20, 184, 166, 0.35);
+  background: rgba(13, 148, 136, 0.25);
   animation: cpParticleFloat 6s ease-in-out infinite;
 }
-.cp-particle:nth-child(1) { left: 12%; top: 20%; animation-delay: 0s;    animation-duration: 7s; width: 8px; height: 8px; }
-.cp-particle:nth-child(2) { left: 80%; top: 15%; animation-delay: 1.2s;  animation-duration: 6s; }
-.cp-particle:nth-child(3) { left: 25%; top: 75%; animation-delay: 2.1s;  animation-duration: 8s; width: 5px; height: 5px; background: rgba(56, 189, 248, 0.3); }
-.cp-particle:nth-child(4) { left: 70%; top: 70%; animation-delay: 0.8s;  animation-duration: 5.5s; width: 10px; height: 10px; }
-.cp-particle:nth-child(5) { left: 50%; top: 10%; animation-delay: 3s;    animation-duration: 7.5s; background: rgba(56, 189, 248, 0.25); }
-.cp-particle:nth-child(6) { left: 88%; top: 50%; animation-delay: 1.6s;  animation-duration: 6.8s; width: 7px; height: 7px; }
+.cp-particle:nth-child(1) { left: 12%; top: 20%; animation-delay: 0s;   animation-duration: 7s; width: 8px; height: 8px; }
+.cp-particle:nth-child(2) { left: 80%; top: 15%; animation-delay: 1.2s; animation-duration: 6s; }
+.cp-particle:nth-child(3) { left: 25%; top: 75%; animation-delay: 2.1s; animation-duration: 8s; width: 5px; height: 5px; background: rgba(14, 165, 233, 0.2); }
+.cp-particle:nth-child(4) { left: 70%; top: 70%; animation-delay: 0.8s; animation-duration: 5.5s; width: 9px; height: 9px; }
+.cp-particle:nth-child(5) { left: 50%; top: 10%; animation-delay: 3s;   animation-duration: 7.5s; background: rgba(14, 165, 233, 0.25); }
+.cp-particle:nth-child(6) { left: 88%; top: 50%; animation-delay: 1.6s; animation-duration: 6.8s; width: 7px; height: 7px; }
 
 @keyframes cpParticleFloat {
-  0%, 100% { transform: translateY(0) scale(1); opacity: 0.4; }
-  50%       { transform: translateY(-28px) scale(1.3); opacity: 0.9; }
+  0%, 100% { transform: translateY(0) scale(1); opacity: 0.35; }
+  50%       { transform: translateY(-24px) scale(1.2); opacity: 0.75; }
 }
 
 .cp-preloader-content {
@@ -793,68 +814,77 @@ h1, h2, h3, h4, h5, h6 {
   z-index: 2;
 }
 
-.cp-pulse-ring-wrapper {
+/* --- Animated Stethoscope --- */
+.cp-stetho-container {
   position: relative;
+  width: 110px;
+  height: 110px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+}
+
+.cp-stetho-pulse-ring {
+  position: absolute;
   width: 100px;
   height: 100px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 1.25rem;
-}
-
-.cp-pulse-ring {
-  position: absolute;
-  inset: 0;
   border-radius: 50%;
-  border: 2px solid rgba(20, 184, 166, 0.5);
-  animation: cpPulseRing 3s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
-}
-.cp-ring-2 { animation-delay: 0.8s; border-color: rgba(56, 189, 248, 0.4); }
-.cp-ring-3 { animation-delay: 1.6s; border-color: rgba(20, 184, 166, 0.25); }
-
-@keyframes cpPulseRing {
-  0%   { transform: scale(0.8);  opacity: 1; }
-  100% { transform: scale(2.0);  opacity: 0; }
+  border: 2px solid rgba(13, 148, 136, 0.3);
+  animation: cpPulseRing 2.8s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
 }
 
-.cp-preloader-icon-circle {
-  width: 76px;
-  height: 76px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #0D9488 0%, #0A1E3A 100%);
-  border: 2px solid rgba(20, 184, 166, 0.7);
-  box-shadow: 0 0 30px rgba(20, 184, 166, 0.55), 0 0 60px rgba(20, 184, 166, 0.2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 2;
+.cp-stetho-svg {
+  filter: drop-shadow(0 6px 16px rgba(13, 148, 136, 0.25));
+  animation: cpStethoFloat 3.2s ease-in-out infinite;
 }
 
-.cp-preloader-heartbeat {
-  font-size: 2.2rem;
-  color: #FFFFFF;
-  animation: cpHeartbeat 1.6s ease-in-out infinite;
+@keyframes cpStethoFloat {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50%       { transform: translateY(-5px) scale(1.02); }
 }
 
-@keyframes cpHeartbeat {
-  0%, 100% { transform: scale(1); }
-  14%       { transform: scale(1.28); filter: drop-shadow(0 0 8px #14B8A6); }
-  28%       { transform: scale(1); }
-  42%       { transform: scale(1.18); }
-  70%       { transform: scale(1); }
+.cp-stetho-tube {
+  stroke-dasharray: 230;
+  stroke-dashoffset: 0;
+  animation: cpStethoFlow 2.8s ease-in-out infinite;
+}
+
+@keyframes cpStethoFlow {
+  0%   { stroke-dashoffset: 230; opacity: 0.7; }
+  50%  { stroke-dashoffset: 0;   opacity: 1; }
+  100% { stroke-dashoffset: -230; opacity: 0.7; }
+}
+
+.cp-stetho-wave {
+  fill: none;
+  transform-origin: 84px 64px;
+  animation: cpStethoWave 2s cubic-bezier(0.2, 0.8, 0.4, 1) infinite;
+}
+.cp-wave-2 {
+  animation-delay: 0.55s;
+}
+
+@keyframes cpStethoWave {
+  0%   { transform: scale(0.6); opacity: 0.95; }
+  100% { transform: scale(2.3); opacity: 0; }
+}
+
+.cp-stetho-heartbeat {
+  animation: cpHeartbeat 1.4s ease-in-out infinite;
+  transform-origin: 84px 64px;
 }
 
 .cp-ecg-svg-container {
   width: 260px;
-  height: 46px;
-  margin: 0.6rem 0 1rem;
+  height: 42px;
+  margin: 0.5rem 0 1rem;
 }
 
 .cp-ecg-svg { width: 100%; height: 100%; }
 
 .cp-ecg-path {
-  stroke: #14B8A6;
+  stroke: #0D9488;
   stroke-width: 2.5;
   stroke-linecap: round;
   stroke-linejoin: round;
@@ -862,7 +892,7 @@ h1, h2, h3, h4, h5, h6 {
   stroke-dasharray: 450;
   stroke-dashoffset: 450;
   animation: cpEcgDash 2.4s ease-in-out infinite;
-  filter: drop-shadow(0 0 10px rgba(20, 184, 166, 0.8));
+  filter: drop-shadow(0 0 6px rgba(13, 148, 136, 0.5));
 }
 
 @keyframes cpEcgDash {
@@ -871,24 +901,24 @@ h1, h2, h3, h4, h5, h6 {
   100% { stroke-dashoffset: -450; opacity: 0.3; }
 }
 
-/* Stepped progress bar */
+/* Stepped progress bar (Light Theme) */
 .cp-loader-progress-wrap {
   width: 220px;
   margin: 0 auto;
 }
 .cp-loader-progress {
   width: 100%;
-  height: 5px;
-  background: rgba(255, 255, 255, 0.1);
+  height: 6px;
+  background: #E2E8F0;
   border-radius: 10px;
   overflow: hidden;
 }
 .cp-loader-fill {
   height: 100%;
-  background: linear-gradient(90deg, #0D9488, #38BDF8, #14B8A6);
+  background: linear-gradient(90deg, #0D9488, #0284c7, #14B8A6);
   border-radius: 10px;
   transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 0 10px rgba(20, 184, 166, 0.6);
+  box-shadow: 0 0 8px rgba(13, 148, 136, 0.4);
 }
 
 /* ====================================================================
