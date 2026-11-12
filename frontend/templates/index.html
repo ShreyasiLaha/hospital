@@ -1,88 +1,136 @@
 {% extends 'base.html' %}
 
-{% block title %}CarePlus Hospital — Premier Healthcare & Appointment Management{% endblock %}
+{% block title %}CarePlus Hospital — Modern Healthcare & Appointment System{% endblock %}
+
+{% block preloader %}
+<!-- ====================================================================
+     PRELOADER: Animated Healthcare Pulse & ECG Preloader (Enhanced)
+     ==================================================================== -->
+<div id="cpPreloader" class="cp-preloader" aria-label="Loading CarePlus Hospital Portal">
+  <!-- Floating particle dots -->
+  <div class="cp-preloader-particles">
+    <span class="cp-particle"></span><span class="cp-particle"></span>
+    <span class="cp-particle"></span><span class="cp-particle"></span>
+    <span class="cp-particle"></span><span class="cp-particle"></span>
+  </div>
+
+  <div class="cp-preloader-content text-center">
+    <!-- Pulse Rings with Heartbeat Icon -->
+    <div class="cp-pulse-ring-wrapper">
+      <div class="cp-pulse-ring"></div>
+      <div class="cp-pulse-ring cp-ring-2"></div>
+      <div class="cp-pulse-ring cp-ring-3"></div>
+      <div class="cp-preloader-icon-circle">
+        <i class="bi bi-heart-pulse-fill cp-preloader-heartbeat"></i>
+      </div>
+    </div>
+
+    <!-- Brand -->
+    <h4 class="fw-bold text-white mb-0" style="letter-spacing: 0.04em;">CarePlus Hospital</h4>
+    <div class="text-cp-teal-accent small fw-semibold mb-3" style="letter-spacing: 0.08em;">HEALTHCARE &amp; CONSULTATION PORTAL</div>
+
+    <!-- Animated Medical ECG Line -->
+    <div class="cp-ecg-svg-container">
+      <svg viewBox="0 0 300 60" class="cp-ecg-svg" preserveAspectRatio="none">
+        <path class="cp-ecg-path" d="M 0,30 L 70,30 L 85,10 L 95,50 L 110,5 L 120,45 L 130,30 L 170,30 L 185,15 L 195,45 L 205,30 L 300,30" />
+      </svg>
+    </div>
+
+    <!-- Stepped Progress Bar with Percentage -->
+    <div class="cp-loader-progress-wrap">
+      <div class="cp-loader-progress">
+        <div class="cp-loader-fill" id="cpLoaderFill" style="width:0%"></div>
+      </div>
+      <div class="d-flex justify-content-between align-items-center mt-2">
+        <span class="text-white-50" style="font-size: 0.75rem;">Initializing clinical services…</span>
+        <span class="text-cp-teal-accent fw-bold" style="font-size: 0.8rem;" id="cpLoaderPct">0%</span>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
 
 {% block layout_container %}
-{# Override layout_container to allow full-bleed modern sections #}
+{# Full-bleed compact landing page container #}
 {% include 'components/flash_messages.html' %}
 
 <!-- ====================================================================
-     SECTION 2: HERO SECTION
+     1. HERO SECTION (Compact, High-Impact)
      ==================================================================== -->
-<header class="cp-hero-section" id="home">
+<header class="cp-hero-section py-5" id="home">
   <div class="cp-hero-bg-overlay"></div>
   <div class="container-xl position-relative" style="z-index: 2;">
-    <div class="row align-items-center g-5">
+    <div class="row align-items-center g-4 py-3">
       
-      <!-- Hero Left Column: Headline & Action Buttons -->
-      <div class="col-lg-6">
+      <!-- Headline & Actions -->
+      <div class="col-lg-7 text-white">
         <span class="cp-section-tag bg-white bg-opacity-10 text-cp-teal-accent border border-white border-opacity-25 mb-3">
           <i class="bi bi-patch-check-fill text-cp-teal-accent me-1"></i> JCI Accredited Medical Center
         </span>
 
-        <h1 class="cp-hero-title mb-3">
+        <h1 class="cp-hero-title mb-3" style="font-size: clamp(2rem, 4vw, 3rem); line-height: 1.2;">
           Compassionate Care, <br>
           <span class="text-cp-teal-accent">Modern Clinical</span> Excellence.
         </h1>
 
-        <p class="cp-hero-lead mb-4 pe-lg-3">
-          CarePlus Hospital brings together distinguished board-certified specialists, state-of-the-art diagnostic facilities, and a seamless digital appointment platform designed around your well-being.
+        <p class="text-white-50 mb-4 pe-lg-4" style="font-size: 1.05rem; max-width: 580px;">
+          CarePlus Hospital connects you with distinguished board-certified specialists, advanced diagnostic facilities, and effortless online appointment booking.
         </p>
 
         <div class="d-flex flex-wrap gap-3 align-items-center mb-4">
-          <a href="{{ url_for('patient.book_appointment') if is_logged_in else url_for('auth.login') }}" class="btn btn-cp-teal btn-lg rounded-pill px-4 py-3 fw-bold cp-btn-cta shadow-lg">
+          <a href="{{ url_for('patient.book_appointment') if is_logged_in else url_for('auth.login') }}" class="btn btn-cp-teal btn-lg rounded-pill px-4 py-2 fw-bold cp-btn-cta shadow">
             <i class="bi bi-calendar2-check-fill me-2"></i> Book Appointment
           </a>
-          <a href="#doctors" class="btn btn-outline-light btn-lg rounded-pill px-4 py-3 fw-semibold">
-            <i class="bi bi-people-fill me-2"></i> Explore Doctors
+          <a href="#departments" class="btn btn-outline-light rounded-pill px-4 py-2 fw-semibold">
+            <i class="bi bi-grid-fill me-2"></i> Explore Directory
           </a>
         </div>
 
         <!-- Trust Badges -->
-        <div class="d-flex flex-wrap gap-4 pt-2 text-white-50" style="font-size: 0.88rem;">
+        <div class="d-flex flex-wrap gap-4 text-white-50 small">
           <div class="d-flex align-items-center gap-2">
             <i class="bi bi-shield-fill-check text-cp-teal-accent fs-5"></i>
-            <span>Verified Specialists</span>
+            <span>50+ Board Specialists</span>
           </div>
           <div class="d-flex align-items-center gap-2">
             <i class="bi bi-stopwatch-fill text-cp-teal-accent fs-5"></i>
-            <span>Zero Waiting Queues</span>
+            <span>Zero Queue Token System</span>
           </div>
           <div class="d-flex align-items-center gap-2">
             <i class="bi bi-telephone-inbound-fill text-cp-teal-accent fs-5"></i>
-            <span>24/7 Immediate Response</span>
+            <span>24/7 Emergency Care</span>
           </div>
         </div>
       </div>
 
-      <!-- Hero Right Column: Hospital Facility Image & Floating Chips -->
-      <div class="col-lg-6">
-        <div class="cp-hero-image-frame position-relative mx-auto" style="max-width: 580px;">
+      <!-- Hero Visual Frame with Float Chips -->
+      <div class="col-lg-5 text-center">
+        <div class="cp-hero-image-frame position-relative mx-auto" style="max-width: 440px;">
           
-          <!-- Floating Chip 1: Emergency & Care -->
-          <div class="cp-hero-float-card top-card d-none d-sm-flex align-items-center gap-3">
-            <div class="rounded-circle bg-danger text-white p-2 d-flex align-items-center justify-content-center" style="width: 42px; height: 42px;">
-              <i class="bi bi-heart-pulse-fill fs-5"></i>
+          <!-- Floating Chip 1: Emergency -->
+          <div class="cp-hero-float-card top-card d-none d-sm-flex align-items-center gap-2 py-2 px-3">
+            <div class="rounded-circle bg-danger text-white p-2 d-flex align-items-center justify-content-center" style="width: 36px; height: 36px;">
+              <i class="bi bi-heart-pulse-fill"></i>
             </div>
-            <div>
-              <div class="fw-bold text-cp-navy" style="font-size: 0.9rem;">24/7 Trauma Care</div>
-              <small class="text-muted">Instant Emergency Triage</small>
+            <div class="text-start">
+              <div class="fw-bold text-cp-navy small">24/7 Emergency</div>
+              <small class="text-muted" style="font-size: 0.75rem;">Instant Trauma Response</small>
             </div>
           </div>
 
-          <!-- Main Hospital Hero Photo -->
+          <!-- Hero Image -->
           <img src="{{ url_for('static', filename='img/hero-hospital.jpg') }}" 
-               alt="CarePlus Hospital Atrium & Medical Center" 
-               class="cp-hero-img img-fluid">
+               alt="CarePlus Hospital Building" 
+               class="cp-hero-img img-fluid shadow-lg rounded-4" style="max-height: 330px; object-fit: cover; width: 100%;">
 
-          <!-- Floating Chip 2: Satisfaction Score -->
-          <div class="cp-hero-float-card bottom-card d-none d-sm-flex align-items-center gap-3">
-            <div class="rounded-circle bg-cp-teal text-white p-2 d-flex align-items-center justify-content-center" style="width: 42px; height: 42px;">
-              <i class="bi bi-star-fill text-warning fs-5"></i>
+          <!-- Floating Chip 2: Satisfaction -->
+          <div class="cp-hero-float-card bottom-card d-none d-sm-flex align-items-center gap-2 py-2 px-3">
+            <div class="rounded-circle bg-cp-teal text-white p-2 d-flex align-items-center justify-content-center" style="width: 36px; height: 36px;">
+              <i class="bi bi-star-fill text-warning"></i>
             </div>
-            <div>
-              <div class="fw-bold text-cp-navy" style="font-size: 0.9rem;">99.2% Satisfaction</div>
-              <small class="text-muted">From 18,000+ Patients</small>
+            <div class="text-start">
+              <div class="fw-bold text-cp-navy small">99.2% Recovery</div>
+              <small class="text-muted" style="font-size: 0.75rem;">18,000+ Happy Patients</small>
             </div>
           </div>
 
@@ -91,24 +139,24 @@
 
     </div>
 
-    <!-- Hero Operational Stats Strip -->
-    <div class="cp-hero-stats-strip">
-      <div class="row text-center g-3">
-        <div class="col-6 col-md-3 cp-hero-stat-item">
-          <div class="cp-stat-number">50+</div>
-          <div class="cp-stat-label">Senior Specialists</div>
+    <!-- Quick Stats Strip -->
+    <div class="cp-hero-stats-strip mt-3 py-3">
+      <div class="row text-center g-2">
+        <div class="col-6 col-md-3 cp-hero-stat-item py-1">
+          <div class="cp-stat-number fs-3">50+</div>
+          <div class="cp-stat-label small">Senior Specialists</div>
         </div>
-        <div class="col-6 col-md-3 cp-hero-stat-item">
-          <div class="cp-stat-number">15k+</div>
-          <div class="cp-stat-label">Surgeries & Procedures</div>
+        <div class="col-6 col-md-3 cp-hero-stat-item py-1">
+          <div class="cp-stat-number fs-3">15k+</div>
+          <div class="cp-stat-label small">Completed Procedures</div>
         </div>
-        <div class="col-6 col-md-3 cp-hero-stat-item">
-          <div class="cp-stat-number">24/7</div>
-          <div class="cp-stat-label">Emergency & Trauma</div>
+        <div class="col-6 col-md-3 cp-hero-stat-item py-1">
+          <div class="cp-stat-number fs-3">24/7</div>
+          <div class="cp-stat-label small">Emergency Support</div>
         </div>
-        <div class="col-6 col-md-3">
-          <div class="cp-stat-number">99.2%</div>
-          <div class="cp-stat-label">Patient Recovery Rate</div>
+        <div class="col-6 col-md-3 py-1">
+          <div class="cp-stat-number fs-3">99.2%</div>
+          <div class="cp-stat-label small">Patient Satisfaction</div>
         </div>
       </div>
     </div>
@@ -117,732 +165,491 @@
 </header>
 
 <!-- ====================================================================
-     SECTION 3: ABOUT HOSPITAL
+     2. QUICK ACTION TILES (Compact Access)
      ==================================================================== -->
-<section class="py-5 bg-white" id="about">
-  <div class="container-xl py-4">
-    
-    <div class="text-center mb-5">
-      <span class="cp-section-tag"><i class="bi bi-building me-1"></i> About CarePlus Hospital</span>
-      <h2 class="cp-section-title">Setting the Benchmark in Patient-Centered Healthcare</h2>
-      <p class="cp-section-desc">
-        Founded on the principles of medical integrity and clinical innovation, CarePlus Hospital provides comprehensive primary, secondary, and tertiary healthcare with a personal, empathetic touch.
-      </p>
-    </div>
-
-    <div class="row g-4 align-items-stretch">
-      <!-- Mission Card -->
-      <div class="col-lg-4 col-md-6">
-        <div class="cp-mission-card">
-          <div class="d-inline-flex p-3 rounded-3 bg-cp-teal-light text-cp-teal fs-3 mb-3">
-            <i class="bi bi-bullseye"></i>
+<section class="py-4 bg-cp-light-bg border-bottom" id="quick-actions">
+  <div class="container-xl">
+    <div class="row g-3">
+      <div class="col-6 col-lg-3">
+        <a href="{{ url_for('patient.book_appointment') if is_logged_in else url_for('auth.login') }}" class="cp-quick-action-card">
+          <div class="rounded-circle bg-cp-teal-light text-cp-teal p-3 d-flex align-items-center justify-content-center flex-shrink-0" style="width: 48px; height: 48px;">
+            <i class="bi bi-calendar2-check-fill fs-5"></i>
           </div>
-          <h4 class="fw-bold mb-3">Our Mission</h4>
-          <p class="text-muted mb-0" style="line-height: 1.7;">
-            To deliver evidence-based clinical medicine of international standards, making world-class healthcare accessible, ethical, and seamless through compassionate care and technological convenience.
-          </p>
-        </div>
+          <div>
+            <div class="fw-bold text-cp-navy small">Book Consultation</div>
+            <div class="text-muted" style="font-size: 0.78rem;">Live slot booking</div>
+          </div>
+        </a>
       </div>
-
-      <!-- Vision Card -->
-      <div class="col-lg-4 col-md-6">
-        <div class="cp-mission-card">
-          <div class="d-inline-flex p-3 rounded-3 bg-cp-navy-subtle text-cp-navy fs-3 mb-3">
-            <i class="bi bi-eye-fill"></i>
+      <div class="col-6 col-lg-3">
+        <a href="tel:+18005550199" class="cp-quick-action-card">
+          <div class="rounded-circle bg-cp-teal-light text-cp-teal p-3 d-flex align-items-center justify-content-center flex-shrink-0" style="width: 48px; height: 48px;">
+            <i class="bi bi-telephone-fill fs-5"></i>
           </div>
-          <h4 class="fw-bold mb-3">Our Vision</h4>
-          <p class="text-muted mb-0" style="line-height: 1.7;">
-            To be recognized as the regional gold standard in medical safety, clinical breakthroughs, and digital healthcare access, where every patient experiences dignity, comfort, and clinical excellence.
-          </p>
-        </div>
+          <div>
+            <div class="fw-bold text-cp-navy small">24/7 Emergency</div>
+            <div class="text-muted" style="font-size: 0.78rem;">+1 (800) 555-CARE</div>
+          </div>
+        </a>
       </div>
-
-      <!-- Core Values / Clinical Highlights -->
-      <div class="col-lg-4 col-md-12">
-        <div class="cp-mission-card bg-cp-light-slate">
-          <div class="d-inline-flex p-3 rounded-3 bg-white text-cp-teal fs-3 mb-3 shadow-sm">
-            <i class="bi bi-award-fill"></i>
+      <div class="col-6 col-lg-3">
+        <a href="{{ url_for('patient.prescriptions') if is_logged_in else url_for('auth.login') }}" class="cp-quick-action-card">
+          <div class="rounded-circle bg-cp-teal-light text-cp-teal p-3 d-flex align-items-center justify-content-center flex-shrink-0" style="width: 48px; height: 48px;">
+            <i class="bi bi-file-earmark-medical-fill fs-5"></i>
           </div>
-          <h4 class="fw-bold mb-3">Healthcare Highlights</h4>
-          <div class="d-flex flex-column gap-2">
-            <div class="cp-feature-pill">
-              <i class="bi bi-check-circle-fill text-cp-teal fs-5"></i>
-              <span class="fw-semibold" style="font-size: 0.92rem;">Board-Certified Medical Faculty</span>
-            </div>
-            <div class="cp-feature-pill">
-              <i class="bi bi-check-circle-fill text-cp-teal fs-5"></i>
-              <span class="fw-semibold" style="font-size: 0.92rem;">NABH & JCI Accredited Standards</span>
-            </div>
-            <div class="cp-feature-pill">
-              <i class="bi bi-check-circle-fill text-cp-teal fs-5"></i>
-              <span class="fw-semibold" style="font-size: 0.92rem;">Automated Real-Time Token System</span>
-            </div>
-            <div class="cp-feature-pill">
-              <i class="bi bi-check-circle-fill text-cp-teal fs-5"></i>
-              <span class="fw-semibold" style="font-size: 0.92rem;">100% Digital Health Records & E-Prescriptions</span>
-            </div>
+          <div>
+            <div class="fw-bold text-cp-navy small">E-Prescriptions</div>
+            <div class="text-muted" style="font-size: 0.78rem;">Clinical Rx records</div>
           </div>
-        </div>
+        </a>
+      </div>
+      <div class="col-6 col-lg-3">
+        <a href="{{ url_for('patient.bills') if is_logged_in else url_for('auth.login') }}" class="cp-quick-action-card">
+          <div class="rounded-circle bg-cp-teal-light text-cp-teal p-3 d-flex align-items-center justify-content-center flex-shrink-0" style="width: 48px; height: 48px;">
+            <i class="bi bi-receipt fs-5"></i>
+          </div>
+          <div>
+            <div class="fw-bold text-cp-navy small">Billing & Receipts</div>
+            <div class="text-muted" style="font-size: 0.78rem;">Instant settlements</div>
+          </div>
+        </a>
       </div>
     </div>
-
   </div>
 </section>
 
 <!-- ====================================================================
-     SECTION 4: MEDICAL DEPARTMENTS
+     3. COMPACT CLINICAL DIRECTORY HUB (Tabs: Departments / Doctors / Services)
+     Eliminates endless scrolling by organizing everything into interactive tabs!
      ==================================================================== -->
 <section class="py-5 bg-cp-light-bg" id="departments">
-  <div class="container-xl py-4">
+  <div class="container-xl">
     
-    <div class="text-center mb-5">
-      <span class="cp-section-tag"><i class="bi bi-grid-3x3-gap-fill me-1"></i> Specialized Care</span>
-      <h2 class="cp-section-title">Our Medical Departments</h2>
-      <p class="cp-section-desc">
-        Explore our specialized clinical centers of excellence. Each department is equipped with advanced diagnostic suites and dedicated specialist consultants.
-      </p>
-    </div>
-
-    <div class="row g-4">
+    <!-- Section Heading & Interactive Tab Nav -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+      <div>
+        <span class="cp-section-tag mb-1"><i class="bi bi-hospital me-1"></i> Hospital Directory</span>
+        <h3 class="fw-bold text-cp-navy mb-0">Specialized Care & Clinical Services</h3>
+      </div>
       
-      <!-- 1. Cardiology -->
-      <div class="col-lg-4 col-md-6">
-        <div class="cp-dept-card">
-          <div class="cp-dept-icon-wrapper">
-            <i class="bi bi-heart-pulse"></i>
-          </div>
-          <h4 class="fw-bold mb-2">Cardiology</h4>
-          <p class="text-muted mb-3 flex-grow-1" style="font-size: 0.95rem;">
-            Comprehensive cardiovascular diagnosis, echocardiography, stress ECG, coronary interventions, and preventative heart failure therapy.
-          </p>
-          <div class="d-flex flex-wrap gap-1 mb-4">
-            <span class="badge bg-cp-light-slate text-cp-navy border">ECG / Echo</span>
-            <span class="badge bg-cp-light-slate text-cp-navy border">Hypertension</span>
-            <span class="badge bg-cp-light-slate text-cp-navy border">Cath Lab</span>
-          </div>
-          <a href="{{ url_for('patient.book_appointment') if is_logged_in else url_for('auth.login') }}" class="btn btn-outline-cp-navy rounded-pill w-100 fw-semibold">
-            Consult Cardiologist <i class="bi bi-arrow-right ms-1"></i>
-          </a>
-        </div>
-      </div>
-
-      <!-- 2. Neurology -->
-      <div class="col-lg-4 col-md-6">
-        <div class="cp-dept-card">
-          <div class="cp-dept-icon-wrapper">
-            <i class="bi bi-activity"></i>
-          </div>
-          <h4 class="fw-bold mb-2">Neurology</h4>
-          <p class="text-muted mb-3 flex-grow-1" style="font-size: 0.95rem;">
-            Advanced clinical management of brain, spine, and nerve disorders, including chronic migraine therapy, stroke recovery, and epilepsy management.
-          </p>
-          <div class="d-flex flex-wrap gap-1 mb-4">
-            <span class="badge bg-cp-light-slate text-cp-navy border">EEG & EMG</span>
-            <span class="badge bg-cp-light-slate text-cp-navy border">Stroke Rehab</span>
-            <span class="badge bg-cp-light-slate text-cp-navy border">Neuro-Care</span>
-          </div>
-          <a href="{{ url_for('patient.book_appointment') if is_logged_in else url_for('auth.login') }}" class="btn btn-outline-cp-navy rounded-pill w-100 fw-semibold">
-            Consult Neurologist <i class="bi bi-arrow-right ms-1"></i>
-          </a>
-        </div>
-      </div>
-
-      <!-- 3. Orthopedics -->
-      <div class="col-lg-4 col-md-6">
-        <div class="cp-dept-card">
-          <div class="cp-dept-icon-wrapper">
-            <i class="bi bi-bandaid"></i>
-          </div>
-          <h4 class="fw-bold mb-2">Orthopedics</h4>
-          <p class="text-muted mb-3 flex-grow-1" style="font-size: 0.95rem;">
-            Minimally invasive arthroscopic surgery, joint replacement (knee, hip), trauma fracture management, and sports medicine rehabilitation.
-          </p>
-          <div class="d-flex flex-wrap gap-1 mb-4">
-            <span class="badge bg-cp-light-slate text-cp-navy border">Joint Replacement</span>
-            <span class="badge bg-cp-light-slate text-cp-navy border">Arthroscopy</span>
-            <span class="badge bg-cp-light-slate text-cp-navy border">Spine Care</span>
-          </div>
-          <a href="{{ url_for('patient.book_appointment') if is_logged_in else url_for('auth.login') }}" class="btn btn-outline-cp-navy rounded-pill w-100 fw-semibold">
-            Consult Orthopedic <i class="bi bi-arrow-right ms-1"></i>
-          </a>
-        </div>
-      </div>
-
-      <!-- 4. Dermatology -->
-      <div class="col-lg-4 col-md-6">
-        <div class="cp-dept-card">
-          <div class="cp-dept-icon-wrapper">
-            <i class="bi bi-emoji-smile"></i>
-          </div>
-          <h4 class="fw-bold mb-2">Dermatology</h4>
-          <p class="text-muted mb-3 flex-grow-1" style="font-size: 0.95rem;">
-            Specialized skin, hair, and nail therapy, diagnostic allergy testing, chronic eczema control, psoriasis clinics, and cosmetic dermatology.
-          </p>
-          <div class="d-flex flex-wrap gap-1 mb-4">
-            <span class="badge bg-cp-light-slate text-cp-navy border">Laser Therapy</span>
-            <span class="badge bg-cp-light-slate text-cp-navy border">Allergy Screen</span>
-            <span class="badge bg-cp-light-slate text-cp-navy border">Acne & Eczema</span>
-          </div>
-          <a href="{{ url_for('patient.book_appointment') if is_logged_in else url_for('auth.login') }}" class="btn btn-outline-cp-navy rounded-pill w-100 fw-semibold">
-            Consult Dermatologist <i class="bi bi-arrow-right ms-1"></i>
-          </a>
-        </div>
-      </div>
-
-      <!-- 5. Pediatrics -->
-      <div class="col-lg-4 col-md-6">
-        <div class="cp-dept-card">
-          <div class="cp-dept-icon-wrapper">
-            <i class="bi bi-person-heart"></i>
-          </div>
-          <h4 class="fw-bold mb-2">Pediatrics & Neonatal</h4>
-          <p class="text-muted mb-3 flex-grow-1" style="font-size: 0.95rem;">
-            Comprehensive infant and adolescent healthcare, milestone developmental monitoring, pediatric immunization rosters, and neonatal support.
-          </p>
-          <div class="d-flex flex-wrap gap-1 mb-4">
-            <span class="badge bg-cp-light-slate text-cp-navy border">Vaccinations</span>
-            <span class="badge bg-cp-light-slate text-cp-navy border">Infant Care</span>
-            <span class="badge bg-cp-light-slate text-cp-navy border">Child Growth</span>
-          </div>
-          <a href="{{ url_for('patient.book_appointment') if is_logged_in else url_for('auth.login') }}" class="btn btn-outline-cp-navy rounded-pill w-100 fw-semibold">
-            Consult Pediatrician <i class="bi bi-arrow-right ms-1"></i>
-          </a>
-        </div>
-      </div>
-
-      <!-- 6. General Medicine -->
-      <div class="col-lg-4 col-md-6">
-        <div class="cp-dept-card">
-          <div class="cp-dept-icon-wrapper">
-            <i class="bi bi-clipboard2-pulse"></i>
-          </div>
-          <h4 class="fw-bold mb-2">General Medicine</h4>
-          <p class="text-muted mb-3 flex-grow-1" style="font-size: 0.95rem;">
-            Primary outpatient care, annual executive health checkups, seasonal infection treatment, diabetes management, and chronic illness care.
-          </p>
-          <div class="d-flex flex-wrap gap-1 mb-4">
-            <span class="badge bg-cp-light-slate text-cp-navy border">Primary Care</span>
-            <span class="badge bg-cp-light-slate text-cp-navy border">Executive Check</span>
-            <span class="badge bg-cp-light-slate text-cp-navy border">Diabetes Clinic</span>
-          </div>
-          <a href="{{ url_for('patient.book_appointment') if is_logged_in else url_for('auth.login') }}" class="btn btn-outline-cp-navy rounded-pill w-100 fw-semibold">
-            Consult Physician <i class="bi bi-arrow-right ms-1"></i>
-          </a>
-        </div>
-      </div>
-
+      <!-- Sleek Tabs Navigation -->
+      <ul class="nav cp-nav-tabs-clean flex-nowrap overflow-auto" id="directoryTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active" id="tab-btn-departments" data-bs-toggle="tab" data-bs-target="#tab-pane-departments" type="button" role="tab" aria-selected="true">
+            <i class="bi bi-grid-3x3-gap-fill me-1"></i> Departments
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="tab-btn-doctors" data-bs-toggle="tab" data-bs-target="#tab-pane-doctors" type="button" role="tab" aria-selected="false">
+            <i class="bi bi-people-fill me-1"></i> Specialists
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="tab-btn-services" data-bs-toggle="tab" data-bs-target="#tab-pane-services" type="button" role="tab" aria-selected="false">
+            <i class="bi bi-hospital-fill me-1"></i> Facilities
+          </button>
+        </li>
+      </ul>
     </div>
 
-  </div>
-</section>
-
-<!-- ====================================================================
-     SECTION 5: OUR DOCTORS
-     ==================================================================== -->
-<section class="py-5 bg-white" id="doctors">
-  <div class="container-xl py-4">
-    
-    <div class="text-center mb-5">
-      <span class="cp-section-tag"><i class="bi bi-person-badge-fill me-1"></i> Medical Specialists</span>
-      <h2 class="cp-section-title">Meet Our Distinguished Doctors</h2>
-      <p class="cp-section-desc">
-        Our medical faculty comprises internationally trained, board-certified consultants committed to evidence-based healthcare and patient empathy.
-      </p>
-    </div>
-
-    <div class="row g-4">
+    <!-- Tab Panes Content -->
+    <div class="tab-content" id="directoryTabsContent">
       
-      <!-- Doctor 1: Dr. Robert Chen -->
-      <div class="col-lg-4 col-md-6">
-        <div class="cp-doctor-card">
-          <div class="cp-doctor-img-container">
-            <img src="{{ url_for('static', filename='img/doctor-chen.jpg') }}" alt="Dr. Robert Chen, MD" class="cp-doctor-img">
-            <span class="cp-doctor-badge"><i class="bi bi-check-circle-fill text-success me-1"></i> Available Mon / Wed / Fri</span>
-          </div>
-          <div class="cp-doctor-body">
-            <div class="d-flex justify-content-between align-items-start mb-2">
-              <div>
-                <span class="badge bg-cp-teal-light text-cp-teal fw-bold mb-1">Cardiology</span>
-                <h5 class="fw-bold mb-0 text-cp-navy">Dr. Robert Chen, MD</h5>
-              </div>
-              <span class="text-cp-navy fw-bold fs-6">$750</span>
-            </div>
-            <div class="text-muted small mb-3">
-              <i class="bi bi-mortarboard-fill me-1 text-cp-teal"></i> MD - Cardiology, FACC (12 Years Exp.)
-            </div>
-            <p class="text-muted small mb-4 flex-grow-1" style="line-height: 1.6;">
-              Interventional cardiologist with deep expertise in coronary diagnostics, hypertension protocols, and preventative heart care.
-            </p>
-            <div class="d-flex gap-2">
-              <button type="button" class="btn btn-outline-cp-navy rounded-pill flex-grow-1 fw-semibold btn-sm py-2"
-                      data-bs-toggle="modal" data-bs-target="#doctorDetailModal"
-                      data-doctor-name="Dr. Robert Chen, MD"
-                      data-doctor-spec="Interventional Cardiologist"
-                      data-doctor-qual="MD - Cardiology, FACC (Harvard Medical Fellow)"
-                      data-doctor-dept="Cardiology"
-                      data-doctor-room="Room 101 - Wing A"
-                      data-doctor-fee="750.00"
-                      data-doctor-bio="Dr. Robert Chen brings over 12 years of specialized clinical experience in coronary intervention, hypertension management, and preventative cardiovascular health."
-                      data-doctor-img="{{ url_for('static', filename='img/doctor-chen.jpg') }}">
-                <i class="bi bi-info-circle me-1"></i> View Profile
-              </button>
-              <a href="{{ url_for('patient.book_appointment') if is_logged_in else url_for('auth.login') }}" class="btn btn-cp-teal rounded-pill fw-semibold btn-sm py-2 px-3">
-                Book Visit
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Doctor 2: Dr. Emily Watson -->
-      <div class="col-lg-4 col-md-6">
-        <div class="cp-doctor-card">
-          <div class="cp-doctor-img-container">
-            <img src="{{ url_for('static', filename='img/doctor-watson.jpg') }}" alt="Dr. Emily Watson, MBBS, MD" class="cp-doctor-img">
-            <span class="cp-doctor-badge"><i class="bi bi-check-circle-fill text-success me-1"></i> Available Tue / Thu / Sat</span>
-          </div>
-          <div class="cp-doctor-body">
-            <div class="d-flex justify-content-between align-items-start mb-2">
-              <div>
-                <span class="badge bg-cp-teal-light text-cp-teal fw-bold mb-1">Pediatrics</span>
-                <h5 class="fw-bold mb-0 text-cp-navy">Dr. Emily Watson, MBBS, MD</h5>
-              </div>
-              <span class="text-cp-navy fw-bold fs-6">$500</span>
-            </div>
-            <div class="text-muted small mb-3">
-              <i class="bi bi-mortarboard-fill me-1 text-cp-teal"></i> MBBS, MD - Pediatrics (8 Years Exp.)
-            </div>
-            <p class="text-muted small mb-4 flex-grow-1" style="line-height: 1.6;">
-              Dedicated senior pediatrician focused on infant wellness, childhood immunization schedules, developmental milestones, and nutrition.
-            </p>
-            <div class="d-flex gap-2">
-              <button type="button" class="btn btn-outline-cp-navy rounded-pill flex-grow-1 fw-semibold btn-sm py-2"
-                      data-bs-toggle="modal" data-bs-target="#doctorDetailModal"
-                      data-doctor-name="Dr. Emily Watson, MBBS, MD"
-                      data-doctor-spec="Senior Pediatrician & Neonatologist"
-                      data-doctor-qual="MBBS, MD - Pediatrics, DNB"
-                      data-doctor-dept="Pediatrics & Neonatal"
-                      data-doctor-room="Room 204 - Wing B"
-                      data-doctor-fee="500.00"
-                      data-doctor-bio="Dr. Emily Watson has spent 8 years treating infants, children, and adolescents, leading our pediatric immunization programs and wellness initiatives."
-                      data-doctor-img="{{ url_for('static', filename='img/doctor-watson.jpg') }}">
-                <i class="bi bi-info-circle me-1"></i> View Profile
-              </button>
-              <a href="{{ url_for('patient.book_appointment') if is_logged_in else url_for('auth.login') }}" class="btn btn-cp-teal rounded-pill fw-semibold btn-sm py-2 px-3">
-                Book Visit
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Doctor 3: Dr. Rajesh Kumar -->
-      <div class="col-lg-4 col-md-6">
-        <div class="cp-doctor-card">
-          <div class="cp-doctor-img-container">
-            <img src="{{ url_for('static', filename='img/doctor-kumar.jpg') }}" alt="Dr. Rajesh Kumar, MS, MCh" class="cp-doctor-img">
-            <span class="cp-doctor-badge"><i class="bi bi-check-circle-fill text-success me-1"></i> Available Mon / Wed / Fri</span>
-          </div>
-          <div class="cp-doctor-body">
-            <div class="d-flex justify-content-between align-items-start mb-2">
-              <div>
-                <span class="badge bg-cp-teal-light text-cp-teal fw-bold mb-1">Orthopedics</span>
-                <h5 class="fw-bold mb-0 text-cp-navy">Dr. Rajesh Kumar, MS</h5>
-              </div>
-              <span class="text-cp-navy fw-bold fs-6">$650</span>
-            </div>
-            <div class="text-muted small mb-3">
-              <i class="bi bi-mortarboard-fill me-1 text-cp-teal"></i> MS - Orthopedics, MCh (15 Years Exp.)
-            </div>
-            <p class="text-muted small mb-4 flex-grow-1" style="line-height: 1.6;">
-              Chief of orthopedic surgery specialized in knee/hip arthroplasty, sports ligament reconstructions, and minimally invasive trauma surgery.
-            </p>
-            <div class="d-flex gap-2">
-              <button type="button" class="btn btn-outline-cp-navy rounded-pill flex-grow-1 fw-semibold btn-sm py-2"
-                      data-bs-toggle="modal" data-bs-target="#doctorDetailModal"
-                      data-doctor-name="Dr. Rajesh Kumar, MS, MCh"
-                      data-doctor-spec="Orthopedic & Joint Replacement Surgeon"
-                      data-doctor-qual="MS - Orthopedics, MCh Orth (UK), Arthroscopy Fellow"
-                      data-doctor-dept="Orthopedics & Spine Center"
-                      data-doctor-room="Room 305 - Wing C"
-                      data-doctor-fee="650.00"
-                      data-doctor-bio="Dr. Rajesh Kumar has over 15 years of surgical excellence, performing over 4,000 successful joint replacements and complex sports reconstructive surgeries."
-                      data-doctor-img="{{ url_for('static', filename='img/doctor-kumar.jpg') }}">
-                <i class="bi bi-info-circle me-1"></i> View Profile
-              </button>
-              <a href="{{ url_for('patient.book_appointment') if is_logged_in else url_for('auth.login') }}" class="btn btn-cp-teal rounded-pill fw-semibold btn-sm py-2 px-3">
-                Book Visit
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Doctor 4: Dr. Sarah Jenkins -->
-      <div class="col-lg-4 col-md-6">
-        <div class="cp-doctor-card">
-          <div class="cp-doctor-img-container">
-            <img src="{{ url_for('static', filename='img/doctor-jenkins.jpg') }}" alt="Dr. Sarah Jenkins, MD, PhD" class="cp-doctor-img">
-            <span class="cp-doctor-badge"><i class="bi bi-check-circle-fill text-success me-1"></i> Available Mon / Wed / Thu</span>
-          </div>
-          <div class="cp-doctor-body">
-            <div class="d-flex justify-content-between align-items-start mb-2">
-              <div>
-                <span class="badge bg-cp-teal-light text-cp-teal fw-bold mb-1">Neurology</span>
-                <h5 class="fw-bold mb-0 text-cp-navy">Dr. Sarah Jenkins, MD</h5>
-              </div>
-              <span class="text-cp-navy fw-bold fs-6">$800</span>
-            </div>
-            <div class="text-muted small mb-3">
-              <i class="bi bi-mortarboard-fill me-1 text-cp-teal"></i> MD, PhD - Neurology (14 Years Exp.)
-            </div>
-            <p class="text-muted small mb-4 flex-grow-1" style="line-height: 1.6;">
-              Chief neuro-consultant specializing in complex stroke rehabilitation, refractory epilepsy, neuro-muscular conditions, and migraine management.
-            </p>
-            <div class="d-flex gap-2">
-              <button type="button" class="btn btn-outline-cp-navy rounded-pill flex-grow-1 fw-semibold btn-sm py-2"
-                      data-bs-toggle="modal" data-bs-target="#doctorDetailModal"
-                      data-doctor-name="Dr. Sarah Jenkins, MD, PhD"
-                      data-doctor-spec="Senior Consultant Neurologist"
-                      data-doctor-qual="MD - Neurology, PhD (Neuroscience), Johns Hopkins Fellow"
-                      data-doctor-dept="Neurology & Spine Clinic (Room 210 - Wing B)"
-                      data-doctor-room="Room 210 - Wing B"
-                      data-doctor-fee="800.00"
-                      data-doctor-bio="Dr. Sarah Jenkins is an internationally acclaimed neurologist with 14 years of clinical practice in comprehensive brain and nerve disorders, advanced EEG analysis, and modern stroke recovery protocols."
-                      data-doctor-img="{{ url_for('static', filename='img/doctor-jenkins.jpg') }}">
-                <i class="bi bi-info-circle me-1"></i> View Profile
-              </button>
-              <a href="{{ url_for('patient.book_appointment') if is_logged_in else url_for('auth.login') }}" class="btn btn-cp-teal rounded-pill fw-semibold btn-sm py-2 px-3">
-                Book Visit
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Doctor 5: Dr. Mark Chen -->
-      <div class="col-lg-4 col-md-6">
-        <div class="cp-doctor-card">
-          <div class="cp-doctor-img-container">
-            <img src="{{ url_for('static', filename='img/doctor-marcus.jpg') }}" alt="Dr. Mark Chen, MD, FAAD" class="cp-doctor-img">
-            <span class="cp-doctor-badge"><i class="bi bi-check-circle-fill text-success me-1"></i> Available Tue / Thu / Fri</span>
-          </div>
-          <div class="cp-doctor-body">
-            <div class="d-flex justify-content-between align-items-start mb-2">
-              <div>
-                <span class="badge bg-cp-teal-light text-cp-teal fw-bold mb-1">Dermatology</span>
-                <h5 class="fw-bold mb-0 text-cp-navy">Dr. Mark Chen, MD</h5>
-              </div>
-              <span class="text-cp-navy fw-bold fs-6">$600</span>
-            </div>
-            <div class="text-muted small mb-3">
-              <i class="bi bi-mortarboard-fill me-1 text-cp-teal"></i> MD - Dermatology, FAAD (10 Years Exp.)
-            </div>
-            <p class="text-muted small mb-4 flex-grow-1" style="line-height: 1.6;">
-              Board-certified dermatologist focusing on clinical allergy mapping, laser dermatology, chronic dermatitis, psoriasis, and cosmetic skincare.
-            </p>
-            <div class="d-flex gap-2">
-              <button type="button" class="btn btn-outline-cp-navy rounded-pill flex-grow-1 fw-semibold btn-sm py-2"
-                      data-bs-toggle="modal" data-bs-target="#doctorDetailModal"
-                      data-doctor-name="Dr. Mark Chen, MD, FAAD"
-                      data-doctor-spec="Senior Dermatologist & Cutaneous Surgeon"
-                      data-doctor-qual="MD - Dermatology, FAAD, Diploma in Aesthetic Medicine"
-                      data-doctor-dept="Dermatology & Skin Care (Room 108 - Wing A)"
-                      data-doctor-room="Room 108 - Wing A"
-                      data-doctor-fee="600.00"
-                      data-doctor-bio="Dr. Mark Chen provides 10 years of specialist expertise in clinical dermatology, medical phototherapy, comprehensive eczema management, and state-of-the-art non-invasive cosmetic treatments."
-                      data-doctor-img="{{ url_for('static', filename='img/doctor-marcus.jpg') }}">
-                <i class="bi bi-info-circle me-1"></i> View Profile
-              </button>
-              <a href="{{ url_for('patient.book_appointment') if is_logged_in else url_for('auth.login') }}" class="btn btn-cp-teal rounded-pill fw-semibold btn-sm py-2 px-3">
-                Book Visit
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Doctor 6: Dr. Margaret Chen -->
-      <div class="col-lg-4 col-md-6">
-        <div class="cp-doctor-card">
-          <div class="cp-doctor-img-container">
-            <img src="{{ url_for('static', filename='img/doctor-margaret.jpg') }}" alt="Dr. Margaret Chen, MD" class="cp-doctor-img">
-            <span class="cp-doctor-badge"><i class="bi bi-check-circle-fill text-success me-1"></i> Available Mon - Sat</span>
-          </div>
-          <div class="cp-doctor-body">
-            <div class="d-flex justify-content-between align-items-start mb-2">
-              <div>
-                <span class="badge bg-cp-teal-light text-cp-teal fw-bold mb-1">General Medicine</span>
-                <h5 class="fw-bold mb-0 text-cp-navy">Dr. Margaret Chen, MD</h5>
-              </div>
-              <span class="text-cp-navy fw-bold fs-6">$450</span>
-            </div>
-            <div class="text-muted small mb-3">
-              <i class="bi bi-mortarboard-fill me-1 text-cp-teal"></i> MD - Internal Medicine, FACP (18 Years Exp.)
-            </div>
-            <p class="text-muted small mb-4 flex-grow-1" style="line-height: 1.6;">
-              Distinguished senior physician delivering holistic adult healthcare, diagnostic preventive checkups, hypertension therapy, and diabetes protocols.
-            </p>
-            <div class="d-flex gap-2">
-              <button type="button" class="btn btn-outline-cp-navy rounded-pill flex-grow-1 fw-semibold btn-sm py-2"
-                      data-bs-toggle="modal" data-bs-target="#doctorDetailModal"
-                      data-doctor-name="Dr. Margaret Chen, MD, FACP"
-                      data-doctor-spec="Lead Consultant Physician"
-                      data-doctor-qual="MD - Internal Medicine, FACP, Diabetology Specialist"
-                      data-doctor-dept="General Medicine & Outpatient (Room 102 - Wing A)"
-                      data-doctor-room="Room 102 - Wing A"
-                      data-doctor-fee="450.00"
-                      data-doctor-bio="Dr. Margaret Chen is our Chief of Outpatient Medicine with 18 years of clinical leadership, heading preventative health screening programs and chronic disease management."
-                      data-doctor-img="{{ url_for('static', filename='img/doctor-margaret.jpg') }}">
-                <i class="bi bi-info-circle me-1"></i> View Profile
-              </button>
-              <a href="{{ url_for('patient.book_appointment') if is_logged_in else url_for('auth.login') }}" class="btn btn-cp-teal rounded-pill fw-semibold btn-sm py-2 px-3">
-                Book Visit
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-  </div>
-</section>
-
-<!-- ====================================================================
-     SECTION 6: OUR SERVICES
-     ==================================================================== -->
-<section class="py-5 bg-cp-light-bg" id="services">
-  <div class="container-xl py-4">
-    
-    <div class="text-center mb-5">
-      <span class="cp-section-tag"><i class="bi bi-gear-wide-connected me-1"></i> Comprehensive Care</span>
-      <h2 class="cp-section-title">Our Healthcare Services</h2>
-      <p class="cp-section-desc">
-        From digital booking to bedside care, CarePlus Hospital integrates all aspects of your clinical experience under one unified platform.
-      </p>
-    </div>
-
-    <div class="row g-4">
-      
-      <!-- Service 1: Online Appointment Booking -->
-      <div class="col-lg-6">
-        <div class="cp-service-card">
-          <div class="d-flex align-items-start gap-4">
-            <div class="cp-service-icon flex-shrink-0">
-              <i class="bi bi-calendar2-check-fill text-cp-teal"></i>
-            </div>
-            <div>
-              <h4 class="fw-bold mb-2 text-cp-navy">Online Appointment Booking</h4>
-              <p class="text-muted mb-3" style="font-size: 0.95rem;">
-                Patients can browse real-time doctor availability calendars, choose precise 30-minute consultation slots, receive automatic token numbers, and manage bookings 24/7 without waiting on phone holds.
-              </p>
-              <ul class="list-unstyled text-muted small mb-0 d-flex flex-column gap-2">
-                <li><i class="bi bi-check2-circle text-cp-teal me-2"></i> Real-time slot conflict prevention (guaranteed zero double-booking)</li>
-                <li><i class="bi bi-check2-circle text-cp-teal me-2"></i> Instant SMS & in-app confirmation notifications</li>
-                <li><i class="bi bi-check2-circle text-cp-teal me-2"></i> Easy self-service cancellation and reschedule requests</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Service 2: Doctor Consultation -->
-      <div class="col-lg-6">
-        <div class="cp-service-card">
-          <div class="d-flex align-items-start gap-4">
-            <div class="cp-service-icon flex-shrink-0">
-              <i class="bi bi-stethoscope text-cp-teal"></i>
-            </div>
-            <div>
-              <h4 class="fw-bold mb-2 text-cp-navy">Specialist Doctor Consultation</h4>
-              <p class="text-muted mb-3" style="font-size: 0.95rem;">
-                Access in-depth consultations with senior physicians and surgeons. Our clinical suites feature private examination rooms, immediate point-of-care diagnostics, and clear treatment counseling.
-              </p>
-              <ul class="list-unstyled text-muted small mb-0 d-flex flex-column gap-2">
-                <li><i class="bi bi-check2-circle text-cp-teal me-2"></i> Dedicated 30-minute doctor-patient consultation time</li>
-                <li><i class="bi bi-check2-circle text-cp-teal me-2"></i> Digital prescription generation with standardized dosages</li>
-                <li><i class="bi bi-check2-circle text-cp-teal me-2"></i> Follow-up appointment scheduling & clinical tracking</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Service 3: Patient Management -->
-      <div class="col-lg-6">
-        <div class="cp-service-card">
-          <div class="d-flex align-items-start gap-4">
-            <div class="cp-service-icon flex-shrink-0">
-              <i class="bi bi-folder-check text-cp-teal"></i>
-            </div>
-            <div>
-              <h4 class="fw-bold mb-2 text-cp-navy">Unified Patient Management</h4>
-              <p class="text-muted mb-3" style="font-size: 0.95rem;">
-                Experience centralized health records management. Track appointment histories, download digital prescriptions, monitor ongoing medical advice, and access billing statements with ease.
-              </p>
-              <ul class="list-unstyled text-muted small mb-0 d-flex flex-column gap-2">
-                <li><i class="bi bi-check2-circle text-cp-teal me-2"></i> Secure, encrypted patient health profile and history</li>
-                <li><i class="bi bi-check2-circle text-cp-teal me-2"></i> Transparent billing invoices with cash, card, and online checkout</li>
-                <li><i class="bi bi-check2-circle text-cp-teal me-2"></i> Front-desk receptionist walk-in token generation</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Service 4: Healthcare Support -->
-      <div class="col-lg-6">
-        <div class="cp-service-card">
-          <div class="d-flex align-items-start gap-4">
-            <div class="cp-service-icon flex-shrink-0">
-              <i class="bi bi-headset text-cp-teal"></i>
-            </div>
-            <div>
-              <h4 class="fw-bold mb-2 text-cp-navy">24/7 Healthcare & Emergency Support</h4>
-              <p class="text-muted mb-3" style="font-size: 0.95rem;">
-                Our dedicated support desk and emergency medical teams operate around the clock. Whether you need immediate trauma support or clinical guidance, our specialists are ready to respond.
-              </p>
-              <ul class="list-unstyled text-muted small mb-0 d-flex flex-column gap-2">
-                <li><i class="bi bi-check2-circle text-cp-teal me-2"></i> Dedicated 24/7 emergency trauma hotline: +1 (800) 555-CARE</li>
-                <li><i class="bi bi-check2-circle text-cp-teal me-2"></i> Rapid ambulance dispatch and trauma triage center</li>
-                <li><i class="bi bi-check2-circle text-cp-teal me-2"></i> Patient assistance desk for insurance and billing queries</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-
-  </div>
-</section>
-
-<!-- ====================================================================
-     SECTION 7: WHY CHOOSE US
-     ==================================================================== -->
-<section class="py-5 bg-white" id="why-us">
-  <div class="container-xl py-4">
-    
-    <div class="row align-items-center g-5">
-      
-      <!-- Left Column: Why Choose Us Narrative -->
-      <div class="col-lg-6">
-        <span class="cp-section-tag"><i class="bi bi-hand-thumbs-up-fill me-1"></i> Patient Advantages</span>
-        <h2 class="cp-section-title mb-4">Why Patients Trust CarePlus Hospital</h2>
-        <p class="text-muted mb-4" style="line-height: 1.8;">
-          Choosing the right healthcare partner is one of life's most critical decisions. At CarePlus Hospital, we combine clinical expertise, modern infrastructure, and genuine empathy to deliver care you can rely on.
-        </p>
-
+      <!-- TAB 1: DEPARTMENTS -->
+      <div class="tab-pane fade show active" id="tab-pane-departments" role="tabpanel" tabindex="0">
         <div class="row g-3">
           
-          <div class="col-sm-6">
-            <div class="cp-why-box">
+          <!-- Cardiology -->
+          <div class="col-md-6 col-lg-4 cp-reveal">
+            <div class="cp-dept-compact-card">
               <div class="d-flex align-items-center gap-3 mb-2">
-                <div class="cp-badge-icon">
-                  <i class="bi bi-hospital"></i>
+                <div class="rounded-3 bg-cp-teal-light text-cp-teal p-2 d-flex align-items-center justify-content-center" style="width: 44px; height: 44px;">
+                  <i class="bi bi-heart-pulse fs-4"></i>
                 </div>
-                <h6 class="fw-bold mb-0 text-cp-navy">Professional Healthcare</h6>
+                <div>
+                  <h5 class="fw-bold text-cp-navy mb-0">Cardiology</h5>
+                  <small class="text-muted">Wing A &bull; Room 101</small>
+                </div>
               </div>
-              <p class="text-muted small mb-0">
-                International standard clinical protocols, clean sterilization, and accredited diagnostics.
+              <p class="text-muted small mb-3 flex-grow-1">
+                Echocardiography, ECG, cardiac catheterization, hypertension and coronary care.
               </p>
+              <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+                <span class="badge bg-cp-light-slate text-cp-navy border">Fee: $750.00</span>
+                <a href="{{ url_for('patient.book_appointment') if is_logged_in else url_for('auth.login') }}" class="btn btn-sm btn-outline-cp-navy rounded-pill px-3 fw-semibold">
+                  Consult <i class="bi bi-arrow-right ms-1"></i>
+                </a>
+              </div>
             </div>
           </div>
 
-          <div class="col-sm-6">
-            <div class="cp-why-box">
+          <!-- Neurology -->
+          <div class="col-md-6 col-lg-4 cp-reveal cp-reveal-delay-1">
+            <div class="cp-dept-compact-card">
               <div class="d-flex align-items-center gap-3 mb-2">
-                <div class="cp-badge-icon">
-                  <i class="bi bi-calendar-event"></i>
+                <div class="rounded-3 bg-cp-teal-light text-cp-teal p-2 d-flex align-items-center justify-content-center" style="width: 44px; height: 44px;">
+                  <i class="bi bi-activity fs-4"></i>
                 </div>
-                <h6 class="fw-bold mb-0 text-cp-navy">Easy Scheduling</h6>
+                <div>
+                  <h5 class="fw-bold text-cp-navy mb-0">Neurology</h5>
+                  <small class="text-muted">Wing B &bull; Room 202</small>
+                </div>
               </div>
-              <p class="text-muted small mb-0">
-                Book a confirmed consultation slot online in under 60 seconds with instant token assignment.
+              <p class="text-muted small mb-3 flex-grow-1">
+                Brain and nerve disorder management, stroke rehabilitation, EEG diagnostics.
               </p>
+              <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+                <span class="badge bg-cp-light-slate text-cp-navy border">Fee: $850.00</span>
+                <a href="{{ url_for('patient.book_appointment') if is_logged_in else url_for('auth.login') }}" class="btn btn-sm btn-outline-cp-navy rounded-pill px-3 fw-semibold">
+                  Consult <i class="bi bi-arrow-right ms-1"></i>
+                </a>
+              </div>
             </div>
           </div>
 
-          <div class="col-sm-6">
-            <div class="cp-why-box">
+          <!-- Pediatrics -->
+          <div class="col-md-6 col-lg-4 cp-reveal cp-reveal-delay-2">
+            <div class="cp-dept-compact-card">
               <div class="d-flex align-items-center gap-3 mb-2">
-                <div class="cp-badge-icon">
-                  <i class="bi bi-award"></i>
+                <div class="rounded-3 bg-cp-teal-light text-cp-teal p-2 d-flex align-items-center justify-content-center" style="width: 44px; height: 44px;">
+                  <i class="bi bi-bandaid fs-4"></i>
                 </div>
-                <h6 class="fw-bold mb-0 text-cp-navy">Experienced Doctors</h6>
+                <div>
+                  <h5 class="fw-bold text-cp-navy mb-0">Pediatrics</h5>
+                  <small class="text-muted">Wing B &bull; Room 204</small>
+                </div>
               </div>
-              <p class="text-muted small mb-0">
-                Distinguished consultants with over a decade of hands-on specialty experience.
+              <p class="text-muted small mb-3 flex-grow-1">
+                Comprehensive infant and child health, neonatal monitoring, immunization programs.
               </p>
+              <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+                <span class="badge bg-cp-light-slate text-cp-navy border">Fee: $600.00</span>
+                <a href="{{ url_for('patient.book_appointment') if is_logged_in else url_for('auth.login') }}" class="btn btn-sm btn-outline-cp-navy rounded-pill px-3 fw-semibold">
+                  Consult <i class="bi bi-arrow-right ms-1"></i>
+                </a>
+              </div>
             </div>
           </div>
 
-          <div class="col-sm-6">
-            <div class="cp-why-box">
+          <!-- Orthopedics -->
+          <div class="col-md-6 col-lg-4 cp-reveal cp-reveal-delay-3">
+            <div class="cp-dept-compact-card">
               <div class="d-flex align-items-center gap-3 mb-2">
-                <div class="cp-badge-icon">
-                  <i class="bi bi-person-heart"></i>
+                <div class="rounded-3 bg-cp-teal-light text-cp-teal p-2 d-flex align-items-center justify-content-center" style="width: 44px; height: 44px;">
+                  <i class="bi bi-person-walking fs-4"></i>
                 </div>
-                <h6 class="fw-bold mb-0 text-cp-navy">Patient-Focused</h6>
+                <div>
+                  <h5 class="fw-bold text-cp-navy mb-0">Orthopedics</h5>
+                  <small class="text-muted">Wing C &bull; Room 305</small>
+                </div>
               </div>
-              <p class="text-muted small mb-0">
-                Transparent billing, zero hidden fees, and dedicated follow-up care for every patient.
+              <p class="text-muted small mb-3 flex-grow-1">
+                Bone, joint and spine care, arthroscopy, joint replacement and sports injury rehabilitation.
               </p>
+              <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+                <span class="badge bg-cp-light-slate text-cp-navy border">Fee: $700.00</span>
+                <a href="{{ url_for('patient.book_appointment') if is_logged_in else url_for('auth.login') }}" class="btn btn-sm btn-outline-cp-navy rounded-pill px-3 fw-semibold">
+                  Consult <i class="bi bi-arrow-right ms-1"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dermatology -->
+          <div class="col-md-6 col-lg-4 cp-reveal cp-reveal-delay-4">
+            <div class="cp-dept-compact-card">
+              <div class="d-flex align-items-center gap-3 mb-2">
+                <div class="rounded-3 bg-cp-teal-light text-cp-teal p-2 d-flex align-items-center justify-content-center" style="width: 44px; height: 44px;">
+                  <i class="bi bi-flower1 fs-4"></i>
+                </div>
+                <div>
+                  <h5 class="fw-bold text-cp-navy mb-0">Dermatology</h5>
+                  <small class="text-muted">Wing A &bull; Room 108</small>
+                </div>
+              </div>
+              <p class="text-muted small mb-3 flex-grow-1">
+                Skin allergy diagnostics, laser treatments, eczema management and clinical dermato-surgery.
+              </p>
+              <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+                <span class="badge bg-cp-light-slate text-cp-navy border">Fee: $550.00</span>
+                <a href="{{ url_for('patient.book_appointment') if is_logged_in else url_for('auth.login') }}" class="btn btn-sm btn-outline-cp-navy rounded-pill px-3 fw-semibold">
+                  Consult <i class="bi bi-arrow-right ms-1"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- General Medicine -->
+          <div class="col-md-6 col-lg-4 cp-reveal">
+            <div class="cp-dept-compact-card">
+              <div class="d-flex align-items-center gap-3 mb-2">
+                <div class="rounded-3 bg-cp-teal-light text-cp-teal p-2 d-flex align-items-center justify-content-center" style="width: 44px; height: 44px;">
+                  <i class="bi bi-capsule fs-4"></i>
+                </div>
+                <div>
+                  <h5 class="fw-bold text-cp-navy mb-0">General Medicine</h5>
+                  <small class="text-muted">OPD Center &bull; Room 102</small>
+                </div>
+              </div>
+              <p class="text-muted small mb-3 flex-grow-1">
+                Primary adult outpatient care, seasonal fevers, comprehensive annual health checkups.
+              </p>
+              <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+                <span class="badge bg-cp-light-slate text-cp-navy border">Fee: $500.00</span>
+                <a href="{{ url_for('patient.book_appointment') if is_logged_in else url_for('auth.login') }}" class="btn btn-sm btn-outline-cp-navy rounded-pill px-3 fw-semibold">
+                  Consult <i class="bi bi-arrow-right ms-1"></i>
+                </a>
+              </div>
             </div>
           </div>
 
         </div>
       </div>
 
-      <!-- Right Column: Visual Trust Indicators -->
-      <div class="col-lg-6">
-        <div class="p-4 p-md-5 rounded-4 border bg-cp-light-slate shadow-sm position-relative">
-          <h4 class="fw-bold text-cp-navy mb-4">CarePlus Quality Commitment</h4>
-
-          <div class="d-flex flex-column gap-4">
-            
-            <div class="d-flex align-items-start gap-3">
-              <div class="rounded-circle bg-cp-navy text-white p-2 d-flex align-items-center justify-content-center flex-shrink-0" style="width: 44px; height: 44px;">
-                <span class="fw-bold">01</span>
+      <!-- TAB 2: SPECIALISTS -->
+      <div class="tab-pane fade" id="tab-pane-doctors" role="tabpanel" tabindex="0">
+        <div class="row g-3">
+          
+          <!-- Dr. Robert Chen -->
+          <div class="col-md-6 col-lg-4 cp-reveal">
+            <div class="cp-doctor-compact-card">
+              <div class="d-flex align-items-center gap-3 mb-3">
+                <img src="{{ url_for('static', filename='img/doctor-chen.jpg') }}" alt="Dr. Robert Chen" 
+                     class="rounded-circle shadow-sm" style="width: 60px; height: 60px; object-fit: cover;">
+                <div>
+                  <h6 class="fw-bold text-cp-navy mb-0">Dr. Robert Chen, MD</h6>
+                  <span class="text-cp-teal fw-semibold small d-block">Interventional Cardiologist</span>
+                  <small class="text-muted">12 Yrs Exp &bull; Room 101</small>
+                </div>
               </div>
-              <div>
-                <h6 class="fw-bold text-cp-navy mb-1">Rigorous Clinical Governance</h6>
-                <p class="text-muted small mb-0">Every physician is strictly peer-reviewed and adheres to international patient safety guidelines.</p>
-              </div>
-            </div>
-
-            <div class="d-flex align-items-start gap-3">
-              <div class="rounded-circle bg-cp-teal text-white p-2 d-flex align-items-center justify-content-center flex-shrink-0" style="width: 44px; height: 44px;">
-                <span class="fw-bold">02</span>
-              </div>
-              <div>
-                <h6 class="fw-bold text-cp-navy mb-1">Guaranteed Appointment Slot Exclusivity</h6>
-                <p class="text-muted small mb-0">Our relational booking engine enforces zero double-booking, ensuring your booked time is exclusively yours.</p>
-              </div>
-            </div>
-
-            <div class="d-flex align-items-start gap-3">
-              <div class="rounded-circle bg-cp-navy text-white p-2 d-flex align-items-center justify-content-center flex-shrink-0" style="width: 44px; height: 44px;">
-                <span class="fw-bold">03</span>
-              </div>
-              <div>
-                <h6 class="fw-bold text-cp-navy mb-1">State-of-the-Art Pharmacy & Diagnostic Vault</h6>
-                <p class="text-muted small mb-0">Prescriptions and diagnostic reports are archived digitally for seamless multi-department care.</p>
+              <div class="d-flex gap-2 mt-auto pt-2 border-top">
+                <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 flex-grow-1"
+                        data-bs-toggle="modal" data-bs-target="#doctorDetailModal"
+                        data-doctor-name="Dr. Robert Chen, MD"
+                        data-doctor-spec="Interventional Cardiologist"
+                        data-doctor-dept="Cardiology"
+                        data-doctor-room="Room 101 - Wing A"
+                        data-doctor-qual="MD - Cardiology, FACC"
+                        data-doctor-fee="750.00"
+                        data-doctor-img="{{ url_for('static', filename='img/doctor-chen.jpg') }}"
+                        data-doctor-bio="Renowned interventional cardiologist with extensive procedural experience in catheterization and preventive cardiac health.">
+                  Profile
+                </button>
+                <a href="{{ url_for('patient.book_appointment') if is_logged_in else url_for('auth.login') }}" class="btn btn-sm btn-cp-teal text-white rounded-pill px-3 fw-bold flex-grow-1">
+                  Book Slot
+                </a>
               </div>
             </div>
-
           </div>
 
-          <div class="mt-4 pt-3 border-top d-flex justify-content-between align-items-center">
-            <div>
-              <div class="fw-bold text-cp-navy">JCI Certified Standards</div>
-              <small class="text-muted">Clinical Safety & Accreditation</small>
+          <!-- Dr. Emily Watson -->
+          <div class="col-md-6 col-lg-4">
+            <div class="cp-doctor-compact-card">
+              <div class="d-flex align-items-center gap-3 mb-3">
+                <img src="{{ url_for('static', filename='img/doctor-watson.jpg') }}" alt="Dr. Emily Watson" 
+                     class="rounded-circle shadow-sm" style="width: 60px; height: 60px; object-fit: cover;">
+                <div>
+                  <h6 class="fw-bold text-cp-navy mb-0">Dr. Emily Watson, MBBS</h6>
+                  <span class="text-cp-teal fw-semibold small d-block">Senior Pediatrician</span>
+                  <small class="text-muted">9 Yrs Exp &bull; Room 204</small>
+                </div>
+              </div>
+              <div class="d-flex gap-2 mt-auto pt-2 border-top">
+                <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 flex-grow-1"
+                        data-bs-toggle="modal" data-bs-target="#doctorDetailModal"
+                        data-doctor-name="Dr. Emily Watson, MBBS"
+                        data-doctor-spec="Senior Pediatrician & Neonatologist"
+                        data-doctor-dept="Pediatrics"
+                        data-doctor-room="Room 204 - Wing B"
+                        data-doctor-qual="MBBS, DCH, Fellowship in Neonatal Medicine"
+                        data-doctor-fee="600.00"
+                        data-doctor-img="{{ url_for('static', filename='img/doctor-watson.jpg') }}"
+                        data-doctor-bio="Compassionate pediatric consultant dedicated to newborn developmental care, preventive pediatrics, and childhood respiratory medicine.">
+                  Profile
+                </button>
+                <a href="{{ url_for('patient.book_appointment') if is_logged_in else url_for('auth.login') }}" class="btn btn-sm btn-cp-teal text-white rounded-pill px-3 fw-bold flex-grow-1">
+                  Book Slot
+                </a>
+              </div>
             </div>
-            <span class="badge bg-cp-teal text-white px-3 py-2 rounded-pill fw-semibold">
-              <i class="bi bi-patch-check-fill me-1"></i> Grade A+ Hospital
-            </span>
           </div>
 
+          <!-- Dr. Rajesh Kumar -->
+          <div class="col-md-6 col-lg-4">
+            <div class="cp-doctor-compact-card">
+              <div class="d-flex align-items-center gap-3 mb-3">
+                <img src="{{ url_for('static', filename='img/doctor-kumar.jpg') }}" alt="Dr. Rajesh Kumar" 
+                     class="rounded-circle shadow-sm" style="width: 60px; height: 60px; object-fit: cover;">
+                <div>
+                  <h6 class="fw-bold text-cp-navy mb-0">Dr. Rajesh Kumar, MS</h6>
+                  <span class="text-cp-teal fw-semibold small d-block">Orthopedic Surgeon</span>
+                  <small class="text-muted">15 Yrs Exp &bull; Room 305</small>
+                </div>
+              </div>
+              <div class="d-flex gap-2 mt-auto pt-2 border-top">
+                <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 flex-grow-1"
+                        data-bs-toggle="modal" data-bs-target="#doctorDetailModal"
+                        data-doctor-name="Dr. Rajesh Kumar, MS"
+                        data-doctor-spec="Orthopedic & Joint Replacement Surgeon"
+                        data-doctor-dept="Orthopedics"
+                        data-doctor-room="Room 305 - Wing C"
+                        data-doctor-qual="MS - Orthopedics, MCh (Ortho - Joint Surgery)"
+                        data-doctor-fee="700.00"
+                        data-doctor-img="{{ url_for('static', filename='img/doctor-kumar.jpg') }}"
+                        data-doctor-bio="Joint replacement expert with over 15 years experience in robotic knee/hip reconstruction and sports arthroscopy.">
+                  Profile
+                </button>
+                <a href="{{ url_for('patient.book_appointment') if is_logged_in else url_for('auth.login') }}" class="btn btn-sm btn-cp-teal text-white rounded-pill px-3 fw-bold flex-grow-1">
+                  Book Slot
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dr. Marcus Vance -->
+          <div class="col-md-6 col-lg-4">
+            <div class="cp-doctor-compact-card">
+              <div class="d-flex align-items-center gap-3 mb-3">
+                <img src="{{ url_for('static', filename='img/doctor-marcus.jpg') }}" alt="Dr. Marcus Vance" 
+                     class="rounded-circle shadow-sm" style="width: 60px; height: 60px; object-fit: cover;">
+                <div>
+                  <h6 class="fw-bold text-cp-navy mb-0">Dr. Marcus Vance, DM</h6>
+                  <span class="text-cp-teal fw-semibold small d-block">Chief Neurologist</span>
+                  <small class="text-muted">14 Yrs Exp &bull; Room 202</small>
+                </div>
+              </div>
+              <div class="d-flex gap-2 mt-auto pt-2 border-top">
+                <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 flex-grow-1"
+                        data-bs-toggle="modal" data-bs-target="#doctorDetailModal"
+                        data-doctor-name="Dr. Marcus Vance, DM"
+                        data-doctor-spec="Chief Neurologist & Spine Specialist"
+                        data-doctor-dept="Neurology"
+                        data-doctor-room="Room 202 - Wing B"
+                        data-doctor-qual="MD, DM (Neurology), FINR"
+                        data-doctor-fee="850.00"
+                        data-doctor-img="{{ url_for('static', filename='img/doctor-marcus.jpg') }}"
+                        data-doctor-bio="Specialist in neuro-rehabilitation, spinal cord trauma, chronic headache therapy and acute stroke management.">
+                  Profile
+                </button>
+                <a href="{{ url_for('patient.book_appointment') if is_logged_in else url_for('auth.login') }}" class="btn btn-sm btn-cp-teal text-white rounded-pill px-3 fw-bold flex-grow-1">
+                  Book Slot
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dr. Margaret Sullivan -->
+          <div class="col-md-6 col-lg-4">
+            <div class="cp-doctor-compact-card">
+              <div class="d-flex align-items-center gap-3 mb-3">
+                <img src="{{ url_for('static', filename='img/doctor-margaret.jpg') }}" alt="Dr. Margaret Sullivan" 
+                     class="rounded-circle shadow-sm" style="width: 60px; height: 60px; object-fit: cover;">
+                <div>
+                  <h6 class="fw-bold text-cp-navy mb-0">Dr. Margaret Sullivan, MD</h6>
+                  <span class="text-cp-teal fw-semibold small d-block">Senior Dermatologist</span>
+                  <small class="text-muted">11 Yrs Exp &bull; Room 108</small>
+                </div>
+              </div>
+              <div class="d-flex gap-2 mt-auto pt-2 border-top">
+                <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 flex-grow-1"
+                        data-bs-toggle="modal" data-bs-target="#doctorDetailModal"
+                        data-doctor-name="Dr. Margaret Sullivan, MD"
+                        data-doctor-spec="Senior Consultant Dermatologist"
+                        data-doctor-dept="Dermatology"
+                        data-doctor-room="Room 108 - Wing A"
+                        data-doctor-qual="MD - Dermatology, FAAD"
+                        data-doctor-fee="550.00"
+                        data-doctor-img="{{ url_for('static', filename='img/doctor-margaret.jpg') }}"
+                        data-doctor-bio="Expert in clinical dermatology, autoimmune skin conditions, allergy patch testing and aesthetic skin restoration.">
+                  Profile
+                </button>
+                <a href="{{ url_for('patient.book_appointment') if is_logged_in else url_for('auth.login') }}" class="btn btn-sm btn-cp-teal text-white rounded-pill px-3 fw-bold flex-grow-1">
+                  Book Slot
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dr. Sarah Jenkins -->
+          <div class="col-md-6 col-lg-4 cp-reveal cp-reveal-delay-1">
+            <div class="cp-doctor-compact-card">
+              <div class="d-flex align-items-center gap-3 mb-3">
+                <img src="{{ url_for('static', filename='img/doctor-jenkins.jpg') }}" alt="Dr. Sarah Jenkins" 
+                     class="rounded-circle shadow-sm" style="width: 60px; height: 60px; object-fit: cover;">
+                <div>
+                  <h6 class="fw-bold text-cp-navy mb-0">Dr. Sarah Jenkins, MBBS</h6>
+                  <span class="text-cp-teal fw-semibold small d-block">Primary Care Physician</span>
+                  <small class="text-muted">8 Yrs Exp &bull; Room 102</small>
+                </div>
+              </div>
+              <div class="d-flex gap-2 mt-auto pt-2 border-top">
+                <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 flex-grow-1"
+                        data-bs-toggle="modal" data-bs-target="#doctorDetailModal"
+                        data-doctor-name="Dr. Sarah Jenkins, MBBS"
+                        data-doctor-spec="General Medicine & Primary Care Physician"
+                        data-doctor-dept="General Medicine"
+                        data-doctor-room="Room 102 - OPD Center"
+                        data-doctor-qual="MBBS, MRCGP, Dip. Internal Medicine"
+                        data-doctor-fee="500.00"
+                        data-doctor-img="{{ url_for('static', filename='img/doctor-jenkins.jpg') }}"
+                        data-doctor-bio="Experienced family physician focusing on lifestyle disease management, preventive annual wellness checks, and geriatric medicine.">
+                  Profile
+                </button>
+                <a href="{{ url_for('patient.book_appointment') if is_logged_in else url_for('auth.login') }}" class="btn btn-sm btn-cp-teal text-white rounded-pill px-3 fw-bold flex-grow-1">
+                  Book Slot
+                </a>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- TAB 3: FACILITIES & SERVICES -->
+      <div class="tab-pane fade" id="tab-pane-services" role="tabpanel" tabindex="0">
+        <div class="row g-3">
+          <div class="col-md-4">
+            <div class="p-3 bg-white border rounded-3 h-100">
+              <i class="bi bi-radioactive fs-3 text-cp-teal mb-2 d-block"></i>
+              <h6 class="fw-bold text-cp-navy mb-1">Advanced Radiology & MRI</h6>
+              <p class="text-muted small mb-0">3 Tesla MRI, 128-slice dual CT, 4D ultrasound scans with digital cloud reporting.</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-3 bg-white border rounded-3 h-100">
+              <i class="bi bi-eyedropper fs-3 text-cp-teal mb-2 d-block"></i>
+              <h6 class="fw-bold text-cp-navy mb-1">24/7 NABL Pathology Lab</h6>
+              <p class="text-muted small mb-0">Fully automated biochemistry, hematology, and microbiology with rapid digital results.</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-3 bg-white border rounded-3 h-100">
+              <i class="bi bi-heart-pulse-fill fs-3 text-danger mb-2 d-block"></i>
+              <h6 class="fw-bold text-cp-navy mb-1">Intensive Care (ICU/CCU)</h6>
+              <p class="text-muted small mb-0">Level-3 tertiary ICU, cardiac care units with dedicated 1:1 specialist intensivist monitoring.</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-3 bg-white border rounded-3 h-100">
+              <i class="bi bi-scissors fs-3 text-cp-teal mb-2 d-block"></i>
+              <h6 class="fw-bold text-cp-navy mb-1">Laminar Flow Modular OTs</h6>
+              <p class="text-muted small mb-0">Class-100 sterile surgical suites equipped with robotic guidance and laparoscopic suites.</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-3 bg-white border rounded-3 h-100">
+              <i class="bi bi-capsule fs-3 text-cp-teal mb-2 d-block"></i>
+              <h6 class="fw-bold text-cp-navy mb-1">24/7 In-House Pharmacy</h6>
+              <p class="text-muted small mb-0">Cold-chain certified genuine medications with direct digital prescription fulfillment.</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-3 bg-white border rounded-3 h-100">
+              <i class="bi bi-truck fs-3 text-danger mb-2 d-block"></i>
+              <h6 class="fw-bold text-cp-navy mb-1">Advanced Cardiac Ambulances</h6>
+              <p class="text-muted small mb-0">GPS-tracked mobile ICUs equipped with ventilators, defibrillators, and paramedics.</p>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -852,231 +659,136 @@
 </section>
 
 <!-- ====================================================================
-     SECTION 8: APPOINTMENT CALL-TO-ACTION BANNER
+     4. COMPACT HIGHLIGHTS & CONTACT (Everything in 1 Clean View)
      ==================================================================== -->
-<section class="py-5 bg-cp-light-bg" id="appointment-cta">
-  <div class="container-xl py-2">
-    <div class="cp-cta-banner text-center text-lg-start">
-      <div class="row align-items-center g-4">
-        
-        <div class="col-lg-8">
-          <span class="badge bg-white bg-opacity-15 text-cp-teal-accent border border-white border-opacity-25 px-3 py-2 rounded-pill mb-3 fw-bold">
-            <i class="bi bi-clock-history me-1"></i> Instant Confirmation & Zero Waiting Time
-          </span>
-          <h2 class="display-6 fw-bold text-white mb-3">
-            Take the First Step Towards Better Health.
-          </h2>
-          <p class="text-white-50 lead mb-0" style="font-size: 1.1rem; max-width: 650px;">
-            Book an appointment with our specialist physicians in seconds. Select your preferred doctor, date, and time slot with instant digital confirmation.
-          </p>
-        </div>
-
-        <div class="col-lg-4 text-lg-end">
-          <div class="d-flex flex-column gap-2 align-items-lg-end align-items-center">
-            <a href="{{ url_for('patient.book_appointment') if is_logged_in else url_for('auth.login') }}" class="btn btn-cp-teal btn-lg rounded-pill px-5 py-3 fw-bold text-white shadow-lg cp-btn-cta">
-              <i class="bi bi-calendar2-check-fill me-2"></i> Book Appointment Now
-            </a>
-            <span class="text-white-50 small mt-1">
-              <i class="bi bi-telephone-fill me-1 text-cp-teal-accent"></i> Or call +1 (800) 555-CARE for urgent booking
-            </span>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ====================================================================
-     SECTION 9: CONTACT SECTION
-     ==================================================================== -->
-<section class="py-5 bg-white" id="contact">
-  <div class="container-xl py-4">
-    
-    <div class="text-center mb-5">
-      <span class="cp-section-tag"><i class="bi bi-geo-alt-fill me-1"></i> Get In Touch</span>
-      <h2 class="cp-section-title">Contact CarePlus Hospital</h2>
-      <p class="cp-section-desc">
-        Have questions about our clinical services or need assistance with your booking? Our dedicated patient support team is here to assist you.
-      </p>
-    </div>
-
-    <div class="row g-4">
+<section class="py-5 bg-white border-top" id="contact">
+  <div class="container-xl">
+    <div class="row g-4 align-items-center">
       
-      <!-- Left Column: Hospital Contact Details -->
-      <div class="col-lg-5">
-        <div class="cp-contact-info-card">
-          <h4 class="fw-bold text-cp-navy mb-4">Hospital Information</h4>
+      <!-- Left: Why Choose Us & Emergency Hotline -->
+      <div class="col-lg-6">
+        <span class="cp-section-tag mb-2"><i class="bi bi-shield-check me-1"></i> Hospital Highlights</span>
+        <h3 class="fw-bold text-cp-navy mb-3">Why Patients Trust CarePlus</h3>
+        
+        <div class="row g-2 mb-4">
+          <div class="col-sm-6">
+            <div class="d-flex align-items-center gap-2 p-2 rounded bg-cp-light-slate">
+              <i class="bi bi-check-circle-fill text-cp-teal fs-5"></i>
+              <span class="small fw-semibold">JCI & NABH Accredited</span>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="d-flex align-items-center gap-2 p-2 rounded bg-cp-light-slate">
+              <i class="bi bi-check-circle-fill text-cp-teal fs-5"></i>
+              <span class="small fw-semibold">50+ Board Certified Doctors</span>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="d-flex align-items-center gap-2 p-2 rounded bg-cp-light-slate">
+              <i class="bi bi-check-circle-fill text-cp-teal fs-5"></i>
+              <span class="small fw-semibold">100% Digital Health Records</span>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="d-flex align-items-center gap-2 p-2 rounded bg-cp-light-slate">
+              <i class="bi bi-check-circle-fill text-cp-teal fs-5"></i>
+              <span class="small fw-semibold">Zero Long Waiting Queues</span>
+            </div>
+          </div>
+        </div>
 
-          <!-- Address -->
-          <div class="cp-contact-item">
-            <div class="cp-contact-icon">
-              <i class="bi bi-geo-alt-fill"></i>
+        <!-- Hotline Banner -->
+        <div class="p-3 rounded-4 bg-cp-navy text-white d-flex align-items-center justify-content-between">
+          <div class="d-flex align-items-center gap-3">
+            <div class="rounded-circle bg-danger text-white p-2 d-flex align-items-center justify-content-center" style="width: 44px; height: 44px;">
+              <i class="bi bi-telephone-fill fs-5"></i>
             </div>
             <div>
-              <h6 class="fw-bold text-cp-navy mb-1">Hospital Address</h6>
-              <p class="text-muted small mb-0">
-                100 CarePlus Parkway, Medical District, Springfield, IL 62704
-              </p>
-              <small class="text-cp-teal fw-semibold">Wing A & B Entrance on West Boulevard</small>
+              <div class="fw-bold">24/7 Emergency & Ambulance Helpline</div>
+              <div class="text-white-50 small">100 CarePlus Parkway &bull; Immediate dispatch</div>
             </div>
           </div>
-
-          <!-- Phone Helpline -->
-          <div class="cp-contact-item">
-            <div class="cp-contact-icon">
-              <i class="bi bi-telephone-fill"></i>
-            </div>
-            <div>
-              <h6 class="fw-bold text-cp-navy mb-1">Telephone & Helpline</h6>
-              <p class="text-muted small mb-0">
-                Appointments & Inquiries: +1 (800) 555-0199<br>
-                Direct Clinic Desk: +1 (555) 014-CARE
-              </p>
-            </div>
-          </div>
-
-          <!-- Email -->
-          <div class="cp-contact-item">
-            <div class="cp-contact-icon">
-              <i class="bi bi-envelope-fill"></i>
-            </div>
-            <div>
-              <h6 class="fw-bold text-cp-navy mb-1">Email Inquiries</h6>
-              <p class="text-muted small mb-0">
-                General: info@careplus-hospital.example<br>
-                Appointments: appointments@careplus-hospital.example
-              </p>
-            </div>
-          </div>
-
-          <!-- Clinical Hours -->
-          <div class="p-3 rounded-3 bg-cp-light-slate border">
-            <div class="d-flex align-items-center gap-2 mb-2 text-cp-navy fw-bold">
-              <i class="bi bi-clock-fill text-cp-teal"></i> Working & Emergency Hours
-            </div>
-            <div class="d-flex justify-content-between text-muted small py-1 border-bottom">
-              <span>Outpatient Clinics (OPD):</span>
-              <span class="fw-semibold text-cp-navy">Mon - Sat: 8:00 AM - 8:00 PM</span>
-            </div>
-            <div class="d-flex justify-content-between text-muted small py-1">
-              <span>Emergency & Trauma Center:</span>
-              <span class="fw-bold text-danger">Open 24 Hours / 7 Days</span>
-            </div>
-          </div>
-
+          <a href="tel:+18005550199" class="btn btn-danger rounded-pill px-3 py-1 fw-bold text-nowrap">
+            Call Hotline
+          </a>
         </div>
       </div>
 
-      <!-- Right Column: Interactive Contact Form -->
-      <div class="col-lg-7">
-        <div class="cp-contact-form-card">
-          <h4 class="fw-bold text-cp-navy mb-2">Send Us an Inquiry</h4>
-          <p class="text-muted small mb-4">
-            Fill out the form below and our patient relations desk will respond within 2-4 business hours.
-          </p>
-
-          <!-- Success Alert Placeholder (Activated via JS) -->
-          <div class="alert alert-success d-none mb-4 shadow-sm" id="contactSuccessAlert" role="alert">
-            <div class="d-flex align-items-center gap-2">
-              <i class="bi bi-check-circle-fill fs-5"></i>
-              <div>
-                <strong>Thank you!</strong> Your message has been received. Our clinical support team will contact you shortly.
-              </div>
+      <!-- Right: Compact Inquiry Desk -->
+      <div class="col-lg-6">
+        <div class="cp-card p-4 shadow-sm">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+              <h5 class="fw-bold text-cp-navy mb-0">Fast Consultation Inquiry</h5>
+              <small class="text-muted">Questions regarding slots or doctors? Send a message.</small>
             </div>
+            <i class="bi bi-chat-left-dots-fill text-cp-teal fs-4"></i>
           </div>
 
-          <form id="hospitalContactForm" novalidate>
-            <div class="row g-3">
-              <div class="col-md-6">
-                <label for="contactName" class="form-label fw-semibold text-cp-navy small">Full Name <span class="text-danger">*</span></label>
-                <input type="text" class="form-control form-control-lg rounded-3 fs-6" id="contactName" placeholder="e.g. John Smith" required>
-              </div>
+          <!-- Success Alert -->
+          <div class="alert alert-success d-none py-2 px-3 small" id="contactSuccessAlert">
+            <i class="bi bi-check-circle me-1"></i> Your inquiry has been received! Our front desk will respond shortly.
+          </div>
 
+          <form id="hospitalContactForm">
+            <div class="row g-2">
               <div class="col-md-6">
-                <label for="contactEmail" class="form-label fw-semibold text-cp-navy small">Email Address <span class="text-danger">*</span></label>
-                <input type="email" class="form-control form-control-lg rounded-3 fs-6" id="contactEmail" placeholder="e.g. john@example.com" required>
+                <input type="text" class="form-control form-control-sm py-2" id="contactName" placeholder="Your Full Name" required>
               </div>
-
               <div class="col-md-6">
-                <label for="contactPhone" class="form-label fw-semibold text-cp-navy small">Phone Number</label>
-                <input type="tel" class="form-control form-control-lg rounded-3 fs-6" id="contactPhone" placeholder="e.g. +1 555-019-2834">
+                <input type="email" class="form-control form-control-sm py-2" id="contactEmail" placeholder="Email Address" required>
               </div>
-
-              <div class="col-md-6">
-                <label for="contactDepartment" class="form-label fw-semibold text-cp-navy small">Department / Inquiry Type</label>
-                <select class="form-select form-select-lg rounded-3 fs-6" id="contactDepartment">
-                  <option value="General Inquiries" selected>General Inquiries</option>
-                  <option value="Cardiology">Cardiology</option>
-                  <option value="Neurology">Neurology</option>
-                  <option value="Orthopedics">Orthopedics</option>
-                  <option value="Dermatology">Dermatology</option>
-                  <option value="Pediatrics">Pediatrics & Neonatal</option>
-                  <option value="General Medicine">General Medicine</option>
-                  <option value="Billing & Insurance">Billing & Insurance</option>
-                </select>
-              </div>
-
               <div class="col-12">
-                <label for="contactSubject" class="form-label fw-semibold text-cp-navy small">Subject</label>
-                <input type="text" class="form-control form-control-lg rounded-3 fs-6" id="contactSubject" placeholder="e.g. Consultation slot question">
+                <textarea class="form-control form-control-sm" id="contactMessage" rows="2" placeholder="How can we assist you?" required></textarea>
               </div>
-
-              <div class="col-12">
-                <label for="contactMessage" class="form-label fw-semibold text-cp-navy small">Message <span class="text-danger">*</span></label>
-                <textarea class="form-control rounded-3 fs-6" id="contactMessage" rows="4" placeholder="How can we assist you with your healthcare requirements?" required></textarea>
-              </div>
-
-              <div class="col-12 mt-4">
-                <button type="submit" class="btn btn-cp-navy btn-lg rounded-pill px-5 fw-bold w-100 shadow-sm">
-                  <i class="bi bi-send-fill me-2"></i> Submit Inquiry
+              <div class="col-12 mt-2">
+                <button type="submit" class="btn btn-cp-navy btn-sm rounded-pill px-4 py-2 fw-bold w-100 shadow-sm">
+                  <i class="bi bi-send-fill me-1"></i> Send Inquiry Message
                 </button>
               </div>
             </div>
           </form>
-
         </div>
       </div>
 
     </div>
-
   </div>
 </section>
 
 <!-- ====================================================================
-     DOCTOR DETAIL MODAL
+     DOCTOR DETAIL MODAL (Compact Profile View)
      ==================================================================== -->
 <div class="modal fade" id="doctorDetailModal" tabindex="-1" aria-labelledby="doctorDetailModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content rounded-4 border-0 shadow-lg overflow-hidden">
       <div class="modal-header bg-cp-navy text-white px-4 py-3 border-0">
         <h5 class="modal-title fw-bold" id="doctorDetailModalLabel">
-          <i class="bi bi-person-badge me-2 text-cp-teal-accent"></i> Specialist Physician Profile
+          <i class="bi bi-person-badge me-2 text-cp-teal-accent"></i> Specialist Profile
         </h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body p-4">
         <div class="row g-4 align-items-center">
           <div class="col-md-5 text-center">
-            <img src="{{ url_for('static', filename='img/doctor-chen.jpg') }}" id="modalDoctorImg" alt="Doctor Photo" class="img-fluid rounded-4 shadow-sm" style="max-height: 280px; width: 100%; object-fit: cover;">
+            <img src="{{ url_for('static', filename='img/doctor-chen.jpg') }}" id="modalDoctorImg" alt="Doctor Photo" class="img-fluid rounded-4 shadow-sm" style="max-height: 250px; width: 100%; object-fit: cover;">
           </div>
           <div class="col-md-7">
             <h4 class="fw-bold text-cp-navy mb-1" id="modalDoctorName"></h4>
             <div class="text-cp-teal fw-semibold mb-2" id="modalDoctorSpec"></div>
             
-            <div class="p-3 bg-cp-light-slate rounded-3 mb-3" style="font-size: 0.9rem;">
+            <div class="p-3 bg-cp-light-slate rounded-3 mb-3 small">
               <div class="mb-1"><strong>Department:</strong> <span id="modalDoctorDept"></span></div>
               <div class="mb-1"><strong>Clinic Location:</strong> <span id="modalDoctorRoom" class="badge bg-white text-cp-navy border"></span></div>
               <div class="mb-1"><strong>Qualifications:</strong> <span id="modalDoctorQual"></span></div>
-              <div class="mb-0"><strong>Consultation Fee:</strong> <span class="badge bg-cp-teal text-white fs-6 px-3 py-1" id="modalDoctorFee"></span></div>
+              <div class="mb-0"><strong>Consultation Fee:</strong> <span class="badge bg-cp-teal text-white px-2 py-1" id="modalDoctorFee"></span></div>
             </div>
 
-            <h6 class="fw-bold text-cp-navy mb-1">Physician Overview</h6>
-            <p class="text-muted small mb-4" id="modalDoctorBio" style="line-height: 1.6;"></p>
+            <h6 class="fw-bold text-cp-navy mb-1 small">Physician Overview</h6>
+            <p class="text-muted small mb-3" id="modalDoctorBio" style="line-height: 1.6;"></p>
 
             <div class="d-flex gap-2">
-              <a href="{{ url_for('patient.book_appointment') if is_logged_in else url_for('auth.login') }}" class="btn btn-cp-teal rounded-pill px-4 fw-bold flex-grow-1">
-                <i class="bi bi-calendar2-check-fill me-1"></i> Book Appointment With Doctor
+              <a href="{{ url_for('patient.book_appointment') if is_logged_in else url_for('auth.login') }}" class="btn btn-cp-teal text-white rounded-pill px-4 fw-bold flex-grow-1">
+                <i class="bi bi-calendar2-check-fill me-1"></i> Book Appointment
               </a>
               <button type="button" class="btn btn-outline-secondary rounded-pill px-3" data-bs-dismiss="modal">
                 Close
@@ -1089,7 +801,7 @@
   </div>
 </div>
 
-<!-- Back to Top Floating Button -->
+<!-- Floating Back to Top Button -->
 <button type="button" class="cp-back-to-top shadow" id="backToTopBtn" aria-label="Back to Top">
   <i class="bi bi-arrow-up"></i>
 </button>

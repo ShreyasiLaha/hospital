@@ -218,11 +218,11 @@ h1, h2, h3, h4, h5, h6 {
 .cp-hero-section {
   position: relative;
   background: 
-    linear-gradient(135deg, rgba(10, 30, 58, 0.94) 0%, rgba(6, 19, 37, 0.93) 55%, rgba(13, 78, 91, 0.88) 100%),
+    linear-gradient(135deg, rgba(10, 30, 58, 0.94) 0%, rgba(14, 38, 71, 0.94) 100%),
     url('../img/hero-hospital.jpg') center center / cover no-repeat;
   color: var(--cp-white);
   overflow: hidden;
-  padding: 5rem 0 6rem 0;
+  padding: 5rem 0 5.5rem 0;
 }
 
 .cp-hero-bg-overlay {
@@ -231,8 +231,7 @@ h1, h2, h3, h4, h5, h6 {
   right: 0;
   bottom: 0;
   left: 0;
-  background-image: radial-gradient(circle at 85% 30%, rgba(13, 148, 136, 0.25) 0%, transparent 60%),
-                    radial-gradient(circle at 15% 80%, rgba(20, 184, 166, 0.15) 0%, transparent 50%);
+  background: rgba(10, 30, 58, 0.35);
   pointer-events: none;
 }
 
@@ -740,4 +739,328 @@ h1, h2, h3, h4, h5, h6 {
   transform: translateY(-2px);
   box-shadow: var(--cp-shadow-xs);
 }
+
+/* ====================================================================
+   PRELOADER / LOADING ANIMATION  (Enhanced – longer, richer)
+   ==================================================================== */
+.cp-preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: radial-gradient(ellipse at 30% 40%, #1a3a6a 0%, #0A1E3A 55%, #061227 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.7s ease;
+  overflow: hidden;
+}
+
+.cp-preloader.fade-out {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* Floating particles */
+.cp-preloader-particles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.cp-particle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(20, 184, 166, 0.35);
+  animation: cpParticleFloat 6s ease-in-out infinite;
+}
+.cp-particle:nth-child(1) { left: 12%; top: 20%; animation-delay: 0s;    animation-duration: 7s; width: 8px; height: 8px; }
+.cp-particle:nth-child(2) { left: 80%; top: 15%; animation-delay: 1.2s;  animation-duration: 6s; }
+.cp-particle:nth-child(3) { left: 25%; top: 75%; animation-delay: 2.1s;  animation-duration: 8s; width: 5px; height: 5px; background: rgba(56, 189, 248, 0.3); }
+.cp-particle:nth-child(4) { left: 70%; top: 70%; animation-delay: 0.8s;  animation-duration: 5.5s; width: 10px; height: 10px; }
+.cp-particle:nth-child(5) { left: 50%; top: 10%; animation-delay: 3s;    animation-duration: 7.5s; background: rgba(56, 189, 248, 0.25); }
+.cp-particle:nth-child(6) { left: 88%; top: 50%; animation-delay: 1.6s;  animation-duration: 6.8s; width: 7px; height: 7px; }
+
+@keyframes cpParticleFloat {
+  0%, 100% { transform: translateY(0) scale(1); opacity: 0.4; }
+  50%       { transform: translateY(-28px) scale(1.3); opacity: 0.9; }
+}
+
+.cp-preloader-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  max-width: 380px;
+  padding: 2rem;
+  position: relative;
+  z-index: 2;
+}
+
+.cp-pulse-ring-wrapper {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.25rem;
+}
+
+.cp-pulse-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid rgba(20, 184, 166, 0.5);
+  animation: cpPulseRing 3s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+}
+.cp-ring-2 { animation-delay: 0.8s; border-color: rgba(56, 189, 248, 0.4); }
+.cp-ring-3 { animation-delay: 1.6s; border-color: rgba(20, 184, 166, 0.25); }
+
+@keyframes cpPulseRing {
+  0%   { transform: scale(0.8);  opacity: 1; }
+  100% { transform: scale(2.0);  opacity: 0; }
+}
+
+.cp-preloader-icon-circle {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #0D9488 0%, #0A1E3A 100%);
+  border: 2px solid rgba(20, 184, 166, 0.7);
+  box-shadow: 0 0 30px rgba(20, 184, 166, 0.55), 0 0 60px rgba(20, 184, 166, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.cp-preloader-heartbeat {
+  font-size: 2.2rem;
+  color: #FFFFFF;
+  animation: cpHeartbeat 1.6s ease-in-out infinite;
+}
+
+@keyframes cpHeartbeat {
+  0%, 100% { transform: scale(1); }
+  14%       { transform: scale(1.28); filter: drop-shadow(0 0 8px #14B8A6); }
+  28%       { transform: scale(1); }
+  42%       { transform: scale(1.18); }
+  70%       { transform: scale(1); }
+}
+
+.cp-ecg-svg-container {
+  width: 260px;
+  height: 46px;
+  margin: 0.6rem 0 1rem;
+}
+
+.cp-ecg-svg { width: 100%; height: 100%; }
+
+.cp-ecg-path {
+  stroke: #14B8A6;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+  stroke-dasharray: 450;
+  stroke-dashoffset: 450;
+  animation: cpEcgDash 2.4s ease-in-out infinite;
+  filter: drop-shadow(0 0 10px rgba(20, 184, 166, 0.8));
+}
+
+@keyframes cpEcgDash {
+  0%   { stroke-dashoffset: 450; opacity: 0.3; }
+  50%  { stroke-dashoffset: 0;   opacity: 1; }
+  100% { stroke-dashoffset: -450; opacity: 0.3; }
+}
+
+/* Stepped progress bar */
+.cp-loader-progress-wrap {
+  width: 220px;
+  margin: 0 auto;
+}
+.cp-loader-progress {
+  width: 100%;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.cp-loader-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #0D9488, #38BDF8, #14B8A6);
+  border-radius: 10px;
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 0 10px rgba(20, 184, 166, 0.6);
+}
+
+/* ====================================================================
+   COMPACT LANDING PAGE COMPONENTS  (Premium Redesign)
+   ==================================================================== */
+
+/* --- Quick Action Cards --- */
+.cp-quick-action-card {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: var(--cp-radius);
+  padding: 1.1rem 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  box-shadow: 0 1px 4px rgba(10, 30, 58, 0.05);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  text-decoration: none !important;
+  color: var(--cp-text-main);
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+.cp-quick-action-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(13, 148, 136, 0.04) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+.cp-quick-action-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 28px rgba(10, 30, 58, 0.1), 0 0 0 1.5px var(--cp-teal);
+  border-color: var(--cp-teal);
+  color: var(--cp-navy);
+}
+.cp-quick-action-card:hover::after { opacity: 1; }
+
+/* --- Tab Navigation --- */
+.cp-nav-tabs-clean {
+  border-bottom: 2px solid #E2E8F0;
+  gap: 0.25rem;
+}
+.cp-nav-tabs-clean .nav-link {
+  color: var(--cp-text-muted);
+  font-weight: 700;
+  font-size: 0.95rem;
+  border: none;
+  border-bottom: 3px solid transparent;
+  padding: 0.65rem 1.3rem;
+  border-radius: 0;
+  background: transparent;
+  transition: all 0.22s ease;
+  position: relative;
+}
+.cp-nav-tabs-clean .nav-link:hover { color: var(--cp-teal); }
+.cp-nav-tabs-clean .nav-link.active {
+  color: var(--cp-navy);
+  border-bottom-color: var(--cp-teal);
+  background: transparent;
+}
+.cp-nav-tabs-clean .nav-link.active::before {
+  content: '';
+  position: absolute;
+  bottom: -2px; left: 50%; right: 0;
+  width: 100%;
+  transform: translateX(-50%);
+  height: 3px;
+  background: linear-gradient(90deg, var(--cp-teal), #38BDF8);
+  border-radius: 10px;
+}
+
+/* --- Department Cards --- */
+.cp-dept-compact-card {
+  background: #FFFFFF;
+  border: 1px solid #E8EEF6;
+  border-radius: var(--cp-radius);
+  padding: 1.2rem;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+.cp-dept-compact-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 3px;
+  height: 100%;
+  background: linear-gradient(180deg, var(--cp-teal), #38BDF8);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  border-radius: 3px 0 0 3px;
+}
+.cp-dept-compact-card:hover {
+  border-color: rgba(13, 148, 136, 0.35);
+  box-shadow: 0 8px 24px rgba(10, 30, 58, 0.09);
+  transform: translateY(-3px);
+}
+.cp-dept-compact-card:hover::before { opacity: 1; }
+
+/* --- Doctor Cards --- */
+.cp-doctor-compact-card {
+  background: #FFFFFF;
+  border: 1px solid #E8EEF6;
+  border-radius: var(--cp-radius);
+  padding: 1.2rem;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+.cp-doctor-compact-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at top left, rgba(13, 148, 136, 0.06) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  pointer-events: none;
+}
+.cp-doctor-compact-card:hover {
+  border-color: rgba(13, 148, 136, 0.4);
+  box-shadow: 0 10px 28px rgba(10, 30, 58, 0.1);
+  transform: translateY(-3px);
+}
+.cp-doctor-compact-card:hover::after { opacity: 1; }
+
+/* Doctor avatar glow on hover */
+.cp-doctor-compact-card:hover img.rounded-circle {
+  box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.35), 0 4px 12px rgba(10, 30, 58, 0.15);
+}
+
+/* --- Facility Cards (Tab 3) --- */
+.cp-facility-card {
+  background: #FFFFFF;
+  border: 1px solid #E8EEF6;
+  border-radius: var(--cp-radius);
+  padding: 1.25rem;
+  transition: all 0.25s ease;
+  height: 100%;
+}
+.cp-facility-card:hover {
+  border-color: var(--cp-teal);
+  box-shadow: 0 6px 20px rgba(10, 30, 58, 0.08);
+  transform: translateY(-2px);
+}
+
+/* --- Scroll Reveal --- */
+.cp-reveal {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 0.55s ease, transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.cp-reveal.cp-revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+.cp-reveal-delay-1 { transition-delay: 0.08s; }
+.cp-reveal-delay-2 { transition-delay: 0.16s; }
+.cp-reveal-delay-3 { transition-delay: 0.24s; }
+.cp-reveal-delay-4 { transition-delay: 0.32s; }
 

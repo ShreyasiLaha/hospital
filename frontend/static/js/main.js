@@ -164,4 +164,99 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     });
   });
+
+  // 8. Navigation Links linking to Directory Tabs (#departments, #doctors, #services)
+  document.querySelectorAll('a[href*="#departments"], a[href*="#doctors"], a[href*="#services"]').forEach(function (link) {
+    link.addEventListener('click', function () {
+      const href = this.getAttribute('href');
+      let targetTabId = '';
+      if (href.includes('#departments')) targetTabId = 'tab-btn-departments';
+      else if (href.includes('#doctors')) targetTabId = 'tab-btn-doctors';
+      else if (href.includes('#services')) targetTabId = 'tab-btn-services';
+
+      if (targetTabId) {
+        const tabTrigger = document.getElementById(targetTabId);
+        if (tabTrigger && typeof bootstrap !== 'undefined' && bootstrap.Tab) {
+          const tab = bootstrap.Tab.getOrCreateInstance(tabTrigger);
+          if (tab) tab.show();
+        }
+      }
+    });
+  });
 });
+
+// 9. Preloader / Loading Animation Controller
+(function () {
+  var preloaderDismissed = false;
+
+  function dismissPreloader() {
+    if (preloaderDismissed) return;
+    preloaderDismissed = true;
+    var preloader = document.getElementById('cpPreloader');
+    if (preloader && !preloader.classList.contains('fade-out')) {
+      preloader.classList.add('fade-out');
+      setTimeout(function () {
+        if (preloader.parentNode) {
+          preloader.parentNode.removeChild(preloader);
+        }
+      }, 700);
+    }
+  }
+
+  // Animated percentage counter
+  var pctEl = document.getElementById('cpLoaderPct');
+  var barEl = document.getElementById('cpLoaderFill');
+  if (pctEl && barEl) {
+    var pct = 0;
+    var steps = [
+      { target: 20, duration: 400 },
+      { target: 45, duration: 500 },
+      { target: 65, duration: 600 },
+      { target: 80, duration: 500 },
+      { target: 92, duration: 700 },
+      { target: 100, duration: 500 }
+    ];
+    var stepIdx = 0;
+    function animateStep() {
+      if (stepIdx >= steps.length) return;
+      var step = steps[stepIdx++];
+      var from = pct;
+      var to = step.target;
+      var start = null;
+      function tick(ts) {
+        if (!start) start = ts;
+        var prog = Math.min((ts - start) / step.duration, 1);
+        pct = Math.round(from + (to - from) * prog);
+        pctEl.textContent = pct + '%';
+        barEl.style.width = pct + '%';
+        if (prog < 1) { requestAnimationFrame(tick); }
+        else { setTimeout(animateStep, 80); }
+      }
+      requestAnimationFrame(tick);
+    }
+    animateStep();
+  }
+
+  // Dismiss when window resources finish loading + extra delay for effect
+  window.addEventListener('load', function () {
+    setTimeout(dismissPreloader, 2800);
+  });
+
+  // Hard fallback: never block user more than 5s
+  setTimeout(dismissPreloader, 5000);
+})();
+
+// 10. Scroll-reveal animation (IntersectionObserver)
+(function () {
+  var revealEls = document.querySelectorAll('.cp-reveal');
+  if (!revealEls.length || !('IntersectionObserver' in window)) return;
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('cp-revealed');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  revealEls.forEach(function (el) { io.observe(el); });
+})();

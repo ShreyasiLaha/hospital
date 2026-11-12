@@ -35,26 +35,35 @@ def run_tests():
     print("\n[2/7] Testing Patient Appointment Booking & Slots...")
     c_patient = app.test_client()
     c_patient.post('/auth/login', data={'email': 'alex@patient.com', 'password': 'Patient@123'})
-    
+
+    # Calculate next Monday (Doctor 1 consultation day) dynamically
+    from datetime import date, timedelta
+    today = date.today()
+    days_ahead = (0 - today.weekday() + 7) % 7
+    if days_ahead == 0:
+        days_ahead = 7
+    target_date_str = (today + timedelta(days=days_ahead)).strftime('%Y-%m-%d')
+    follow_up_str = (today + timedelta(days=days_ahead + 30)).strftime('%Y-%m-%d')
+
     # Check slots API
-    res_slots = c_patient.get('/api/available-slots?doctor_id=1&date=2026-11-09')
-    assert res_slots.status_code == 200, "Slots API failed"
+    res_slots = c_patient.get(f'/api/available-slots?doctor_id=1&date={target_date_str}')
+    assert res_slots.status_code == 200, f"Slots API failed: {res_slots.data}"
     slots_data = res_slots.json
     assert slots_data.get('status') == 'success', "Slot calculation status error"
-    print(f"  [OK] Slot API returned {len(slots_data['slots'])} slots for 2026-11-09 (Doctor 1)")
+    print(f"  [OK] Slot API returned {len(slots_data['slots'])} slots for {target_date_str} (Doctor 1)")
 
     # Book appointment
     res_book = c_patient.post('/patient/book-appointment', data={
         'department_id': '1',
         'doctor_id': '1',
-        'appointment_date': '2026-11-09',
+        'appointment_date': target_date_str,
         'appointment_time': '10:00',
         'symptoms': 'Cardiovascular health routine evaluation'
     })
     assert res_book.status_code == 302, "Appointment booking failed"
     
     with app.app_context():
-        latest_appt = query_db("SELECT * FROM appointments WHERE appointment_date='2026-11-09' AND doctor_id=1 ORDER BY id DESC LIMIT 1", one=True)
+        latest_appt = query_db("SELECT * FROM appointments WHERE appointment_date=%s AND doctor_id=1 ORDER BY id DESC LIMIT 1", (target_date_str,), one=True)
         assert latest_appt is not None, "Appointment not found in database"
         appt_id = latest_appt['id']
         print(f"  [OK] Created Appointment {latest_appt['appointment_number']} (Token #{latest_appt['token_number']})")
@@ -67,7 +76,7 @@ def run_tests():
     res_rx = c_doctor.post(f'/doctor/write-prescription/{appt_id}', data={
         'diagnosis': 'Borderline Hypertension - Stage 1',
         'advice_notes': 'Maintain low-sodium diet, 30 min daily cardio exercise, follow up in 1 month.',
-        'follow_up_date': '2026-12-09',
+        'follow_up_date': follow_up_str,
         'medicine_name[]': ['Telmisartan', 'Metoprolol Succinate'],
         'dosage[]': ['40 mg', '25 mg'],
         'frequency[]': ['1-0-0 (Morning)', '0-0-1 (Night)'],
