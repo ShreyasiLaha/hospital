@@ -74,9 +74,11 @@
 {% include 'components/flash_messages.html' %}
 
 <!-- ====================================================================
-     1. HERO SECTION (Unified Light Theme)
+     1. HERO SECTION (Unified Light Theme + Interactive Cursor Grid)
      ==================================================================== -->
-<header class="cp-hero-section py-5" id="home" style="background: #F8FAFC !important; border-bottom: 1px solid #E2E8F0;">
+<header class="cp-hero-section py-5 position-relative overflow-hidden" id="home" style="background: #F8FAFC !important; border-bottom: 1px solid #E2E8F0;">
+  <!-- Interactive WebGL Cursor Grid Canvas -->
+  <canvas id="cpHeroCanvas" class="position-absolute top-0 start-0 w-100 h-100" style="pointer-events: none; z-index: 1;" aria-hidden="true"></canvas>
   <div class="container-xl position-relative" style="z-index: 2;">
     <div class="row align-items-center g-4 py-3">
       
@@ -823,5 +825,9 @@
 <button type="button" class="cp-back-to-top shadow" id="backToTopBtn" aria-label="Back to Top">
   <i class="bi bi-arrow-up"></i>
 </button>
+{% endblock %}
 
+{% block extra_js %}
+<!-- WebGL2 Interactive Cursor Grid Background Script -->
+<script src="{{ url_for('static', filename='js/cursor-grid.js') }}?v=1"></script>
 {% endblock %}
