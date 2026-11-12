@@ -6,7 +6,7 @@ from datetime import datetime, date
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 from app.db import query_db, execute_db
 from app.utils.decorators import role_required
-from app.utils.helpers import log_audit, format_time_hhmm
+from app.utils.helpers import log_audit, format_time_hhmm, create_notification, paginate_query
 
 doctor_bp = Blueprint('doctor', __name__, url_prefix='/doctor')
 
@@ -88,34 +88,44 @@ def appointments():
     doctor_id = get_current_doctor_id()
     filter_status = request.args.get('status', '')
     search_q = request.args.get('q', '').strip()
+    page = request.args.get('page', 1)
 
-    sql = """
+    where_clause = "WHERE a.doctor_id = %s"
+    params = [doctor_id]
+
+    if filter_status:
+        where_clause += " AND a.status = %s"
+        params.append(filter_status)
+
+    if search_q:
+        where_clause += " AND (u.full_name LIKE %s OR a.appointment_number LIKE %s)"
+        params.extend([f"%{search_q}%", f"%{search_q}%"])
+
+    sql = f"""
         SELECT a.*, u.full_name as patient_name, u.phone as patient_phone, 
                p.gender, p.date_of_birth, p.blood_group, dept.name as department_name
         FROM appointments a
         JOIN patients p ON a.patient_id = p.id
         JOIN users u ON p.user_id = u.id
         JOIN departments dept ON a.department_id = dept.id
-        WHERE a.doctor_id = %s
+        {where_clause}
+        ORDER BY a.appointment_date DESC, a.appointment_time DESC
     """
-    params = [doctor_id]
+    count_sql = f"""
+        SELECT COUNT(*) as cnt
+        FROM appointments a
+        JOIN patients p ON a.patient_id = p.id
+        JOIN users u ON p.user_id = u.id
+        {where_clause}
+    """
 
-    if filter_status:
-        sql += " AND a.status = %s"
-        params.append(filter_status)
-
-    if search_q:
-        sql += " AND (u.full_name LIKE %s OR a.appointment_number LIKE %s)"
-        params.extend([f"%{search_q}%", f"%{search_q}%"])
-
-    sql += " ORDER BY a.appointment_date DESC, a.appointment_time DESC"
-
-    appointments_list = query_db(sql, tuple(params))
-    for appt in appointments_list:
+    paginated = paginate_query(sql, count_sql, tuple(params), page=page, per_page=15)
+    for appt in paginated['items']:
         appt['age'] = calculate_age(appt.get('date_of_birth'))
 
     return render_template('doctor/appointments.html', 
-                           appointments=appointments_list, 
+                           appointments=paginated['items'],
+                           pagination=paginated,
                            current_filter=filter_status, 
                            search_query=search_q)
 
@@ -255,6 +265,12 @@ def write_prescription(appointment_id):
 
             # Mark appointment COMPLETED
             execute_db("UPDATE appointments SET status = 'Completed' WHERE id = %s", (appointment_id,))
+
+            # Trigger notification to patient
+            pat = query_db("SELECT user_id FROM patients WHERE id = %s", (appt['patient_id'],), one=True)
+            if pat:
+                create_notification(pat['user_id'], 'Prescription Issued',
+                                    f"Dr. {session.get('full_name')} completed your consultation and issued your prescription for appointment {appt['appointment_number']}.", 'APPOINTMENT')
 
             log_audit(session['user_id'], 'WRITE_PRESCRIPTION', f"Prescription #{rx_id} issued for Appt #{appt['appointment_number']}")
             flash(f"Prescription successfully saved and consultation completed for {appt['patient_name']}!", 'success')

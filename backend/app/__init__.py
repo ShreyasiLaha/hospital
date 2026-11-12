@@ -27,14 +27,25 @@ def create_app(config_class=Config):
     # Register Database teardown
     app.teardown_appcontext(close_db)
 
-    # Context processor to make current user session available globally in templates
+    # Context processor to make current user session and alerts available globally in templates
     @app.context_processor
     def inject_user():
+        unread_notifs = 0
+        if 'user_id' in session:
+            try:
+                from app.db import query_db
+                notif_row = query_db("SELECT COUNT(*) as cnt FROM notifications WHERE user_id = %s AND is_read = 0", (session['user_id'],), one=True)
+                if notif_row:
+                    unread_notifs = notif_row['cnt']
+            except Exception:
+                unread_notifs = 0
+
         return {
             'is_logged_in': 'user_id' in session,
             'current_user_name': session.get('full_name'),
             'current_user_role': session.get('role'),
             'current_user_id': session.get('user_id'),
+            'unread_notifications_count': unread_notifs,
             'hospital_name': app.config.get('HOSPITAL_NAME', 'CarePlus Hospital')
         }
 

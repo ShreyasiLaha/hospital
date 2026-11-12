@@ -22,7 +22,10 @@
         </div>
 
         <div class="mb-4">
-          <label class="form-label fw-semibold text-cp-navy small" for="password">Password</label>
+          <div class="d-flex justify-content-between align-items-center mb-1">
+            <label class="form-label fw-semibold text-cp-navy small mb-0" for="password">Password</label>
+            <a href="{{ url_for('auth.forgot_password') }}" class="small text-decoration-none text-cp-teal">Forgot Password?</a>
+          </div>
           <div class="input-group">
             <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-lock"></i></span>
             <input type="password" class="form-control border-start-0 border-end-0 py-2 fs-6" id="password" name="password" placeholder="••••••••" required>

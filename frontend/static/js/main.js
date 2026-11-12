@@ -260,3 +260,81 @@ document.addEventListener('DOMContentLoaded', function () {
   }, { threshold: 0.12 });
   revealEls.forEach(function (el) { io.observe(el); });
 })();
+
+// 11. Real-time In-App Notifications Loader & Dismissal
+(function () {
+  var notifBtn = document.getElementById('notifBellBtn');
+  var notifContainer = document.getElementById('notifListContainer');
+  var markAllBtn = document.getElementById('markAllNotifsReadBtn');
+  var notifBadge = document.getElementById('notifCountBadge');
+
+  if (!notifBtn || !notifContainer) return;
+
+  function loadNotifications() {
+    fetch('/api/notifications')
+      .then(function (res) { return res.json(); })
+      .then(function (data) {
+        if (data.status !== 'success') return;
+        var notifs = data.notifications || [];
+        if (notifs.length === 0) {
+          notifContainer.innerHTML = '<div class="text-center py-4 text-muted small"><i class="bi bi-bell-slash fs-4 d-block mb-1 opacity-50"></i>No notifications yet</div>';
+          return;
+        }
+
+        var html = '<div class="list-group list-group-flush">';
+        notifs.forEach(function (n) {
+          var bgClass = n.is_read ? 'bg-white' : 'bg-light';
+          var iconClass = 'bi-bell-fill text-cp-teal';
+          if (n.type === 'BILLING') iconClass = 'bi-receipt text-success';
+          else if (n.type === 'SYSTEM') iconClass = 'bi-shield-check text-primary';
+
+          html += '<div class="list-group-item list-group-item-action ' + bgClass + ' p-2 border-0 rounded-2 mb-1 notif-item" data-id="' + n.id + '">';
+          html += '  <div class="d-flex align-items-start gap-2">';
+          html += '    <i class="bi ' + iconClass + ' mt-1 fs-6"></i>';
+          html += '    <div class="flex-grow-1">';
+          html += '      <div class="d-flex justify-content-between align-items-center">';
+          html += '        <span class="fw-semibold text-cp-navy" style="font-size: 0.8rem;">' + (n.title || 'Alert') + '</span>';
+          html += '        <small class="text-muted" style="font-size: 0.68rem;">' + (n.created_at ? n.created_at.substring(0, 16) : '') + '</small>';
+          html += '      </div>';
+          html += '      <p class="mb-0 text-secondary" style="font-size: 0.75rem;">' + n.message + '</p>';
+          html += '    </div>';
+          html += '  </div>';
+          html += '</div>';
+        });
+        html += '</div>';
+        notifContainer.innerHTML = html;
+
+        // Attach click listeners to mark individual item as read
+        document.querySelectorAll('.notif-item').forEach(function (item) {
+          item.addEventListener('click', function () {
+            var id = this.getAttribute('data-id');
+            fetch('/api/notifications/' + id + '/read', { method: 'POST' });
+            this.classList.remove('bg-light');
+            this.classList.add('bg-white');
+          });
+        });
+      })
+      .catch(function () {
+        notifContainer.innerHTML = '<div class="text-center py-3 text-danger small">Failed to load alerts</div>';
+      });
+  }
+
+  notifBtn.addEventListener('click', function () {
+    loadNotifications();
+  });
+
+  if (markAllBtn) {
+    markAllBtn.addEventListener('click', function (e) {
+      e.preventDefault();
+      fetch('/api/notifications/read-all', { method: 'POST' })
+        .then(function () {
+          if (notifBadge) notifBadge.style.display = 'none';
+          document.querySelectorAll('.notif-item').forEach(function (item) {
+            item.classList.remove('bg-light');
+            item.classList.add('bg-white');
+          });
+        });
+    });
+  }
+})();
+
