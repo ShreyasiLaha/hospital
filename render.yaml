@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: careplus-hospital
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn run:app
+    envVars:
+      - key: FLASK_DEBUG
+        value: "0"
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DB_TYPE
+        value: auto
+
