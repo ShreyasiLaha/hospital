@@ -2,7 +2,7 @@
 CarePlus Hospital - Receptionist Desk Blueprint Implementation
 Handles walk-in registrations, patient check-ins, queue management, and cashier billing.
 """
-from datetime import datetime, date
+from datetime import datetime
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 from werkzeug.security import generate_password_hash
 from app.db import query_db, execute_db

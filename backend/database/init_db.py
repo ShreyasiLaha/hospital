@@ -33,8 +33,6 @@ def execute_sql_file(cursor, filepath):
     # Split statements by semicolon while respecting strings
     statements = []
     current_stmt = []
-    in_quote = False
-    quote_char = ''
     
     lines = content.splitlines()
     for line in lines:

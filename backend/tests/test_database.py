@@ -4,8 +4,6 @@ Validates schema integrity, tables, foreign keys, indexes, roles, statuses, and 
 """
 import sys
 import os
-import sqlite3
-import pymysql
 
 # Add backend directory to sys.path
 backend_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
@@ -26,10 +24,10 @@ def run_tests():
     with app.app_context():
         # 1. Test Database Connection Module
         print("\n--- Test 1: Connection Module & Environment Configuration ---")
-        conn = get_db()
+        get_db()
         from flask import g
         backend = getattr(g, 'db_backend', 'mysql')
-        print(f"[OK] Database connection established successfully.")
+        print("[OK] Database connection established successfully.")
         print(f"     Active Backend Engine: {backend.upper()}")
         print(f"     Target DB Name:        {Config.DB_NAME}")
         print(f"     Host & Port:           {Config.DB_HOST}:{Config.DB_PORT}")
@@ -171,7 +169,7 @@ def run_tests():
             """, (doc_id, appt_date, appt_time))
             print("[FAIL] Conflict test failed: Duplicate appointment slot was inserted!")
         except Exception as e:
-            print(f"[PASS] Duplicate slot successfully REJECTED by database constraint!")
+            print("[PASS] Duplicate slot successfully REJECTED by database constraint!")
             print(f"       Constraint enforcement message: {e}")
 
         # 11. Test Supporting Clinical/Billing Tables

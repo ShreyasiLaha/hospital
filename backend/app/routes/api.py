@@ -3,8 +3,8 @@ CarePlus Hospital - Internal API Blueprint Implementation
 Provides dynamic JSON endpoints for department doctors and available slot calculations.
 """
 from datetime import datetime, timedelta
-from flask import Blueprint, jsonify, request
-from app.db import query_db
+from flask import Blueprint, jsonify, request, session
+from app.db import query_db, execute_db
 from app.utils.helpers import format_time_hhmm
 
 api_bp = Blueprint('api', __name__, url_prefix='/api')
@@ -129,7 +129,6 @@ def get_available_slots():
 @api_bp.route('/notifications')
 def get_user_notifications():
     """Returns unread count and latest 15 notifications for the authenticated user."""
-    from flask import session
     user_id = session.get('user_id')
     if not user_id:
         return jsonify({'status': 'error', 'message': 'Authentication required.'}), 401
@@ -166,8 +165,6 @@ def get_user_notifications():
 @api_bp.route('/notifications/<int:notification_id>/read', methods=['POST'])
 def mark_notification_read(notification_id):
     """Marks a single notification as read."""
-    from flask import session
-    from app.db import execute_db
     user_id = session.get('user_id')
     if not user_id:
         return jsonify({'status': 'error', 'message': 'Authentication required.'}), 401
@@ -178,8 +175,6 @@ def mark_notification_read(notification_id):
 @api_bp.route('/notifications/read-all', methods=['POST'])
 def mark_all_notifications_read():
     """Marks all notifications as read for current user."""
-    from flask import session
-    from app.db import execute_db
     user_id = session.get('user_id')
     if not user_id:
         return jsonify({'status': 'error', 'message': 'Authentication required.'}), 401

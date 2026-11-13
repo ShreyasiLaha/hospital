@@ -146,8 +146,10 @@ def schedule():
                 slot_duration = int(request.form.get(f'slot_{day_lower}', 30) or 30)
 
                 # Ensure HH:MM:SS format
-                if len(start_time) == 5: start_time += ':00'
-                if len(end_time) == 5: end_time += ':00'
+                if len(start_time) == 5:
+                    start_time += ':00'
+                if len(end_time) == 5:
+                    end_time += ':00'
 
                 # Upsert into doctor_schedules
                 existing = query_db("SELECT id FROM doctor_schedules WHERE doctor_id = %s AND day_of_week = %s", 
